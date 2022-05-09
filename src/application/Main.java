@@ -13,7 +13,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.FlowPane;
@@ -42,7 +41,7 @@ class Ball {
 	
 	static {
 		try {
-			ballImg = new Image("Theme "+ 1 + "/Ball.png");
+			ballImg = new Image("Theme 1/Ball.png");
 		}
 		catch(IllegalArgumentException npe) {
 			ballImg = null;
