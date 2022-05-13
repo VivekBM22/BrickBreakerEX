@@ -380,9 +380,10 @@ class GameEngine {
 	}
 	
 	void updateElements(long curNanoTime) {
-		elapsedNanoTime += curNanoTime - lastNanoTime;
+		long loopTime = curNanoTime - lastNanoTime;
+		elapsedNanoTime += loopTime;
 		
-		ball.updateCoords(curNanoTime - lastNanoTime);
+		ball.updateCoords(loopTime);
 		
 		//Upper Wall Collision test
 		if(ball.getY() < Ball.BALL_SIZE/2 - 1) {
