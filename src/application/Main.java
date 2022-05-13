@@ -320,6 +320,9 @@ class GameEngine {
 	private long lastNanoTime;
 	private long elapsedNanoTime = 0;
 	private int frameCount = 0;
+	private long pauseTime;
+	Boolean pauseRequest = false; 
+	private Boolean paused = false;
 	
 	Ball ball;
 	Paddle paddle;
@@ -327,15 +330,17 @@ class GameEngine {
 	
 	GraphicsContext ballGC, brickPaddleGC;
 	Canvas ballCanvas, brickPaddleCanvas;
+	AnimationTimer animTimer;
 	
 	WritableImage ballImg;
 	PixelReader ballImgReader;
 	
-	GameEngine(Canvas ballCanvas, GraphicsContext ballGC, Canvas brickPaddleCanvas, GraphicsContext brickPaddleGC) {
+	GameEngine(Canvas ballCanvas, GraphicsContext ballGC, Canvas brickPaddleCanvas, GraphicsContext brickPaddleGC, AnimationTimer animTimer) {
 		this.ballCanvas = ballCanvas;
 		this.ballGC = ballGC;
 		this.brickPaddleCanvas = brickPaddleCanvas;
 		this.brickPaddleGC = brickPaddleGC;
+		this.animTimer = animTimer;
 		ball = new Ball(640, 650, Math.PI/3);
 		ball.setVelocity(0.5);
 		paddle = new Paddle(ball.getX(), ball.getY() + Paddle.PADDLE_WIDTH_2 + Ball.BALL_SIZE_2 + 2);
@@ -353,6 +358,25 @@ class GameEngine {
 	
 	void setLastNanoTime(long lNanoTime) {
 		lastNanoTime = lNanoTime;
+	}
+	
+	Boolean isPaused() {
+		return paused;
+	}
+	
+	void pause() {
+			pauseRequest = true;
+	}
+	
+	void unpause() {
+		pauseTime = System.nanoTime() - pauseTime;
+		animTimer.start();
+		lastNanoTime += pauseTime;
+		paused = false;
+	}
+	
+	long getPauseTime() {
+		return pauseTime;
 	}
 	
 	public void drawFrame(long curNanoTime) {
@@ -385,6 +409,14 @@ class GameEngine {
 		}
 
 		System.out.println(curNanoTime);
+		
+		if(pauseRequest && !paused) {
+			animTimer.stop();
+			pauseTime = System.nanoTime();
+			paused = true;
+			pauseRequest = false;
+			System.out.println("Animation paused");
+		}
 	}
 	
 };
@@ -394,7 +426,7 @@ public class Main extends Application {
 	GraphicsContext ballGC, brickPaddleGC, bgGC;
 	GameEngine gameEngine;
 	
-	private long pauseTime;
+	//private long pauseTime;
 	private long totalPausedTime = 0;
 	private Boolean paused = false;
 	
@@ -433,14 +465,14 @@ public class Main extends Application {
 		bgGC.setFill(GameEngine.GAME_BG_COLOR);
 		bgGC.fillRect(0, 0, GameEngine.GAME_LENGTH, GameEngine.GAME_HEIGHT);
 		
-		gameEngine = new GameEngine(ballCanvas, ballGC, brickPaddleCanvas, brickPaddleGC);
-		
 		animTimer = new AnimationTimer() {
 			public void handle(long currentNanoTime) {
 				gameEngine.drawFrame(currentNanoTime);
 				gameEngine.setLastNanoTime(currentNanoTime);
 			}
 		};
+		
+		gameEngine = new GameEngine(ballCanvas, ballGC, brickPaddleCanvas, brickPaddleGC, animTimer);
 		
 		gameEngine.setLastNanoTime(System.nanoTime());
 		animTimer.start();
@@ -456,18 +488,13 @@ public class Main extends Application {
 		btn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent ae) {
-				if(!paused) {
-					animTimer.stop();
-					pauseTime = System.nanoTime();
-					paused = true;
-;					txt.setText("Animation stopped");
+				if(!gameEngine.isPaused()) {
+					gameEngine.pause();
+					txt.setText("Animation paused");
 				}
 				else {
-					pauseTime = System.nanoTime() - pauseTime;
-					gameEngine.setLastNanoTime(gameEngine.getLastNanoTime() + pauseTime);
-					totalPausedTime += pauseTime;
-					animTimer.start();
-					paused = false;
+					gameEngine.unpause();
+					totalPausedTime += gameEngine.getPauseTime();
 					txt.setText("Animation continued");
 				}
 			}
