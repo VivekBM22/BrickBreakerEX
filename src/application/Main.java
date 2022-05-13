@@ -317,8 +317,11 @@ class GameEngine {
 	final static int GAME_HEIGHT = 720;
 	final static int FRAME_RATE = 60;
 	final static long NANO_FRAME_TIME = 1000000000/FRAME_RATE;
+	
+	private long startTime;
 	private long lastNanoTime;
 	private long elapsedNanoTime = 0;
+	private long totalPauseTime = 0;
 	private int frameCount = 0;
 	private long pauseTime;
 	Boolean pauseRequest = false; 
@@ -352,9 +355,9 @@ class GameEngine {
 		//brick.eraseBrick(brickPaddleGC);
 	}
 	
-	long getLastNanoTime() {
+	/*long getLastNanoTime() {
 		return lastNanoTime;
-	}
+	}*/
 	
 	void setLastNanoTime(long lNanoTime) {
 		lastNanoTime = lNanoTime;
@@ -371,15 +374,27 @@ class GameEngine {
 	void unpause() {
 		pauseTime = System.nanoTime() - pauseTime;
 		animTimer.start();
+		totalPauseTime += pauseTime;
 		lastNanoTime += pauseTime;
 		paused = false;
 	}
 	
 	long getPauseTime() {
-		return pauseTime;
+		if(paused)
+			return totalPauseTime + System.nanoTime() - pauseTime;
+		return totalPauseTime;
 	}
 	
-	void updateElements(long curNanoTime) {
+	long getGameTime(long curNanoTime) {
+		return curNanoTime - startTime - totalPauseTime;
+	}
+	
+	void startGame() {
+		startTime = lastNanoTime = System.nanoTime();
+		animTimer.start();
+	}
+	
+	void updateGame(long curNanoTime) {
 		long loopTime = curNanoTime - lastNanoTime;
 		elapsedNanoTime += loopTime;
 		
@@ -431,10 +446,6 @@ public class Main extends Application {
 	GraphicsContext ballGC, brickPaddleGC, bgGC;
 	GameEngine gameEngine;
 	
-	//private long pauseTime;
-	private long totalPausedTime = 0;
-	private Boolean paused = false;
-	
 	WritableImage ballImg;
 	PixelReader ballImgReader;
 	
@@ -444,13 +455,16 @@ public class Main extends Application {
 		
 		FlowPane root = new FlowPane();
 		
-		Button btn = new Button("Test Button");
-		root.getChildren().add(btn);
-		
 		Scene scene  = new Scene(root, 1300, 800);
 		primaryStage.setScene(scene);
 		primaryStage.setTitle("Test Application 1");
 		primaryStage.show();
+		
+		Button btn = new Button("Test Button");
+		root.getChildren().add(btn);
+		
+		Label timeLabel = new Label();
+		root.getChildren().add(timeLabel);
 		
 		StackPane canvasPane = new StackPane();
 		root.getChildren().add(canvasPane);
@@ -472,7 +486,8 @@ public class Main extends Application {
 		
 		animTimer = new AnimationTimer() {
 			public void handle(long currentNanoTime) {
-				gameEngine.updateElements(currentNanoTime);
+				timeLabel.setText(Long.toString(gameEngine.getGameTime(currentNanoTime)/1000000000) + "s");
+				gameEngine.updateGame(currentNanoTime);
 				gameEngine.drawFrame(currentNanoTime);
 				gameEngine.pauseGame();
 				gameEngine.setLastNanoTime(currentNanoTime);
@@ -481,8 +496,9 @@ public class Main extends Application {
 		
 		gameEngine = new GameEngine(ballCanvas, ballGC, brickPaddleCanvas, brickPaddleGC, animTimer);
 		
-		gameEngine.setLastNanoTime(System.nanoTime());
-		animTimer.start();
+		/*gameEngine.setLastNanoTime(System.nanoTime());
+		animTimer.start();*/
+		gameEngine.startGame();
 		
 		ballImg = gameEngine.ball.getBallImg(ballCanvas);
 		ballImgReader = ballImg.getPixelReader();
@@ -501,8 +517,7 @@ public class Main extends Application {
 				}
 				else {
 					gameEngine.unpause();
-					totalPausedTime += gameEngine.getPauseTime();
-					txt.setText("Animation continued");
+					txt.setText("Animation continued\nTotal Pause Time: " + gameEngine.getPauseTime()/1000000000);
 				}
 			}
 		});
