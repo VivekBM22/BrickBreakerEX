@@ -379,7 +379,7 @@ class GameEngine {
 		return pauseTime;
 	}
 	
-	public void drawFrame(long curNanoTime) {
+	void updateElements(long curNanoTime) {
 		elapsedNanoTime += curNanoTime - lastNanoTime;
 		
 		ball.updateCoords(curNanoTime - lastNanoTime);
@@ -397,7 +397,9 @@ class GameEngine {
 			
 			System.out.println("X Velocity: " + ball.getXVelocity() + "\nY Velocity: " + ball.getYVelocity());
 		}
-		
+	}
+	
+	public void drawFrame(long curNanoTime) {
 		if(elapsedNanoTime > NANO_FRAME_TIME) {
 			ball.eraseBall(ballGC);
 			ball.drawBall(ballGC);
@@ -409,7 +411,9 @@ class GameEngine {
 		}
 
 		System.out.println(curNanoTime);
-		
+	}
+	
+	void pauseGame() {
 		if(pauseRequest && !paused) {
 			animTimer.stop();
 			pauseTime = System.nanoTime();
@@ -467,7 +471,9 @@ public class Main extends Application {
 		
 		animTimer = new AnimationTimer() {
 			public void handle(long currentNanoTime) {
+				gameEngine.updateElements(currentNanoTime);
 				gameEngine.drawFrame(currentNanoTime);
+				gameEngine.pauseGame();
 				gameEngine.setLastNanoTime(currentNanoTime);
 			}
 		};
