@@ -453,21 +453,24 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		
-		FlowPane root = new FlowPane();
+		StackPane root = new StackPane();
+		FlowPane gamePane = new FlowPane();
 		
 		Scene scene  = new Scene(root, 1300, 800);
 		primaryStage.setScene(scene);
 		primaryStage.setTitle("Test Application 1");
 		primaryStage.show();
 		
+		root.getChildren().add(gamePane);
+		
 		Button btn = new Button("Test Button");
-		root.getChildren().add(btn);
+		gamePane.getChildren().add(btn);
 		
 		Label timeLabel = new Label();
-		root.getChildren().add(timeLabel);
+		gamePane.getChildren().add(timeLabel);
 		
 		StackPane canvasPane = new StackPane();
-		root.getChildren().add(canvasPane);
+		gamePane.getChildren().add(canvasPane);
 		
 		bgCanvas = new Canvas(GameEngine.GAME_LENGTH, GameEngine.GAME_HEIGHT);
 		bgGC = bgCanvas.getGraphicsContext2D();
@@ -496,8 +499,6 @@ public class Main extends Application {
 		
 		gameEngine = new GameEngine(ballCanvas, ballGC, brickPaddleCanvas, brickPaddleGC, animTimer);
 		
-		/*gameEngine.setLastNanoTime(System.nanoTime());
-		animTimer.start();*/
 		gameEngine.startGame();
 		
 		ballImg = gameEngine.ball.getBallImg(ballCanvas);
@@ -506,7 +507,7 @@ public class Main extends Application {
 		/*gc.drawImage(ballImg, 0, 0);*/
 		
 		Label txt = new Label();
-		root.getChildren().add(txt);
+		gamePane.getChildren().add(txt);
 		
 		btn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
