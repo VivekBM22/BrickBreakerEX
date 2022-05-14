@@ -1,10 +1,14 @@
 package application;
 
+import java.util.List;
+import java.util.ListIterator;
+
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
+import javafx.geometry.VPos;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
@@ -18,13 +22,16 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 import javafx.scene.transform.Rotate;
 
 class Ball {	
 	final static int BALL_SIZE = 27;
 	final static int BALL_SIZE_2 = BALL_SIZE/2;
 	final static Color ballColor = Color.DARKGOLDENROD;
-	static Image ballImg;
+	private static Image ballImg;
 	
 	private int x;
 	private int y;
@@ -150,7 +157,7 @@ class Paddle {
 	final static int PADDLE_WIDTH = (Ball.BALL_SIZE + 1)/2;
 	final static int PADDLE_WIDTH_2 = PADDLE_WIDTH/2;
 	final static Color paddleColor = Color.DARKORANGE;
-	static Image paddleImg;
+	private static Image paddleImg;
 	
 	private int x;
 	private int y;
@@ -214,7 +221,7 @@ class Brick {
 	final static int BRICK_WIDTH = 27;
 	final static int BRICK_WIDTH_2 = BRICK_WIDTH/2;
 	final static Color brickColor = Color.DARKBLUE;
-	static Image brickImg = new Image("Theme "+ 1 + "/Brick.png");
+	private static Image brickImg = new Image("Theme "+ 1 + "/Brick.png");
 	
 	//Upper-left corner
 	private int x;
@@ -317,6 +324,10 @@ class GameEngine {
 	final static int GAME_HEIGHT = 720;
 	final static int FRAME_RATE = 60;
 	final static long NANO_FRAME_TIME = 1000000000/FRAME_RATE;
+	private final static Image lifeImg = new Image("life.png");
+	private final static Color TIME_FILL_COLOR = Color.BLACK;
+	private final static int TIME_FONT_SIZE = 25;
+	private final static Font TIME_FONT = Font.font("Courier New", FontWeight.BOLD, FontPosture.REGULAR, TIME_FONT_SIZE);
 	
 	private long startTime;
 	private long lastNanoTime;
@@ -331,20 +342,25 @@ class GameEngine {
 	Paddle paddle;
 	Brick brick;
 	
-	GraphicsContext ballGC, brickPaddleGC;
-	Canvas ballCanvas, brickPaddleCanvas;
+	private int lives = 3;
+	private int displayedLives = 3;
+	
+	GraphicsContext ballGC, brickPaddleGC, UIGC;
+	Canvas ballCanvas, brickPaddleCanvas, UICanvas;
 	AnimationTimer animTimer;
 	
 	WritableImage ballImg;
 	PixelReader ballImgReader;
 	
-	GameEngine(Canvas ballCanvas, GraphicsContext ballGC, Canvas brickPaddleCanvas, GraphicsContext brickPaddleGC, AnimationTimer animTimer) {
+	GameEngine(Canvas ballCanvas, GraphicsContext ballGC, Canvas brickPaddleCanvas, GraphicsContext brickPaddleGC, Canvas UICanvas, GraphicsContext UIGC, AnimationTimer animTimer) {
 		this.ballCanvas = ballCanvas;
 		this.ballGC = ballGC;
 		this.brickPaddleCanvas = brickPaddleCanvas;
 		this.brickPaddleGC = brickPaddleGC;
+		this.UICanvas = UICanvas;
+		this.UIGC = UIGC;
 		this.animTimer = animTimer;
-		ball = new Ball(640, 650, Math.PI/3);
+		ball = new Ball(GAME_LENGTH/2 - Ball.BALL_SIZE_2, GAME_HEIGHT - 100, Math.PI/3);
 		ball.setVelocity(0.5);
 		paddle = new Paddle(ball.getX(), ball.getY() + Paddle.PADDLE_WIDTH_2 + Ball.BALL_SIZE_2 + 2);
 		brick = new Brick(ball.getX() - Brick.BRICK_LENGTH_2, 360 - Brick.BRICK_WIDTH_2, Math.PI/6);
@@ -389,7 +405,44 @@ class GameEngine {
 		return curNanoTime - startTime - totalPauseTime;
 	}
 	
+	String getTimeString(long time) {
+		String timeStr = new String();
+		
+		time /= 1000000000;
+		long unit = time%60;
+		if(unit < 10)
+			timeStr = ":0" + Long.toString(unit);
+		else
+			timeStr = ":" + Long.toString(unit);
+		
+		time /= 60;
+		if(time == 60)
+			return "00:00" + timeStr;
+		unit = time%60;
+		if(unit < 10)
+			timeStr = ":0" + Long.toString(unit) + timeStr;
+		else
+			timeStr = ":" + Long.toString(unit) + timeStr;
+		
+		time /= 60;
+		if(time == 0)
+			return "00" + timeStr;
+		else if(time < 10)
+			return "0" + Long.toString(time) + timeStr;
+		
+		return Long.toString(time) + timeStr;
+	}
+	
 	void startGame() {
+		UIGC.setTextBaseline(VPos.TOP);
+		UIGC.setFill(TIME_FILL_COLOR);
+		UIGC.setFont(TIME_FONT);
+		
+		displayedLives = lives;
+		for(int i = 0; i < lives; i++) {
+			UIGC.drawImage(lifeImg, GAME_LENGTH - (i+1)*(lifeImg.getWidth() + 3), 0);
+		}
+		
 		startTime = lastNanoTime = System.nanoTime();
 		animTimer.start();
 	}
@@ -419,6 +472,19 @@ class GameEngine {
 		if(elapsedNanoTime > NANO_FRAME_TIME) {
 			ball.eraseBall(ballGC);
 			ball.drawBall(ballGC);
+			
+			String timeStr = getTimeString(getGameTime(curNanoTime));
+			UIGC.clearRect(0, 0, TIME_FONT_SIZE*4.8, TIME_FONT_SIZE);
+			UIGC.fillText(timeStr, 0, 0);
+			
+			for(; displayedLives < lives; displayedLives++) {
+				UIGC.drawImage(lifeImg, GAME_LENGTH - (displayedLives+1)*(lifeImg.getWidth() + 3), 0);
+			}
+			
+			for(; displayedLives > lives; displayedLives--) {
+				UIGC.clearRect(GAME_LENGTH - (displayedLives)*(lifeImg.getWidth() + 3), 0, lifeImg.getWidth(), lifeImg.getHeight());
+			}
+			
 			elapsedNanoTime -= NANO_FRAME_TIME;
 			frameCount ++;
 		}
@@ -442,8 +508,8 @@ class GameEngine {
 };
 
 public class Main extends Application {
-	Canvas ballCanvas, brickPaddleCanvas, bgCanvas;
-	GraphicsContext ballGC, brickPaddleGC, bgGC;
+	Canvas ballCanvas, brickPaddleCanvas, bgCanvas, UICanvas;
+	GraphicsContext ballGC, brickPaddleGC, bgGC, UIGC;
 	GameEngine gameEngine;
 	
 	WritableImage ballImg;
@@ -484,6 +550,10 @@ public class Main extends Application {
 		brickPaddleGC = brickPaddleCanvas.getGraphicsContext2D();
 		canvasPane.getChildren().add(brickPaddleCanvas);
 		
+		UICanvas = new Canvas(GameEngine.GAME_LENGTH, GameEngine.GAME_HEIGHT);
+		UIGC = UICanvas.getGraphicsContext2D();
+		canvasPane.getChildren().add(UICanvas);
+		
 		bgGC.setFill(GameEngine.GAME_BG_COLOR);
 		bgGC.fillRect(0, 0, GameEngine.GAME_LENGTH, GameEngine.GAME_HEIGHT);
 		
@@ -497,7 +567,7 @@ public class Main extends Application {
 			}
 		};
 		
-		gameEngine = new GameEngine(ballCanvas, ballGC, brickPaddleCanvas, brickPaddleGC, animTimer);
+		gameEngine = new GameEngine(ballCanvas, ballGC, brickPaddleCanvas, brickPaddleGC, UICanvas, UIGC, animTimer);
 		
 		gameEngine.startGame();
 		
@@ -525,6 +595,8 @@ public class Main extends Application {
 	}
 	
 	public static void main(String[] args) {
+		
+			System.out.println();
 		launch(args);
 	}
 }
