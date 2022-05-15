@@ -1,8 +1,5 @@
 package application;
 
-import java.util.List;
-import java.util.ListIterator;
-
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -19,6 +16,8 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -156,11 +155,18 @@ class Paddle {
 	final static int PADDLE_LENGTH_2 = PADDLE_LENGTH/2;
 	final static int PADDLE_WIDTH = (Ball.BALL_SIZE + 1)/2;
 	final static int PADDLE_WIDTH_2 = PADDLE_WIDTH/2;
+	private final int velocity = 1;
 	final static Color paddleColor = Color.DARKORANGE;
 	private static Image paddleImg;
 	
 	private int x;
 	private int y;
+	private double xCoord;
+	
+	private int oldX;
+	
+	private boolean moveLeft = false;
+	private boolean moveRight = false;
 	
 	static {
 		try {
@@ -180,14 +186,16 @@ class Paddle {
 		}
 	}
 	
-	Paddle(int X, int Y) {
-		x = X;
-		y = Y;
+	Paddle(int x, int y) {
+		this.x = x;
+		this.y = y;
+		xCoord = x;
 	}
 	
-	void setPos(int X, int Y) {
-		x = X;
-		y = Y;
+	void setPos(int x, int y) {
+		this.x = x;
+		this.y = y;
+		xCoord = x;
 	}
 	
 	int getX() {
@@ -197,8 +205,15 @@ class Paddle {
 	int getY() {
 		return y;
 	}
-
 	
+	void setLeft(boolean value) {
+		moveLeft = value;
+	}
+	
+	void setRight(boolean value) {
+		moveRight = value;
+	}
+
 	void drawPaddle(GraphicsContext gc) {
 		if(paddleImg != null) {
 			;
@@ -207,11 +222,28 @@ class Paddle {
 			gc.setFill(paddleColor);
 			gc.fillRect(x - PADDLE_LENGTH_2, y - PADDLE_WIDTH_2, PADDLE_LENGTH, PADDLE_WIDTH);
 		}
+		
+		oldX = x;
 	}
 	
 	void erasePaddle(GraphicsContext gc) {
-		gc.setFill(Color.TRANSPARENT);
-		gc.fillRect(x - PADDLE_LENGTH_2, y - PADDLE_WIDTH_2, PADDLE_LENGTH, PADDLE_WIDTH);
+		if(paddleImg != null)
+			gc.clearRect(oldX - PADDLE_LENGTH_2, y - PADDLE_WIDTH_2, PADDLE_LENGTH, PADDLE_WIDTH);
+		else {
+			gc.setFill(GameEngine.GAME_BG_COLOR);
+			gc.fillRect(oldX - PADDLE_LENGTH_2, y - PADDLE_WIDTH_2, PADDLE_LENGTH, PADDLE_WIDTH);
+		}
+	}
+	
+	void updateCoords(long nanoTime) {
+		long time = nanoTime / 1000000;
+		
+		if(moveLeft && !moveRight && xCoord > PADDLE_LENGTH/2.0)
+			xCoord -= velocity * time;
+		else if(!moveLeft && moveRight && xCoord < GameEngine.GAME_LENGTH - PADDLE_LENGTH/2.0)
+			xCoord += velocity * time;
+		
+		x = (int) Math.round(xCoord);
 	}
 };
 
@@ -250,20 +282,20 @@ class Brick {
 		}
 	}
 	
-	Brick(int x, int y, double angle) { //Modify for center as (x,y)
+	Brick(int x, int y, double angle) {
 		this.x = x;
 		this.y = y;
 		this.angle = angle;
 		
-		xCoords[0] = 0;
-		xCoords[1] = BRICK_LENGTH * Math.cos(this.angle);
-		xCoords[3] = BRICK_WIDTH * Math.sin(this.angle);
-		xCoords[2] = xCoords[1] + xCoords[3];
+		xCoords[0] = -BRICK_LENGTH/2.0 * Math.cos(this.angle) - BRICK_WIDTH/2.0 * Math.sin(this.angle);
+		xCoords[1] = BRICK_LENGTH/2.0 * Math.cos(this.angle) - BRICK_WIDTH/2.0 * Math.sin(this.angle);
+		xCoords[3] = -BRICK_LENGTH/2.0 * Math.cos(this.angle) + BRICK_WIDTH/2.0 * Math.sin(this.angle);
+		xCoords[2] = BRICK_LENGTH/2.0 * Math.cos(this.angle) + BRICK_WIDTH/2.0 * Math.sin(this.angle);
 		
-		yCoords[0] = 0;
-		yCoords[1] = - BRICK_LENGTH *  Math.sin(this.angle);
-		yCoords[3] = BRICK_WIDTH * Math.cos(this.angle);
-		yCoords[2] = yCoords[1] + yCoords[3];
+		yCoords[0] = BRICK_LENGTH/2.0 * Math.sin(this.angle) - BRICK_WIDTH/2.0 * Math.cos(this.angle);
+		yCoords[1] = -BRICK_LENGTH/2.0 * Math.sin(this.angle) - BRICK_WIDTH/2.0 * Math.cos(this.angle);
+		yCoords[3] = BRICK_LENGTH/2.0 * Math.sin(this.angle) + BRICK_WIDTH/2.0 * Math.cos(this.angle);
+		yCoords[2] = -BRICK_LENGTH/2.0 * Math.sin(this.angle) + BRICK_WIDTH/2.0 * Math.cos(this.angle);
 		
 		for(int i = 0; i < 4; i++) {
 			xCoords[i] += this.x;
@@ -294,8 +326,8 @@ class Brick {
 	void drawBrick(GraphicsContext gc) {
 		if(brickImg != null) {
 			gc.save();
-			rotateGC(gc, -angle*180/Math.PI, x/* + BRICK_LENGTH_2*/, y/* + BRICK_WIDTH_2*/); // Remove comments to rotate along center
-			gc.drawImage(brickImg, x, y);
+			rotateGC(gc, -angle*180/Math.PI, x, y);
+			gc.drawImage(brickImg, x - BRICK_LENGTH_2, y - BRICK_WIDTH_2);
 			gc.restore();
 		}
 		else {
@@ -307,8 +339,8 @@ class Brick {
 	void eraseBrick(GraphicsContext gc) {
 		if(brickImg != null) {
 			gc.save();
-			rotateGC(gc, -angle*180/Math.PI, x/* + BRICK_LENGTH_2*/, y/* + BRICK_WIDTH_2*/); // Remove comments to rotate along center
-			gc.clearRect(x, y, BRICK_LENGTH, BRICK_WIDTH);
+			rotateGC(gc, -angle*180/Math.PI, x, y);
+			gc.clearRect(x - BRICK_LENGTH_2, y - BRICK_WIDTH_2, BRICK_LENGTH, BRICK_WIDTH);
 			gc.restore();
 		}
 		else {
@@ -363,17 +395,13 @@ class GameEngine {
 		ball = new Ball(GAME_LENGTH/2 - Ball.BALL_SIZE_2, GAME_HEIGHT - 100, Math.PI/3);
 		ball.setVelocity(0.5);
 		paddle = new Paddle(ball.getX(), ball.getY() + Paddle.PADDLE_WIDTH_2 + Ball.BALL_SIZE_2 + 2);
-		brick = new Brick(ball.getX() - Brick.BRICK_LENGTH_2, 360 - Brick.BRICK_WIDTH_2, Math.PI/6);
+		brick = new Brick(ball.getX(), ball.getY() - 250, Math.PI/6);
 		
 		paddle.drawPaddle(brickPaddleGC);
 		ball.drawBall(ballGC);
 		brick.drawBrick(brickPaddleGC);
-		//brick.eraseBrick(brickPaddleGC);
+		brick.eraseBrick(brickPaddleGC);
 	}
-	
-	/*long getLastNanoTime() {
-		return lastNanoTime;
-	}*/
 	
 	void setLastNanoTime(long lNanoTime) {
 		lastNanoTime = lNanoTime;
@@ -451,6 +479,7 @@ class GameEngine {
 		long loopTime = curNanoTime - lastNanoTime;
 		elapsedNanoTime += loopTime;
 		
+		paddle.updateCoords(loopTime);
 		ball.updateCoords(loopTime);
 		
 		//Upper Wall Collision test
@@ -472,6 +501,9 @@ class GameEngine {
 		if(elapsedNanoTime > NANO_FRAME_TIME) {
 			ball.eraseBall(ballGC);
 			ball.drawBall(ballGC);
+			
+			paddle.erasePaddle(brickPaddleGC);
+			paddle.drawPaddle(brickPaddleGC);
 			
 			String timeStr = getTimeString(getGameTime(curNanoTime));
 			UIGC.clearRect(0, 0, TIME_FONT_SIZE*4.8, TIME_FONT_SIZE);
@@ -590,6 +622,40 @@ public class Main extends Application {
 					gameEngine.unpause();
 					txt.setText("Animation continued\nTotal Pause Time: " + gameEngine.getPauseTime()/1000000000);
 				}
+			}
+		});
+		
+		gamePane.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			public void handle(KeyEvent ke) {
+				if(!gameEngine.isPaused()) {
+					if(ke.getCode() == KeyCode.A) {
+						gameEngine.paddle.setLeft(true);
+						txt.setText("Moving left");
+					}
+					else if(ke.getCode() == KeyCode.D) {
+						gameEngine.paddle.setRight(true);
+						txt.setText("Moving right");
+					}
+				}
+			}
+		});
+		gamePane.setOnKeyReleased(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				if(ke.getCode() == KeyCode.ESCAPE) {
+					if(!gameEngine.isPaused()) {
+						gameEngine.pause();
+						txt.setText("Animation paused");
+					}
+					else {
+						gameEngine.unpause();
+						txt.setText("Animation continued\nTotal Pause Time: " + gameEngine.getPauseTime()/1000000000);
+					}
+				}
+				else if(ke.getCode() == KeyCode.A)
+					gameEngine.paddle.setLeft(false);
+				else if(ke.getCode() == KeyCode.D)
+					gameEngine.paddle.setRight(false);
 			}
 		});
 	}
