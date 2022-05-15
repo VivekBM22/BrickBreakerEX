@@ -161,9 +161,14 @@ class Paddle {
 	
 	private int x;
 	private int y;
+<<<<<<< HEAD
 	private double xCoord;
 	
 	private int oldX;
+=======
+	private double xCoords;
+	private double yCoords;
+>>>>>>> 470e77a1e61a74798a264bf492c5279f7006969c
 	
 	private boolean moveLeft = false;
 	private boolean moveRight = false;
