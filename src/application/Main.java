@@ -1,8 +1,5 @@
 package application;
 
-import java.util.List;
-import java.util.ListIterator;
-
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -19,6 +16,8 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -161,6 +160,11 @@ class Paddle {
 	
 	private int x;
 	private int y;
+	private double xCoords;
+	private double yCoords;
+	
+	private boolean moveLeft = false;
+	private boolean moveRight = false;
 	
 	static {
 		try {
@@ -250,20 +254,20 @@ class Brick {
 		}
 	}
 	
-	Brick(int x, int y, double angle) { //Modify for center as (x,y)
+	Brick(int x, int y, double angle) {
 		this.x = x;
 		this.y = y;
 		this.angle = angle;
 		
-		xCoords[0] = 0;
-		xCoords[1] = BRICK_LENGTH * Math.cos(this.angle);
-		xCoords[3] = BRICK_WIDTH * Math.sin(this.angle);
-		xCoords[2] = xCoords[1] + xCoords[3];
+		xCoords[0] = -BRICK_LENGTH/2.0 * Math.cos(this.angle) - BRICK_WIDTH/2.0 * Math.sin(this.angle);
+		xCoords[1] = BRICK_LENGTH/2.0 * Math.cos(this.angle) - BRICK_WIDTH/2.0 * Math.sin(this.angle);
+		xCoords[3] = -BRICK_LENGTH/2.0 * Math.cos(this.angle) + BRICK_WIDTH/2.0 * Math.sin(this.angle);
+		xCoords[2] = BRICK_LENGTH/2.0 * Math.cos(this.angle) + BRICK_WIDTH/2.0 * Math.sin(this.angle);
 		
-		yCoords[0] = 0;
-		yCoords[1] = - BRICK_LENGTH *  Math.sin(this.angle);
-		yCoords[3] = BRICK_WIDTH * Math.cos(this.angle);
-		yCoords[2] = yCoords[1] + yCoords[3];
+		yCoords[0] = BRICK_LENGTH/2.0 * Math.sin(this.angle) - BRICK_WIDTH/2.0 * Math.cos(this.angle);
+		yCoords[1] = -BRICK_LENGTH/2.0 * Math.sin(this.angle) - BRICK_WIDTH/2.0 * Math.cos(this.angle);
+		yCoords[3] = BRICK_LENGTH/2.0 * Math.sin(this.angle) + BRICK_WIDTH/2.0 * Math.cos(this.angle);
+		yCoords[2] = -BRICK_LENGTH/2.0 * Math.sin(this.angle) + BRICK_WIDTH/2.0 * Math.cos(this.angle);
 		
 		for(int i = 0; i < 4; i++) {
 			xCoords[i] += this.x;
@@ -294,8 +298,8 @@ class Brick {
 	void drawBrick(GraphicsContext gc) {
 		if(brickImg != null) {
 			gc.save();
-			rotateGC(gc, -angle*180/Math.PI, x/* + BRICK_LENGTH_2*/, y/* + BRICK_WIDTH_2*/); // Remove comments to rotate along center
-			gc.drawImage(brickImg, x, y);
+			rotateGC(gc, -angle*180/Math.PI, x, y);
+			gc.drawImage(brickImg, x - BRICK_LENGTH_2, y - BRICK_WIDTH_2);
 			gc.restore();
 		}
 		else {
@@ -307,8 +311,8 @@ class Brick {
 	void eraseBrick(GraphicsContext gc) {
 		if(brickImg != null) {
 			gc.save();
-			rotateGC(gc, -angle*180/Math.PI, x/* + BRICK_LENGTH_2*/, y/* + BRICK_WIDTH_2*/); // Remove comments to rotate along center
-			gc.clearRect(x, y, BRICK_LENGTH, BRICK_WIDTH);
+			rotateGC(gc, -angle*180/Math.PI, x, y);
+			gc.clearRect(x - BRICK_LENGTH_2, y - BRICK_WIDTH_2, BRICK_LENGTH, BRICK_WIDTH);
 			gc.restore();
 		}
 		else {
@@ -363,12 +367,12 @@ class GameEngine {
 		ball = new Ball(GAME_LENGTH/2 - Ball.BALL_SIZE_2, GAME_HEIGHT - 100, Math.PI/3);
 		ball.setVelocity(0.5);
 		paddle = new Paddle(ball.getX(), ball.getY() + Paddle.PADDLE_WIDTH_2 + Ball.BALL_SIZE_2 + 2);
-		brick = new Brick(ball.getX() - Brick.BRICK_LENGTH_2, 360 - Brick.BRICK_WIDTH_2, Math.PI/6);
+		brick = new Brick(ball.getX(), ball.getY() - 250, Math.PI/6);
 		
 		paddle.drawPaddle(brickPaddleGC);
 		ball.drawBall(ballGC);
 		brick.drawBrick(brickPaddleGC);
-		//brick.eraseBrick(brickPaddleGC);
+		brick.eraseBrick(brickPaddleGC);
 	}
 	
 	/*long getLastNanoTime() {
