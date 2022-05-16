@@ -155,20 +155,15 @@ class Paddle {
 	final static int PADDLE_LENGTH_2 = PADDLE_LENGTH/2;
 	final static int PADDLE_WIDTH = (Ball.BALL_SIZE + 1)/2;
 	final static int PADDLE_WIDTH_2 = PADDLE_WIDTH/2;
-	private final int velocity = 1;
 	final static Color paddleColor = Color.DARKORANGE;
 	private static Image paddleImg;
 	
 	private int x;
 	private int y;
-<<<<<<< HEAD
-	private double xCoord;
+	private double velocity = 1;
 	
 	private int oldX;
-=======
-	private double xCoords;
-	private double yCoords;
->>>>>>> 470e77a1e61a74798a264bf492c5279f7006969c
+	private double xCoord;
 	
 	private boolean moveLeft = false;
 	private boolean moveRight = false;
@@ -211,6 +206,10 @@ class Paddle {
 		return y;
 	}
 	
+	void setVelocity(double velocity) {
+		this.velocity = velocity;
+	}
+	
 	void setLeft(boolean value) {
 		moveLeft = value;
 	}
@@ -242,11 +241,12 @@ class Paddle {
 	
 	void updateCoords(long nanoTime) {
 		long time = nanoTime / 1000000;
+		double displace = velocity * time;
 		
-		if(moveLeft && !moveRight && xCoord > PADDLE_LENGTH/2.0)
-			xCoord -= velocity * time;
-		else if(!moveLeft && moveRight && xCoord < GameEngine.GAME_LENGTH - PADDLE_LENGTH/2.0)
-			xCoord += velocity * time;
+		if(moveLeft && !moveRight && xCoord - displace > PADDLE_LENGTH/2.0)
+			xCoord -= displace;
+		else if(!moveLeft && moveRight && xCoord + displace < GameEngine.GAME_LENGTH - PADDLE_LENGTH/2.0)
+			xCoord += displace;
 		
 		x = (int) Math.round(xCoord);
 	}
@@ -383,23 +383,23 @@ class GameEngine {
 	private int displayedLives = 3;
 	
 	GraphicsContext ballGC, brickPaddleGC, UIGC;
-	Canvas ballCanvas, brickPaddleCanvas, UICanvas;
+	Canvas ballCanvas, brickPaddleCanvas;
 	AnimationTimer animTimer;
 	
 	WritableImage ballImg;
 	PixelReader ballImgReader;
 	
-	GameEngine(Canvas ballCanvas, GraphicsContext ballGC, Canvas brickPaddleCanvas, GraphicsContext brickPaddleGC, Canvas UICanvas, GraphicsContext UIGC, AnimationTimer animTimer) {
+	GameEngine(Canvas ballCanvas, GraphicsContext ballGC, Canvas brickPaddleCanvas, GraphicsContext brickPaddleGC, GraphicsContext UIGC, AnimationTimer animTimer) {
 		this.ballCanvas = ballCanvas;
 		this.ballGC = ballGC;
 		this.brickPaddleCanvas = brickPaddleCanvas;
 		this.brickPaddleGC = brickPaddleGC;
-		this.UICanvas = UICanvas;
 		this.UIGC = UIGC;
 		this.animTimer = animTimer;
 		ball = new Ball(GAME_LENGTH/2 - Ball.BALL_SIZE_2, GAME_HEIGHT - 100, Math.PI/3);
 		ball.setVelocity(0.5);
 		paddle = new Paddle(ball.getX(), ball.getY() + Paddle.PADDLE_WIDTH_2 + Ball.BALL_SIZE_2 + 2);
+		paddle.setVelocity(0.8);
 		brick = new Brick(ball.getX(), ball.getY() - 250, Math.PI/6);
 		
 		paddle.drawPaddle(brickPaddleGC);
@@ -500,6 +500,8 @@ class GameEngine {
 			
 			System.out.println("X Velocity: " + ball.getXVelocity() + "\nY Velocity: " + ball.getYVelocity());
 		}
+
+		System.out.println("Loop Time: " + loopTime);
 	}
 	
 	public void drawFrame(long curNanoTime) {
@@ -528,8 +530,6 @@ class GameEngine {
 		if(frameCount%200 == 0) {
 			System.out.println("200 frames printed");
 		}
-
-		System.out.println(curNanoTime);
 	}
 	
 	void pauseGame() {
@@ -604,7 +604,7 @@ public class Main extends Application {
 			}
 		};
 		
-		gameEngine = new GameEngine(ballCanvas, ballGC, brickPaddleCanvas, brickPaddleGC, UICanvas, UIGC, animTimer);
+		gameEngine = new GameEngine(ballCanvas, ballGC, brickPaddleCanvas, brickPaddleGC, UIGC, animTimer);
 		
 		gameEngine.startGame();
 		
@@ -630,14 +630,15 @@ public class Main extends Application {
 			}
 		});
 		
+		gamePane.requestFocus();
 		gamePane.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent ke) {
 				if(!gameEngine.isPaused()) {
-					if(ke.getCode() == KeyCode.A) {
+					if(ke.getCode().equals(KeyCode.LEFT)) {
 						gameEngine.paddle.setLeft(true);
 						txt.setText("Moving left");
 					}
-					else if(ke.getCode() == KeyCode.D) {
+					else if(ke.getCode().equals(KeyCode.RIGHT)) {
 						gameEngine.paddle.setRight(true);
 						txt.setText("Moving right");
 					}
@@ -647,7 +648,7 @@ public class Main extends Application {
 		gamePane.setOnKeyReleased(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent ke) {
-				if(ke.getCode() == KeyCode.ESCAPE) {
+				if(ke.getCode().equals(KeyCode.ESCAPE)) {
 					if(!gameEngine.isPaused()) {
 						gameEngine.pause();
 						txt.setText("Animation paused");
@@ -657,9 +658,9 @@ public class Main extends Application {
 						txt.setText("Animation continued\nTotal Pause Time: " + gameEngine.getPauseTime()/1000000000);
 					}
 				}
-				else if(ke.getCode() == KeyCode.A)
+				else if(ke.getCode().equals(KeyCode.LEFT))
 					gameEngine.paddle.setLeft(false);
-				else if(ke.getCode() == KeyCode.D)
+				else if(ke.getCode().equals( KeyCode.RIGHT))
 					gameEngine.paddle.setRight(false);
 			}
 		});
