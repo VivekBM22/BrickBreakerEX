@@ -425,10 +425,6 @@ class GameEngine {
 		brick.eraseBrick(brickPaddleGC);
 	}
 	
-	void setLastNanoTime(long lNanoTime) {
-		lastNanoTime = lNanoTime;
-	}
-	
 	Boolean isPaused() {
 		return paused;
 	}
@@ -506,6 +502,7 @@ class GameEngine {
 	
 	void updateGame(long curNanoTime) {
 		long loopTime = curNanoTime - lastNanoTime;
+		lastNanoTime = System.nanoTime();
 		elapsedNanoTime += loopTime;
 		
 		paddle.updateCoords(loopTime);
@@ -621,7 +618,6 @@ public class Main extends Application {
 				gameEngine.updateGame(currentNanoTime);
 				gameEngine.drawFrame(currentNanoTime);
 				gameEngine.pauseGame();
-				gameEngine.setLastNanoTime(currentNanoTime);
 			}
 		};
 		
