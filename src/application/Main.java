@@ -1,5 +1,8 @@
 package application;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -265,7 +268,9 @@ class Brick {
 	private int x;
 	private int y;
 	
-	double angle;
+	private double angle;
+	
+	private int health;
 	
 	double[] xCoords = new double[4];
 	double[] yCoords = new double[4];
@@ -293,15 +298,18 @@ class Brick {
 		this.y = y;
 		this.angle = angle;
 		
-		xCoords[0] = -BRICK_LENGTH/2.0 * Math.cos(this.angle) - BRICK_WIDTH/2.0 * Math.sin(this.angle);
-		xCoords[1] = BRICK_LENGTH/2.0 * Math.cos(this.angle) - BRICK_WIDTH/2.0 * Math.sin(this.angle);
-		xCoords[3] = -BRICK_LENGTH/2.0 * Math.cos(this.angle) + BRICK_WIDTH/2.0 * Math.sin(this.angle);
-		xCoords[2] = BRICK_LENGTH/2.0 * Math.cos(this.angle) + BRICK_WIDTH/2.0 * Math.sin(this.angle);
+		double cos = Math.cos(this.angle);
+		double sin = Math.sin(this.angle);
 		
-		yCoords[0] = BRICK_LENGTH/2.0 * Math.sin(this.angle) - BRICK_WIDTH/2.0 * Math.cos(this.angle);
-		yCoords[1] = -BRICK_LENGTH/2.0 * Math.sin(this.angle) - BRICK_WIDTH/2.0 * Math.cos(this.angle);
-		yCoords[3] = BRICK_LENGTH/2.0 * Math.sin(this.angle) + BRICK_WIDTH/2.0 * Math.cos(this.angle);
-		yCoords[2] = -BRICK_LENGTH/2.0 * Math.sin(this.angle) + BRICK_WIDTH/2.0 * Math.cos(this.angle);
+		xCoords[0] = -BRICK_LENGTH/2.0 * cos - BRICK_WIDTH/2.0 * sin;
+		xCoords[1] = BRICK_LENGTH/2.0 * cos - BRICK_WIDTH/2.0 * sin;
+		xCoords[3] = -BRICK_LENGTH/2.0 * cos + BRICK_WIDTH/2.0 * sin;
+		xCoords[2] = BRICK_LENGTH/2.0 * cos + BRICK_WIDTH/2.0 * sin;
+		
+		yCoords[0] = BRICK_LENGTH/2.0 * sin - BRICK_WIDTH/2.0 * cos;
+		yCoords[1] = -BRICK_LENGTH/2.0 * sin - BRICK_WIDTH/2.0 * cos;
+		yCoords[3] = BRICK_LENGTH/2.0 * sin + BRICK_WIDTH/2.0 * cos;
+		yCoords[2] = -BRICK_LENGTH/2.0 * sin + BRICK_WIDTH/2.0 * cos;
 		
 		for(int i = 0; i < 4; i++) {
 			xCoords[i] += this.x;
@@ -372,9 +380,11 @@ class GameEngine {
 	Boolean pauseRequest = false; 
 	private Boolean paused = false;
 	
-	Ball ball;
+	ArrayList<Ball> ballList;
 	Paddle paddle;
-	Brick brick;
+	ArrayList<Brick> brickList;
+	ListIterator<Ball> ballIter;
+	ListIterator<Brick> brickIter;
 	
 	private int lives = 3;
 	private int displayedLives = 3;
@@ -419,16 +429,22 @@ class GameEngine {
 		this.brickPaddleGC = brickPaddleGC;
 		this.UIGC = UIGC;
 		this.animTimer = animTimer;
-		ball = new Ball(GAME_LENGTH/2 - Ball.BALL_SIZE_2, GAME_HEIGHT - 100, Math.PI/3);
-		ball.setVelocity(0.5);
-		paddle = new Paddle(ball.getX(), ball.getY() + Paddle.PADDLE_WIDTH_2 + Ball.BALL_SIZE_2 + 2);
-		paddle.setVelocity(0.8);
-		brick = new Brick(ball.getX(), ball.getY() - 250, Math.PI/6);
 		
-		paddle.drawPaddle(brickPaddleGC);
-		ball.drawBall(ballGC);
-		brick.drawBrick(brickPaddleGC);
-		brick.eraseBrick(brickPaddleGC);
+		ballList = new ArrayList<Ball>();
+		brickList = new ArrayList<Brick>();
+		
+		ballIter = ballList.listIterator();
+		brickIter = brickList.listIterator();
+		
+		Ball ball = new Ball(GAME_LENGTH/2, GAME_HEIGHT - 100, Math.PI/3);
+		ball.setVelocity(0.5);
+		ballIter.add(ball);
+		
+		Brick brick = new Brick(GAME_LENGTH/2, ball.getY() - 250, Math.PI/6);
+		brickIter.add(brick);
+		
+		paddle = new Paddle(GAME_LENGTH/2, GAME_HEIGHT - 100 + Paddle.PADDLE_WIDTH_2 + Ball.BALL_SIZE_2 + 2);
+		paddle.setVelocity(0.8);
 	}
 	
 	Boolean isPaused() {
@@ -502,6 +518,15 @@ class GameEngine {
 			UIGC.drawImage(lifeImg, GAME_LENGTH - (i+1)*(lifeImg.getWidth() + 3), 0);
 		}
 		
+		ballIter = ballList.listIterator();
+		brickIter = brickList.listIterator();
+		
+		paddle.drawPaddle(brickPaddleGC);
+		while(ballIter.hasNext())
+			ballIter.next().drawBall(ballGC);
+		while(brickIter.hasNext())
+			brickIter.next().drawBrick(brickPaddleGC);
+		
 		startTime = lastNanoTime = System.nanoTime();
 		animTimer.start();
 	}
@@ -512,20 +537,26 @@ class GameEngine {
 		elapsedNanoTime += loopTime;
 		
 		paddle.updateCoords(loopTime);
-		ball.updateCoords(loopTime);
 		
-		//Upper Wall Collision test
-		if(ball.getY() < Ball.BALL_SIZE/2 - 1) {
-			if((-ball.getAngle() + 2 * Math.PI) > 2 * Math.PI) {
-				System.out.println("1. " + -ball.getAngle());
-				ball.setAngle(-ball.getAngle());
-			}
-			else {
-				System.out.println("2. " + (-ball.getAngle() + 2 * Math.PI));
-				ball.setAngle(-ball.getAngle() + 2 * Math.PI);
-			}
+		ballIter = ballList.listIterator();
+		
+		while(ballIter.hasNext()) {
+			Ball ball = ballIter.next();
+			ball.updateCoords(loopTime);
 			
-			System.out.println("X Velocity: " + ball.getXVelocity() + "\nY Velocity: " + ball.getYVelocity());
+			//Upper Wall Collision test
+			if(ball.getY() < Ball.BALL_SIZE/2 - 1) {
+				if((-ball.getAngle() + 2 * Math.PI) > 2 * Math.PI) {
+					System.out.println("1. " + -ball.getAngle());
+					ball.setAngle(-ball.getAngle());
+				}
+				else {
+					System.out.println("2. " + (-ball.getAngle() + 2 * Math.PI));
+					ball.setAngle(-ball.getAngle() + 2 * Math.PI);
+				}
+				
+				System.out.println("X Velocity: " + ball.getXVelocity() + "\nY Velocity: " + ball.getYVelocity());
+			}
 		}
 
 		System.out.println("Loop Time: " + loopTime);
@@ -533,8 +564,13 @@ class GameEngine {
 	
 	public void drawFrame(long curNanoTime) {
 		if(elapsedNanoTime > NANO_FRAME_TIME) {
-			ball.eraseBall(ballGC);
-			ball.drawBall(ballGC);
+			ballIter = ballList.listIterator();
+			
+			while(ballIter.hasNext()) {
+				Ball ball = ballIter.next();
+				ball.eraseBall(ballGC);
+				ball.drawBall(ballGC);
+			}
 			
 			paddle.erasePaddle(brickPaddleGC);
 			paddle.drawPaddle(brickPaddleGC);
@@ -631,10 +667,10 @@ public class Main extends Application {
 		
 		gameEngine.startGame();
 		
-		ballImg = gameEngine.ball.getBallImg(ballCanvas);
+		/*ballImg = gameEngine.ball.getBallImg(ballCanvas);
 		ballImgReader = ballImg.getPixelReader();
 		
-		/*gc.drawImage(ballImg, 0, 0);*/
+		gc.drawImage(ballImg, 0, 0);*/
 		
 		Label txt = new Label();
 		gamePane.getChildren().add(txt);
