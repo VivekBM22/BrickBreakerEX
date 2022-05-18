@@ -155,7 +155,7 @@ class Paddle {
 	final static int PADDLE_LENGTH_2 = PADDLE_LENGTH/2;
 	final static int PADDLE_WIDTH = (Ball.BALL_SIZE + 1)/2;
 	final static int PADDLE_WIDTH_2 = PADDLE_WIDTH/2;
-	final static Color paddleColor = Color.DARKORANGE;
+	final static Color paddleColor = Color.PURPLE;
 	private static Image paddleImg;
 	
 	private int x;
@@ -238,10 +238,16 @@ class Paddle {
 		long time = nanoTime / 1000000;
 		double displace = velocity * time;
 		
-		if(moveLeft && !moveRight && xCoord - displace > PADDLE_LENGTH/2.0)
-			xCoord -= displace;
-		else if(!moveLeft && moveRight && xCoord + displace < GameEngine.GAME_LENGTH - PADDLE_LENGTH/2.0)
-			xCoord += displace;
+		if(moveLeft && !moveRight)
+			if(xCoord - displace > PADDLE_LENGTH/2.0)
+				xCoord -= displace;
+			else
+				xCoord = PADDLE_LENGTH/2.0;
+		else if(!moveLeft && moveRight)
+			if(xCoord + displace < GameEngine.GAME_LENGTH - PADDLE_LENGTH/2.0)
+				xCoord += displace;
+			else
+				xCoord = GameEngine.GAME_LENGTH - PADDLE_LENGTH/2.0;
 		
 		x = (int) Math.round(xCoord);
 	}
