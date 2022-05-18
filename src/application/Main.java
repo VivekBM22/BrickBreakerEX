@@ -1,7 +1,6 @@
 package application;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.ListIterator;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -293,10 +292,11 @@ class Brick {
 		}
 	}
 	
-	Brick(int x, int y, double angle) {
+	Brick(int x, int y, double angle, int health) {
 		this.x = x;
 		this.y = y;
 		this.angle = angle;
+		this.health = health;
 		
 		double cos = Math.cos(this.angle);
 		double sin = Math.sin(this.angle);
@@ -357,6 +357,46 @@ class Brick {
 		gc.restore();
 	}
 };
+
+class GameInfo {
+	static final int THEME_COUNT = 5;
+	static final int STANDARD_MODE = 0;
+	static final int HARD_MODE = 1;
+	static final int TIME_TRIAL_MODE = 2;
+	static final int RANDOM_MODE = 3;
+	static final int ENDLESS_MODE = 4;
+	static final int LEVEL_NULL = -1;
+	
+	class BrickInfo {
+		int x;
+		int y;
+		double angle;
+		int health;
+	}
+	
+	static void setDetails(GameEngine gameEngine, final int mode, final int level) {
+		gameEngine.ballList.clear(); //Power-ups do not carry over
+		gameEngine.brickList.clear();
+		
+		Ball ball = new Ball(GameEngine.GAME_LENGTH/2, GameEngine.GAME_HEIGHT - 100, Math.PI/3);
+		ball.setVelocity(0.5);
+		gameEngine.ballList.add(ball);
+		
+		gameEngine.paddle = new Paddle(GameEngine.GAME_LENGTH/2, GameEngine.GAME_HEIGHT - 100 + Paddle.PADDLE_WIDTH_2 + Ball.BALL_SIZE_2 + 2);
+		gameEngine.paddle.setVelocity(0.8);
+		
+		if(mode == STANDARD_MODE) {
+			final int health = 3;
+			if(level == 1) {
+				ListIterator<Brick> brickIter = gameEngine.brickList.listIterator();
+				
+				Brick brick = new Brick(GameEngine.GAME_LENGTH/2, GameEngine.GAME_HEIGHT - 100 - 250, Math.PI/6, health);
+				brickIter.add(brick);
+			}
+		}
+	}
+}
+
 
 class GameEngine {
 	final static Color GAME_BG_COLOR = Color.LIGHTGREEN;
@@ -432,19 +472,6 @@ class GameEngine {
 		
 		ballList = new ArrayList<Ball>();
 		brickList = new ArrayList<Brick>();
-		
-		ballIter = ballList.listIterator();
-		brickIter = brickList.listIterator();
-		
-		Ball ball = new Ball(GAME_LENGTH/2, GAME_HEIGHT - 100, Math.PI/3);
-		ball.setVelocity(0.5);
-		ballIter.add(ball);
-		
-		Brick brick = new Brick(GAME_LENGTH/2, ball.getY() - 250, Math.PI/6);
-		brickIter.add(brick);
-		
-		paddle = new Paddle(GAME_LENGTH/2, GAME_HEIGHT - 100 + Paddle.PADDLE_WIDTH_2 + Ball.BALL_SIZE_2 + 2);
-		paddle.setVelocity(0.8);
 	}
 	
 	Boolean isPaused() {
@@ -517,6 +544,8 @@ class GameEngine {
 		for(int i = 0; i < lives; i++) {
 			UIGC.drawImage(lifeImg, GAME_LENGTH - (i+1)*(lifeImg.getWidth() + 3), 0);
 		}
+		
+		GameInfo.setDetails(this, GameInfo.STANDARD_MODE, 1);
 		
 		ballIter = ballList.listIterator();
 		brickIter = brickList.listIterator();
