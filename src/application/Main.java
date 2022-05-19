@@ -266,7 +266,6 @@ class Brick {
 	final static int DAMAGE_HIGH = 1;
 	final static int DAMAGE_LOW = 2;
 	final static int NO_DAMAGE = 3;
-	final static int ERASED = -1;
 	
 	private static Color noDmgColor;
 	private static Color dmgLowColor;
@@ -391,8 +390,8 @@ class Brick {
 		return y;
 	}
 	
-	boolean isErased() {
-		if(status == ERASED)
+	boolean isDestroyed() {
+		if(status == DESTROYED)
 			return true;
 		return false;
 	}
@@ -468,7 +467,6 @@ class Brick {
 	void eraseBrick(GraphicsContext gc) {
 		if(reDraw) {
 			reDraw = false;
-			status = ERASED;
 			
 			gc.save();
 			rotateGC(gc, -angle*180/Math.PI, x, y);
@@ -726,7 +724,7 @@ class GameEngine {
 				while(brickIter.hasNext()) {
 					Brick brick = brickIter.next();
 					brick.reduceHealth(1);
-					System.out.println("Brick health reduced\nBrick Status: " + brick.status + "\nBrick Redraw: " + brick.reDraw+ "\nBrick Health: " + brick.health);
+					//System.out.println("Brick health reduced\nBrick Status: " + brick.status + "\nBrick Redraw: " + brick.reDraw+ "\nBrick Health: " + brick.health);
 				}
 			}*/
 			
@@ -734,7 +732,7 @@ class GameEngine {
 			while(brickIter.hasNext()) {
 				Brick brick = brickIter.next();
 				brick.drawBrick(brickPaddleGC);
-				if(brick.isErased()) {
+				if(brick.isDestroyed()) {
 					brickIter.remove();
 					System.out.println("Deleted brick");
 				}
