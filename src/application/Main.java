@@ -260,8 +260,23 @@ class Brick {
 	final static int BRICK_LENGTH_2 = BRICK_LENGTH/2;
 	final static int BRICK_WIDTH = 27;
 	final static int BRICK_WIDTH_2 = BRICK_WIDTH/2;
-	final static Color brickColor = Color.DARKBLUE;
-	private static Image brickImg = new Image("Theme "+ 1 + "/Brick.png");
+	
+	//Status values
+	final static int DESTROYED = 0;
+	final static int DAMAGE_HIGH = 1;
+	final static int DAMAGE_LOW = 2;
+	final static int NO_DAMAGE = 3;
+	
+	private static Color noDmgColor;
+	private static Color dmgLowColor;
+	private static Color dmgHighColor;
+	
+	private static Image noDmgImg;
+	private static Image dmgLowImg;
+	private static Image dmgHighImg;
+	
+	private static Image brickImg;
+	static Color brickColor;
 	
 	//Upper-left corner
 	private int x;
@@ -269,34 +284,78 @@ class Brick {
 	
 	private double angle;
 	
-	private int health;
-	
 	double[] xCoords = new double[4];
 	double[] yCoords = new double[4];
 	
+	private int health;
+	private int maxHealth;
+	private int status;
+	
+	private boolean reDraw;
+	
 	static {
+		noDmgColor = Color.BLUE;
+		dmgLowColor = Color.YELLOW;
+		dmgHighColor = Color.RED;
+
 		try {
-			brickImg = new Image("Theme "+ 1 + "/Brick.png");
+			noDmgImg = new Image("Theme "+ 1 + "/Brick.png");
 		}
 		catch(IllegalArgumentException npe) {
-			brickImg = null;
+			noDmgImg = null;
 		}
+		try {
+			dmgLowImg = new Image("Theme "+ 1 + "/BrickLowDmg.png");
+		}
+		catch(IllegalArgumentException npe) {
+			dmgLowImg = null;
+		}
+		try {
+			dmgHighImg = new Image("Theme "+ 1 + "/BrickHighDmg.png");
+		}
+		catch(IllegalArgumentException npe) {
+			dmgHighImg = null;
+		}
+		
+		brickImg = noDmgImg;
+		brickColor = noDmgColor;
 	}
 	
 	static void setTheme(int themeNo) {
+		noDmgColor = Color.BLUE;
+		dmgLowColor = Color.YELLOW;
+		dmgHighColor = Color.RED;
+		
 		try {
-			brickImg = new Image("Theme "+ themeNo + "/Brick.png");
+			noDmgImg = new Image("Theme "+ themeNo + "/Brick.png");
 		}
 		catch(IllegalArgumentException npe) {
-			brickImg = null;
+			noDmgImg = null;
 		}
+		try {
+			dmgLowImg = new Image("Theme "+ themeNo + "/BrickLowDmg.png");
+		}
+		catch(IllegalArgumentException npe) {
+			dmgLowImg = null;
+		}
+		try {
+			dmgHighImg = new Image("Theme "+ themeNo + "/BrickHighDmg.png");
+		}
+		catch(IllegalArgumentException npe) {
+			dmgHighImg = null;
+		}
+		
+		brickImg = noDmgImg;
+		brickColor = noDmgColor;
 	}
 	
 	Brick(int x, int y, double angle, int health) {
 		this.x = x;
 		this.y = y;
 		this.angle = angle;
-		this.health = health;
+		this.health = this.maxHealth = health;
+		this.status = NO_DAMAGE;
+		this.reDraw = false;
 		
 		double cos = Math.cos(this.angle);
 		double sin = Math.sin(this.angle);
@@ -330,31 +389,76 @@ class Brick {
 	int getY() {
 		return y;
 	}
+	
+	private void setStatus(int status) {
+		this.reDraw = true;
+		this.status = status;
+		if(this.status == NO_DAMAGE) {
+			brickColor = dmgLowColor;
+			brickImg = dmgLowImg;
+		}
+		else if(status == DAMAGE_LOW) {
+			brickColor = dmgHighColor;
+			brickImg = dmgHighImg;
+		}
+	}
+	
+	void reduceHealth(int damage) {
+		this.health -= damage;
+		if(this.health < 0)
+			this.health = 0;
+		if(maxHealth == 5)
+			if(health == 4)
+				this.setStatus(DAMAGE_LOW);
+			else if(health == 2)
+				this.setStatus(DAMAGE_HIGH);
+			else if(health == 0)
+				this.setStatus(DESTROYED);
+		else if(maxHealth == 3)
+			if(health == 2)
+				this.setStatus(DAMAGE_LOW);
+			else if(health == 1)
+				this.setStatus(DAMAGE_HIGH);
+			else if(health == 0)
+				this.setStatus(DESTROYED);
+	}
 
 	private void rotateGC(GraphicsContext gc, double angle, double px, double py) {
         Rotate r = new Rotate(angle, px, py);
         gc.setTransform(r.getMxx(), r.getMyx(), r.getMxy(), r.getMyy(), r.getTx(), r.getTy());
     }
 
-	
 	void drawBrick(GraphicsContext gc) {
-		if(brickImg != null) {
-			gc.save();
-			rotateGC(gc, -angle*180/Math.PI, x, y);
-			gc.drawImage(brickImg, x - BRICK_LENGTH_2, y - BRICK_WIDTH_2);
-			gc.restore();
+		if(status == DESTROYED) {
+			eraseBrick(gc);
+			return;
 		}
-		else {
-			gc.setFill(brickColor);
-			gc.fillPolygon(xCoords, yCoords, 4);
+		
+		if(reDraw) {
+			reDraw = false;
+			
+			if(brickImg != null) {
+				gc.save();
+				rotateGC(gc, -angle*180/Math.PI, x, y);
+				gc.drawImage(brickImg, x - BRICK_LENGTH_2, y - BRICK_WIDTH_2);
+				gc.restore();
+			}
+			else {
+				gc.setFill(brickColor);
+				gc.fillPolygon(xCoords, yCoords, 4);
+			}
 		}
 	}
 	
 	void eraseBrick(GraphicsContext gc) {
-		gc.save();
-		rotateGC(gc, -angle*180/Math.PI, x, y);
-		gc.clearRect(x - BRICK_LENGTH_2, y - BRICK_WIDTH_2, BRICK_LENGTH, BRICK_WIDTH);
-		gc.restore();
+		if(reDraw) {
+			reDraw = false;
+			
+			gc.save();
+			rotateGC(gc, -angle*180/Math.PI, x, y);
+			gc.clearRect(x - BRICK_LENGTH_2, y - BRICK_WIDTH_2, BRICK_LENGTH, BRICK_WIDTH);
+			gc.restore();
+		}
 	}
 };
 
