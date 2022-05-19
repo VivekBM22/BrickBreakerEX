@@ -266,6 +266,7 @@ class Brick {
 	final static int DAMAGE_HIGH = 1;
 	final static int DAMAGE_LOW = 2;
 	final static int NO_DAMAGE = 3;
+	final static int ERASED = -1;
 	
 	private static Color noDmgColor;
 	private static Color dmgLowColor;
@@ -355,7 +356,7 @@ class Brick {
 		this.angle = angle;
 		this.health = this.maxHealth = health;
 		this.status = NO_DAMAGE;
-		this.reDraw = false;
+		this.reDraw = true;
 		
 		double cos = Math.cos(this.angle);
 		double sin = Math.sin(this.angle);
@@ -390,37 +391,50 @@ class Brick {
 		return y;
 	}
 	
+	boolean isErased() {
+		if(status == ERASED)
+			return true;
+		return false;
+	}
+	
 	private void setStatus(int status) {
-		this.reDraw = true;
 		this.status = status;
-		if(this.status == NO_DAMAGE) {
+		 if(this.status == NO_DAMAGE) {
+			brickColor = noDmgColor;
+			brickImg = noDmgImg;
+		}
+		else if(this.status == DAMAGE_LOW) {
 			brickColor = dmgLowColor;
 			brickImg = dmgLowImg;
 		}
-		else if(status == DAMAGE_LOW) {
+		else if(this.status == DAMAGE_HIGH) {
 			brickColor = dmgHighColor;
 			brickImg = dmgHighImg;
 		}
+		this.reDraw = true;
 	}
 	
 	void reduceHealth(int damage) {
-		this.health -= damage;
-		if(this.health < 0)
-			this.health = 0;
-		if(maxHealth == 5)
+		health -= damage;
+		if(health < 0)
+			health = 0;
+		
+		if(maxHealth == 5) {
 			if(health == 4)
-				this.setStatus(DAMAGE_LOW);
+				setStatus(DAMAGE_LOW);
 			else if(health == 2)
-				this.setStatus(DAMAGE_HIGH);
+				setStatus(DAMAGE_HIGH);
 			else if(health == 0)
-				this.setStatus(DESTROYED);
-		else if(maxHealth == 3)
+				setStatus(DESTROYED);
+		}
+		else if(maxHealth == 3) {
 			if(health == 2)
-				this.setStatus(DAMAGE_LOW);
+				setStatus(DAMAGE_LOW);
 			else if(health == 1)
-				this.setStatus(DAMAGE_HIGH);
+				setStatus(DAMAGE_HIGH);
 			else if(health == 0)
-				this.setStatus(DESTROYED);
+				setStatus(DESTROYED);
+		}
 	}
 
 	private void rotateGC(GraphicsContext gc, double angle, double px, double py) {
@@ -430,6 +444,7 @@ class Brick {
 
 	void drawBrick(GraphicsContext gc) {
 		if(status == DESTROYED) {
+			System.out.println("Erased brick");
 			eraseBrick(gc);
 			return;
 		}
@@ -453,6 +468,7 @@ class Brick {
 	void eraseBrick(GraphicsContext gc) {
 		if(reDraw) {
 			reDraw = false;
+			status = ERASED;
 			
 			gc.save();
 			rotateGC(gc, -angle*180/Math.PI, x, y);
@@ -705,6 +721,25 @@ class GameEngine {
 				ball.drawBall(ballGC);
 			}
 			
+			/*if(frameCount%150 == 0) { // Debugging block
+				brickIter = brickList.listIterator();
+				while(brickIter.hasNext()) {
+					Brick brick = brickIter.next();
+					brick.reduceHealth(1);
+					System.out.println("Brick health reduced\nBrick Status: " + brick.status + "\nBrick Redraw: " + brick.reDraw+ "\nBrick Health: " + brick.health);
+				}
+			}*/
+			
+			brickIter = brickList.listIterator();
+			while(brickIter.hasNext()) {
+				Brick brick = brickIter.next();
+				brick.drawBrick(brickPaddleGC);
+				if(brick.isErased()) {
+					brickIter.remove();
+					System.out.println("Deleted brick");
+				}
+			}
+			
 			paddle.erasePaddle(brickPaddleGC);
 			paddle.drawPaddle(brickPaddleGC);
 			
@@ -859,8 +894,6 @@ public class Main extends Application {
 	}
 	
 	public static void main(String[] args) {
-		
-			System.out.println();
 		launch(args);
 	}
 }
