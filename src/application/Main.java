@@ -294,6 +294,10 @@ class Brick {
 	
 	private boolean reDraw;
 	
+	private Vector2D n1, n2;
+	private double aOnN1, dOnN1;
+	private double aOnN2, bOnN2; 
+	
 	static {
 		noDmgColor = Color.BLUE;
 		dmgLowColor = Color.YELLOW;
@@ -376,6 +380,14 @@ class Brick {
 			yCoords[i] += this.y;
 			System.out.println(xCoords[i] + ", " + yCoords[i]);
 		}
+		
+		n1 = new Vector2D(-sin, cos);
+		n2 = new Vector2D(cos, sin);
+		
+		aOnN1 = n1.dot(xCoords[0], yCoords[0]);
+		dOnN1 = n1.dot(xCoords[3], yCoords[3]);
+		aOnN2 = n2.dot(xCoords[0], yCoords[0]);
+		bOnN2 = n2.dot(xCoords[1], yCoords[1]);
 	};
 	
 	void setPos(int X, int Y) {
