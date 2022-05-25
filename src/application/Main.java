@@ -1,5 +1,6 @@
 package application;
 
+import Vector2D.Vector2D;
 import java.util.ArrayList;
 import java.util.ListIterator;
 import javafx.animation.AnimationTimer;
