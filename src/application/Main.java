@@ -118,6 +118,13 @@ class Ball {
 		return yVelocity;
 	}
 
+	double getXCoord() {
+		return xCoord;
+	}
+	
+	double getYCoord() {
+		return yCoord;
+	}
 	
 	WritableImage getBallImg(Canvas canvas) {
 		SnapshotParameters snapParams = new SnapshotParameters();
@@ -381,8 +388,8 @@ class Brick {
 			System.out.println(xCoords[i] + ", " + yCoords[i]);
 		}
 		
-		n1 = new Vector2D(-sin, cos);
-		n2 = new Vector2D(cos, sin);
+		n1 = new Vector2D(-sin, -cos);
+		n2 = new Vector2D(cos, -sin);
 		
 		aOnN1 = n1.dot(xCoords[0], yCoords[0]);
 		dOnN1 = n1.dot(xCoords[3], yCoords[3]);
@@ -403,10 +410,94 @@ class Brick {
 		return y;
 	}
 	
+	double getAX() {
+		return xCoords[0];
+	}
+	
+	double getBX() {
+		return xCoords[1];
+	}
+	
+	double getCX() {
+		return xCoords[2];
+	}
+	
+	double getDX() {
+		return xCoords[3];
+	}
+	
+	double getAY() {
+		return yCoords[0];
+	}
+	
+	double getBY() {
+		return yCoords[1];
+	}
+	
+	double getCY() {
+		return yCoords[2];
+	}
+	
+	double getDY() {
+		return yCoords[3];
+	}
+	
 	boolean isDestroyed() {
 		if(status == DESTROYED)
 			return true;
 		return false;
+	}
+	
+	Vector2D getAxis1() {
+		return n1;
+	}
+	
+	Vector2D getAxis2() {
+		return n2;
+	}
+	
+	double getAOnN1() {
+		return aOnN1;
+	}
+	
+	double getDOnN1() {
+		return dOnN1;
+	}
+	
+	double getAOnN2() {
+		return aOnN2;
+	}
+	
+	double getBOnN2() {
+		return bOnN2;
+	}
+	
+	Vector2D normalToClosestCorner(double x, double y) {
+		Vector2D normal = null;
+		
+		double d1 = (x - xCoords[0])*(x - xCoords[0]) + (y - yCoords[0])*(y - yCoords[0]);
+		double d2 = (x - xCoords[1])*(x - xCoords[1]) + (y - yCoords[1])*(y - yCoords[1]);
+		double d3 = (x - xCoords[2])*(x - xCoords[2]) + (y - yCoords[2])*(y - yCoords[2]);
+		double d4 = (x - xCoords[3])*(x - xCoords[3]) + (y - yCoords[3])*(y - yCoords[3]);
+		
+		double smallest = d1;
+		if(d2 < smallest)
+			smallest = d2;
+		if(d3 < smallest)
+			smallest = d3;
+		if(d4 < smallest)
+			smallest = d4;
+		
+		if(smallest == d1)
+			normal = new Vector2D((xCoords[0] - x)/Math.sqrt(d1), -(yCoords[0] - y)/Math.sqrt(d1));
+		else if(smallest == d2)
+			normal = new Vector2D((xCoords[1] - x)/Math.sqrt(d2), -(yCoords[1] - y)/Math.sqrt(d2));
+		else if(smallest == d3)
+			normal = new Vector2D((xCoords[2] - x)/Math.sqrt(d3), -(yCoords[2] - y)/Math.sqrt(d3));
+		else
+			normal = new Vector2D((xCoords[3] - x)/Math.sqrt(d4), -(yCoords[3] - y)/Math.sqrt(d4));
+		
+		return normal;
 	}
 	
 	private void setStatus(int status) {
@@ -509,7 +600,7 @@ class GameInfo {
 		gameEngine.ballList.clear(); //Power-ups do not carry over
 		gameEngine.brickList.clear();
 		
-		Ball ball = new Ball(GameEngine.GAME_LENGTH/2, GameEngine.GAME_HEIGHT - 100, Math.PI/3);
+		Ball ball = new Ball(GameEngine.GAME_LENGTH/2 - 100, GameEngine.GAME_HEIGHT - 100, Math.PI/2.35);
 		ball.setVelocity(0.5);
 		gameEngine.ballList.add(ball);
 		
@@ -659,6 +750,64 @@ class GameEngine {
 		return Long.toString(time) + timeStr;
 	}
 	
+	boolean brickBallCollide(Brick brick, Ball ball) {
+		double ballCProj, brickAProj, brickBProj, brickCProj, brickDProj;
+		double brickMinProj, brickMaxProj;
+		double ballX, ballY;
+		
+		ballX = ball.getXCoord();
+		ballY = ball.getYCoord();
+		
+		//Checking along first axis
+		ballCProj = brick.getAxis1().dot(ballX, ballY);
+		brickMaxProj = brickAProj = brick.getAOnN1();
+		brickMinProj = brickDProj = brick.getDOnN1();
+		if(brickAProj < brickDProj) {
+			brickMaxProj = brickDProj;
+			brickMinProj = brickAProj;
+		}
+		if(ballCProj + Ball.BALL_SIZE/2.0 < brickMinProj || ballCProj - Ball.BALL_SIZE/2.0 > brickMaxProj)
+			return false;
+		
+		//Checking along second axis
+		ballCProj = brick.getAxis2().dot(ballX, ballY);
+		brickMaxProj = brickBProj = brick.getBOnN2();
+		brickMinProj = brickAProj = brick.getAOnN2();
+		if(brickBProj < brickAProj) {
+			brickMaxProj = brickAProj;
+			brickMinProj = brickBProj;
+		}
+		if(ballCProj + Ball.BALL_SIZE/2.0 < brickMinProj || ballCProj - Ball.BALL_SIZE/2.0 > brickMaxProj)
+			return false;
+		
+		//Checking along third axis
+		Vector2D n3 = brick.normalToClosestCorner(ballX, ballY);
+		ballCProj = n3.dot(ballX, ballY);
+		brickMinProj = brickAProj = n3.dot(brick.getAX(), brick.getAY());
+		brickBProj = n3.dot(brick.getBX(), brick.getBY());
+		brickCProj = n3.dot(brick.getCX(), brick.getCY());
+		brickDProj = n3.dot(brick.getDX(), brick.getDY());
+		if(brickBProj < brickMinProj)
+			brickMinProj = brickBProj;
+		if(brickCProj < brickMinProj)
+			brickMinProj = brickCProj;
+		if(brickDProj < brickMinProj)
+			brickMinProj = brickDProj;
+		
+		if(brickMinProj == brickAProj)
+			brickMaxProj = brickCProj;
+		else if(brickMinProj == brickBProj)
+			brickMaxProj = brickDProj;
+		else if(brickMinProj == brickCProj)
+			brickMaxProj = brickAProj;
+		else
+			brickMaxProj = brickBProj;
+		if(ballCProj + Ball.BALL_SIZE/2.0 < brickMinProj || ballCProj - Ball.BALL_SIZE/2.0 > brickMaxProj)
+			return false;
+		
+		return true;
+	}
+	
 	void startGame() {
 		if(bgImg != null)
 			bgGC.drawImage(bgImg, 0, 0);
@@ -716,6 +865,16 @@ class GameEngine {
 				}
 				
 				System.out.println("X Velocity: " + ball.getXVelocity() + "\nY Velocity: " + ball.getYVelocity());
+			}
+			
+			brickIter = brickList.listIterator();
+			while(brickIter.hasNext()) {
+				Brick brick = brickIter.next();
+				if(brickBallCollide(brick, ball))
+				{
+					System.out.println("Ball collided");
+					animTimer.stop();
+				}
 			}
 		}
 
