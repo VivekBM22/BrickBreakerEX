@@ -688,13 +688,17 @@ class GameInfo {
 	}
 }
 
-
 class GameEngine {
 	final static Color GAME_BG_COLOR = Color.LIGHTGREEN;
 	final static int GAME_LENGTH = 1280;
 	final static int GAME_HEIGHT = 720;
 	final static int FRAME_RATE = 60;
 	final static long NANO_FRAME_TIME = 1000000000/FRAME_RATE;
+	
+	final static int IN_GAME = 0;
+	final static int WON = 1;
+	final static int LOST = 2;
+	final static int PAUSED = 3;
 	
 	private final int UPPER_WALL = 10;
 	private final int LEFT_WALL = 10;
@@ -713,7 +717,7 @@ class GameEngine {
 	private int frameCount = 0;
 	private long pauseTime;
 	Boolean pauseRequest = false; 
-	private Boolean paused = false;
+	private int status = 0;
 	
 	ArrayList<Ball> ballList;
 	Paddle paddle;
@@ -770,7 +774,9 @@ class GameEngine {
 	}
 	
 	Boolean isPaused() {
-		return paused;
+		if(status == PAUSED)
+			return true;
+		return false;
 	}
 	
 	void pause() {
@@ -782,11 +788,11 @@ class GameEngine {
 		animTimer.start();
 		totalPauseTime += pauseTime;
 		lastNanoTime += pauseTime;
-		paused = false;
+		status = IN_GAME;
 	}
 	
 	long getPauseTime() {
-		if(paused)
+		if(status == PAUSED)
 			return totalPauseTime + System.nanoTime() - pauseTime;
 		return totalPauseTime;
 	}
@@ -1098,6 +1104,7 @@ class GameEngine {
 				if((backtrack = brickBallCollide(brick, ball)) != 0)
 				{
 					System.out.println("Ball collided with Brick having backtrack: " + backtrack);
+					brick.reduceHealth(1);                  //////////////////////////////// Set Damage
 					//pause();
 				}
 			}
@@ -1166,10 +1173,10 @@ class GameEngine {
 	}
 	
 	void pauseGame() {
-		if(pauseRequest && !paused) {
+		if(pauseRequest && status != PAUSED) {
 			animTimer.stop();
 			pauseTime = System.nanoTime();
-			paused = true;
+			status = PAUSED;
 			pauseRequest = false;
 			System.out.println("Animation paused");
 		}
