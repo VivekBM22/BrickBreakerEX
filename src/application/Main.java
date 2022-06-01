@@ -94,12 +94,12 @@ class Ball {
 		setVelocity(velocity);
 	}
 	
-	int getX() {
-		return x;
+	double getX() {
+		return xCoord;
 	}
 	
-	int getY() {
-		return y;
+	double getY() {
+		return yCoord;
 	}
 	
 	double getAngle() {
@@ -1058,7 +1058,7 @@ class GameEngine {
 			//Upper Wall Collision test
 			backtrack = 0;
 			if(ball.getY() - Ball.BALL_SIZE/2.0 < UPPER_WALL) {
-				backtrack = (UPPER_WALL - ball.getY() - Ball.BALL_SIZE/2.0) / Math.abs(Math.sin(ball.getAngle()));
+				backtrack = (UPPER_WALL - ball.getY() + Ball.BALL_SIZE/2.0) / Math.abs(new Vector2D(0,1).dot(ball.getVelocityUnitVector()));
 				ball.move(-backtrack);
 				newAngle = (-ball.getAngle())%(2 * Math.PI);
 				if(newAngle < 0)
@@ -1070,7 +1070,7 @@ class GameEngine {
 			//Left Wall Collision test
 			backtrack = 0;
 			if(ball.getX() - Ball.BALL_SIZE/2.0 < LEFT_WALL) {
-				backtrack = (LEFT_WALL - ball.getX() - Ball.BALL_SIZE/2.0) / Math.abs(Math.cos(ball.getAngle()));
+				backtrack = (LEFT_WALL - ball.getX() + Ball.BALL_SIZE/2.0) /  Math.abs(new Vector2D(0,1).dot(ball.getVelocityUnitVector()));
 				ball.move(-backtrack);
 				newAngle = (Math.PI - ball.getAngle())%(2 * Math.PI);
 				if(newAngle < 0)
@@ -1082,7 +1082,7 @@ class GameEngine {
 			//Right Wall Collision test
 			backtrack = 0;
 			if(ball.getX() + Ball.BALL_SIZE/2.0 > RIGHT_WALL) {
-				backtrack = (ball.getX() + Ball.BALL_SIZE/2.0 - RIGHT_WALL) / Math.abs(Math.cos(ball.getAngle()));
+				backtrack = (ball.getX() + Ball.BALL_SIZE/2.0 - RIGHT_WALL) /  Math.abs(new Vector2D(0,1).dot(ball.getVelocityUnitVector()));
 				ball.move(-backtrack);
 				newAngle = (Math.PI - ball.getAngle())%(2 * Math.PI);
 				if(newAngle < 0)
