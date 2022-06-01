@@ -110,12 +110,8 @@ class Ball {
 		return velocity;
 	}
 	
-	double getXVelocity() {
-		return xVelocity;
-	}
-	
-	double getYVelocity() {
-		return yVelocity;
+	Vector2D getVelocityUnitVector() {
+		return new Vector2D(Math.cos(angle), Math.sin(angle));
 	}
 
 	double getXCoord() {
@@ -124,6 +120,13 @@ class Ball {
 	
 	double getYCoord() {
 		return yCoord;
+	}
+	
+	void move(double backtrack) {
+		xCoord += backtrack * Math.cos(angle);
+		yCoord -= backtrack * Math.sin(angle);
+		x = (int) Math.round(xCoord);
+		y = (int) Math.round(yCoord);
 	}
 	
 	WritableImage getBallImg(Canvas canvas) {
@@ -174,6 +177,7 @@ class Paddle {
 	
 	private int oldX;
 	private double xCoord;
+	private double AY, CY;
 	
 	private boolean moveLeft = false;
 	private boolean moveRight = false;
@@ -200,6 +204,9 @@ class Paddle {
 		this.x = x;
 		this.y = y;
 		xCoord = x;
+		
+		AY = y - PADDLE_WIDTH/2.0;
+		CY = y + PADDLE_WIDTH/2.0;
 	}
 	
 	void setPos(int x, int y) {
@@ -216,6 +223,38 @@ class Paddle {
 		return y;
 	}
 	
+	double getAX() {
+		return xCoord - PADDLE_LENGTH/2.0;
+	}
+	
+	double getBX() {
+		return xCoord + PADDLE_LENGTH/2.0;
+	}
+	
+	double getCX() {
+		return xCoord + PADDLE_LENGTH/2.0;
+	}
+	
+	double getDX() {
+		return xCoord - PADDLE_LENGTH/2.0;
+	}
+	
+	double getAY() {
+		return AY;
+	}
+	
+	double getBY() {
+		return AY;
+	}
+	
+	double getCY() {
+		return CY;
+	}
+	
+	double getDY() {
+		return CY;
+	}
+	
 	void setVelocity(double velocity) {
 		this.velocity = velocity;
 	}
@@ -226,6 +265,36 @@ class Paddle {
 	
 	void setRight(boolean value) {
 		moveRight = value;
+	}
+	
+	Vector2D normalToClosestCorner(double x, double y) {
+		Vector2D normal = null;
+		double AX = getAX();
+		double BX = getBX();
+		
+		double d1 = (x - AX)*(x - AX) + (y - AY)*(y - AY);
+		double d2 = (x - BX)*(x - BX) + (y - AY)*(y - AY);
+		double d3 = (x - BX)*(x - BX) + (y - CY)*(y - CY);
+		double d4 = (x - AX)*(x - AX) + (y - CY)*(y - CY);
+		
+		double smallest = d1;
+		if(d2 < smallest)
+			smallest = d2;
+		if(d3 < smallest)
+			smallest = d3;
+		if(d4 < smallest)
+			smallest = d4;
+		
+		if(smallest == d1)
+			normal = new Vector2D((AX - x)/Math.sqrt(d1), -(AY - y)/Math.sqrt(d1));
+		else if(smallest == d2)
+			normal = new Vector2D((BX - x)/Math.sqrt(d2), -(AY - y)/Math.sqrt(d2));
+		else if(smallest == d3)
+			normal = new Vector2D((BX - x)/Math.sqrt(d3), -(CY - y)/Math.sqrt(d3));
+		else
+			normal = new Vector2D((AX - x)/Math.sqrt(d4), -(CY - y)/Math.sqrt(d4));
+		
+		return normal;
 	}
 
 	void drawPaddle(GraphicsContext gc) {
@@ -600,7 +669,7 @@ class GameInfo {
 		gameEngine.ballList.clear(); //Power-ups do not carry over
 		gameEngine.brickList.clear();
 		
-		Ball ball = new Ball(GameEngine.GAME_LENGTH/2 - 100, GameEngine.GAME_HEIGHT - 100, Math.PI/2.35);
+		Ball ball = new Ball(GameEngine.GAME_LENGTH/2 + 400, GameEngine.GAME_HEIGHT - 500, -Math.PI/1.1);
 		ball.setVelocity(0.5);
 		gameEngine.ballList.add(ball);
 		
@@ -626,6 +695,10 @@ class GameEngine {
 	final static int GAME_HEIGHT = 720;
 	final static int FRAME_RATE = 60;
 	final static long NANO_FRAME_TIME = 1000000000/FRAME_RATE;
+	
+	private final int UPPER_WALL = 10;
+	private final int LEFT_WALL = 10;
+	private final int RIGHT_WALL = GAME_LENGTH - 10;
 	
 	private static Image lifeImg;
 	private final static Color TIME_FILL_COLOR = Color.BLACK;
@@ -750,43 +823,65 @@ class GameEngine {
 		return Long.toString(time) + timeStr;
 	}
 	
-	boolean brickBallCollide(Brick brick, Ball ball) {
+	double brickBallCollide(Brick brick, Ball ball) {
 		double ballCProj, brickAProj, brickBProj, brickCProj, brickDProj;
-		double brickMinProj, brickMaxProj;
+		double ballMinProj, ballMaxProj, brickMinProj, brickMaxProj;
 		double ballX, ballY;
+		Vector2D axis1, axis2, axis3, mtv; // mtv -> Minimum Translation Vector
+		double overlap, backtrack = 0; // overlap -> Magnitude of mtv
 		
 		ballX = ball.getXCoord();
 		ballY = ball.getYCoord();
 		
 		//Checking along first axis
-		ballCProj = brick.getAxis1().dot(ballX, ballY);
+		axis1 = brick.getAxis1();
+		ballCProj = axis1.dot(ballX, ballY);
+		ballMaxProj = ballCProj + Ball.BALL_SIZE/2.0;
+		ballMinProj = ballCProj - Ball.BALL_SIZE/2.0;
 		brickMaxProj = brickAProj = brick.getAOnN1();
 		brickMinProj = brickDProj = brick.getDOnN1();
-		if(brickAProj < brickDProj) {
-			brickMaxProj = brickDProj;
-			brickMinProj = brickAProj;
+		if(ballMaxProj < brickMinProj || ballMinProj > brickMaxProj)
+			return 0;
+		else {
+			overlap = brickMaxProj - ballMinProj;
+			mtv = axis1;
+			if(ballMaxProj - brickMinProj < overlap) {
+				overlap = ballMaxProj - brickMinProj;
+				mtv = axis1.getReversed();
+			}
+			backtrack = overlap / Math.abs(mtv.dot(ball.getVelocityUnitVector()));
 		}
-		if(ballCProj + Ball.BALL_SIZE/2.0 < brickMinProj || ballCProj - Ball.BALL_SIZE/2.0 > brickMaxProj)
-			return false;
 		
 		//Checking along second axis
-		ballCProj = brick.getAxis2().dot(ballX, ballY);
+		axis2 = brick.getAxis2();
+		ballCProj = axis2.dot(ballX, ballY);
+		ballMaxProj = ballCProj + Ball.BALL_SIZE/2.0;
+		ballMinProj = ballCProj - Ball.BALL_SIZE/2.0;
 		brickMaxProj = brickBProj = brick.getBOnN2();
 		brickMinProj = brickAProj = brick.getAOnN2();
-		if(brickBProj < brickAProj) {
-			brickMaxProj = brickAProj;
-			brickMinProj = brickBProj;
+		if(ballMaxProj < brickMinProj || ballMinProj > brickMaxProj)
+			return 0;
+		else {
+			if(brickMaxProj - ballMinProj < overlap) {
+				overlap = brickMaxProj - ballMinProj;
+				mtv = axis2;
+			}
+			if(ballMaxProj - brickMinProj < overlap) {
+				overlap = ballMaxProj - brickMinProj;
+				mtv = axis2.getReversed();
+			}
+			backtrack = overlap / Math.abs(mtv.dot(ball.getVelocityUnitVector()));
 		}
-		if(ballCProj + Ball.BALL_SIZE/2.0 < brickMinProj || ballCProj - Ball.BALL_SIZE/2.0 > brickMaxProj)
-			return false;
 		
 		//Checking along third axis
-		Vector2D n3 = brick.normalToClosestCorner(ballX, ballY);
-		ballCProj = n3.dot(ballX, ballY);
-		brickMinProj = brickAProj = n3.dot(brick.getAX(), brick.getAY());
-		brickBProj = n3.dot(brick.getBX(), brick.getBY());
-		brickCProj = n3.dot(brick.getCX(), brick.getCY());
-		brickDProj = n3.dot(brick.getDX(), brick.getDY());
+		axis3 = brick.normalToClosestCorner(ballX, ballY);
+		ballCProj = axis3.dot(ballX, ballY);
+		ballMaxProj = ballCProj + Ball.BALL_SIZE/2.0;
+		ballMinProj = ballCProj - Ball.BALL_SIZE/2.0;
+		brickMinProj = brickAProj = axis3.dot(brick.getAX(), brick.getAY());
+		brickBProj = axis3.dot(brick.getBX(), brick.getBY());
+		brickCProj = axis3.dot(brick.getCX(), brick.getCY());
+		brickDProj = axis3.dot(brick.getDX(), brick.getDY());
 		if(brickBProj < brickMinProj)
 			brickMinProj = brickBProj;
 		if(brickCProj < brickMinProj)
@@ -802,10 +897,116 @@ class GameEngine {
 			brickMaxProj = brickAProj;
 		else
 			brickMaxProj = brickBProj;
-		if(ballCProj + Ball.BALL_SIZE/2.0 < brickMinProj || ballCProj - Ball.BALL_SIZE/2.0 > brickMaxProj)
-			return false;
+		if(ballMaxProj < brickMinProj || ballMinProj > brickMaxProj)
+			return 0;
+		else {
+			if(ballMaxProj - brickMinProj < overlap) {
+				overlap = ballMaxProj - brickMinProj;
+				mtv = axis3;
+				backtrack = overlap / Math.abs(mtv.dot(ball.getVelocityUnitVector()));
+			}
+		}
 		
-		return true;
+		ball.move(-backtrack);
+		double newAngle = ((2 * Math.atan2(mtv.x,mtv.y)) - ball.getAngle())%(2 * Math.PI);
+		if(newAngle < 0)
+			newAngle += 2 * Math.PI;
+		ball.setAngle(newAngle);
+		ball.move(backtrack);
+		
+		return backtrack;
+	}
+	
+	double paddleBallCollide(Paddle paddle, Ball ball) {
+		double ballCProj, paddleAProj, paddleBProj, paddleCProj, paddleDProj;
+		double ballMinProj, ballMaxProj, paddleMinProj, paddleMaxProj;
+		double ballX, ballY;
+		Vector2D axis1, axis2, axis3, mtv; // mtv -> Minimum Translation Vector
+		double overlap, backtrack = 0; // overlap -> Magnitude of mtv
+		
+		ballX = ball.getXCoord();
+		ballY = ball.getYCoord();
+		
+		//Checking along first axis
+		axis1 = new Vector2D(0, -1);
+		ballMaxProj = -ballY + Ball.BALL_SIZE/2.0;
+		ballMinProj = -ballY - Ball.BALL_SIZE/2.0;
+		paddleMaxProj = paddleAProj = -paddle.getAY();
+		paddleMinProj = paddleDProj = -paddle.getDY();
+		if(ballMaxProj < paddleMinProj || ballMinProj > paddleMaxProj)
+			return 0;
+		else {
+			overlap = paddleMaxProj - ballMinProj;
+			mtv = axis1;
+			if(ballMaxProj - paddleMinProj < overlap) {
+				overlap = ballMaxProj - paddleMinProj;
+				mtv = axis1.getReversed();
+			}
+			backtrack = overlap / Math.abs(mtv.dot(ball.getVelocityUnitVector()));
+		}
+		
+		//Checking along second axis
+		axis2 = new Vector2D(1, 0);
+		ballMaxProj = ballX + Ball.BALL_SIZE/2.0;
+		ballMinProj = ballX - Ball.BALL_SIZE/2.0;
+		paddleMaxProj = paddleBProj = paddle.getBX();
+		paddleMinProj = paddleAProj = paddle.getAX();
+		if(ballMaxProj < paddleMinProj || ballMinProj > paddleMaxProj)
+			return 0;
+		else {
+			if(paddleMaxProj - ballMinProj < overlap) {
+				overlap = paddleMaxProj - ballMinProj;
+				mtv = axis2;
+			}
+			if(ballMaxProj - paddleMinProj < overlap) {
+				overlap = ballMaxProj - paddleMinProj;
+				mtv = axis2.getReversed();
+			}
+			backtrack = overlap / Math.abs(mtv.dot(ball.getVelocityUnitVector()));
+		}
+		
+		//Checking along third axis
+		axis3 = paddle.normalToClosestCorner(ballX, ballY);
+		ballCProj = axis3.dot(ballX, ballY);
+		ballMaxProj = ballCProj + Ball.BALL_SIZE/2.0;
+		ballMinProj = ballCProj - Ball.BALL_SIZE/2.0;
+		paddleMinProj = paddleAProj = axis3.dot(paddle.getAX(), paddle.getAY());
+		paddleBProj = axis3.dot(paddle.getBX(), paddle.getBY());
+		paddleCProj = axis3.dot(paddle.getCX(), paddle.getCY());
+		paddleDProj = axis3.dot(paddle.getDX(), paddle.getDY());
+		if(paddleBProj < paddleMinProj)
+			paddleMinProj = paddleBProj;
+		if(paddleCProj < paddleMinProj)
+			paddleMinProj = paddleCProj;
+		if(paddleDProj < paddleMinProj)
+			paddleMinProj = paddleDProj;
+		
+		if(paddleMinProj == paddleAProj)
+			paddleMaxProj = paddleCProj;
+		else if(paddleMinProj == paddleBProj)
+			paddleMaxProj = paddleDProj;
+		else if(paddleMinProj == paddleCProj)
+			paddleMaxProj = paddleAProj;
+		else
+			paddleMaxProj = paddleBProj;
+		if(ballMaxProj < paddleMinProj || ballMinProj > paddleMaxProj)
+			return 0;
+		else {
+			if(ballMaxProj - paddleMinProj < overlap) {
+				overlap = ballMaxProj - paddleMinProj;
+				mtv = axis3;
+				backtrack = overlap / Math.abs(mtv.dot(ball.getVelocityUnitVector()));
+			}
+		}
+		
+		ball.move(-backtrack);
+		double newAngle = ((2 * Math.atan2(mtv.x,mtv.y)) - ball.getAngle())%(2 * Math.PI);
+		if(newAngle < 0)
+			newAngle += 2 * Math.PI;
+		ball.setAngle(newAngle);
+		ball.move(backtrack);
+
+		return backtrack;
 	}
 	
 	void startGame() {
@@ -842,6 +1043,7 @@ class GameEngine {
 	
 	void updateGame(long curNanoTime) {
 		long loopTime = curNanoTime - lastNanoTime;
+		double backtrack, newAngle;
 		lastNanoTime = System.nanoTime();
 		elapsedNanoTime += loopTime;
 		
@@ -854,27 +1056,57 @@ class GameEngine {
 			ball.updateCoords(loopTime);
 			
 			//Upper Wall Collision test
-			if(ball.getY() < Ball.BALL_SIZE/2 - 1) {
-				if((-ball.getAngle() + 2 * Math.PI) > 2 * Math.PI) {
-					System.out.println("1. " + -ball.getAngle());
-					ball.setAngle(-ball.getAngle());
-				}
-				else {
-					System.out.println("2. " + (-ball.getAngle() + 2 * Math.PI));
-					ball.setAngle(-ball.getAngle() + 2 * Math.PI);
-				}
-				
-				System.out.println("X Velocity: " + ball.getXVelocity() + "\nY Velocity: " + ball.getYVelocity());
+			backtrack = 0;
+			if(ball.getY() - Ball.BALL_SIZE/2.0 < UPPER_WALL) {
+				backtrack = (UPPER_WALL - ball.getY() - Ball.BALL_SIZE/2.0) / Math.abs(Math.sin(ball.getAngle()));
+				ball.move(-backtrack);
+				newAngle = (-ball.getAngle())%(2 * Math.PI);
+				if(newAngle < 0)
+					newAngle += 2 * Math.PI;
+				ball.setAngle(newAngle);
+				ball.move(backtrack);
 			}
 			
+			//Left Wall Collision test
+			backtrack = 0;
+			if(ball.getX() - Ball.BALL_SIZE/2.0 < LEFT_WALL) {
+				backtrack = (LEFT_WALL - ball.getX() - Ball.BALL_SIZE/2.0) / Math.abs(Math.cos(ball.getAngle()));
+				ball.move(-backtrack);
+				newAngle = (Math.PI - ball.getAngle())%(2 * Math.PI);
+				if(newAngle < 0)
+					newAngle += 2 * Math.PI;
+				ball.setAngle(newAngle);
+				ball.move(backtrack);
+			}
+			
+			//Right Wall Collision test
+			backtrack = 0;
+			if(ball.getX() + Ball.BALL_SIZE/2.0 > RIGHT_WALL) {
+				backtrack = (ball.getX() + Ball.BALL_SIZE/2.0 - RIGHT_WALL) / Math.abs(Math.cos(ball.getAngle()));
+				ball.move(-backtrack);
+				newAngle = (Math.PI - ball.getAngle())%(2 * Math.PI);
+				if(newAngle < 0)
+					newAngle += 2 * Math.PI;
+				ball.setAngle(newAngle);
+				ball.move(backtrack);
+			}
+			
+			//Brick Collision test
 			brickIter = brickList.listIterator();
 			while(brickIter.hasNext()) {
 				Brick brick = brickIter.next();
-				if(brickBallCollide(brick, ball))
+				if((backtrack = brickBallCollide(brick, ball)) != 0)
 				{
-					System.out.println("Ball collided");
-					animTimer.stop();
+					System.out.println("Ball collided with Brick having backtrack: " + backtrack);
+					//pause();
 				}
+			}
+			
+			//Paddle Collision test
+			if((backtrack = paddleBallCollide(paddle, ball)) != 0)
+			{
+				System.out.println("Ball collided with Paddle having backtrack: " + backtrack);
+				//pause();
 			}
 		}
 
