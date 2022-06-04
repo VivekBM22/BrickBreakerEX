@@ -110,6 +110,14 @@ class Ball {
 		return velocity;
 	}
 	
+	double getVelocityX() {
+		return velocity * Math.cos(angle);
+	}
+	
+	double getVelocityY() {
+		return velocity * Math.sin(angle);
+	}
+	
 	Vector2D getVelocityUnitVector() {
 		return new Vector2D(Math.cos(angle), Math.sin(angle));
 	}
@@ -296,6 +304,26 @@ class Paddle {
 		
 		return normal;
 	}
+	
+	double impartVelToBall(Ball ball) {
+		double impartFactor = 0.5;
+		double newAngle = -1;
+		
+		if(moveRight && !moveLeft) {
+			newAngle = Math.atan(ball.getVelocityY() / (ball.getVelocityX() + velocity*impartFactor));
+			if(newAngle < 0)
+				newAngle += Math.PI;
+			ball.setAngle(newAngle);
+		}
+		else if(moveLeft && !moveRight) {
+			newAngle = Math.atan(ball.getVelocityY() / (ball.getVelocityX() - velocity*impartFactor));
+			if(newAngle < 0)
+				newAngle += Math.PI;
+			ball.setAngle(newAngle);
+		}
+		
+		return newAngle;
+	}
 
 	void drawPaddle(GraphicsContext gc) {
 		if(paddleImg != null) {
@@ -380,19 +408,19 @@ class Brick {
 		dmgHighColor = Color.RED;
 
 		try {
-			noDmgImg = new Image("Theme "+ 1 + "/Brick.png");
+			noDmgImg = new Image("Theme " + 1 + "/Brick.png");
 		}
 		catch(IllegalArgumentException npe) {
 			noDmgImg = null;
 		}
 		try {
-			dmgLowImg = new Image("Theme "+ 1 + "/BrickLowDmg.png");
+			dmgLowImg = new Image("Theme " + 1 + "/BrickLowDmg.png");
 		}
 		catch(IllegalArgumentException npe) {
 			dmgLowImg = null;
 		}
 		try {
-			dmgHighImg = new Image("Theme "+ 1 + "/BrickHighDmg.png");
+			dmgHighImg = new Image("Theme " + 1 + "/BrickHighDmg.png");
 		}
 		catch(IllegalArgumentException npe) {
 			dmgHighImg = null;
@@ -408,19 +436,19 @@ class Brick {
 		dmgHighColor = Color.RED;
 		
 		try {
-			noDmgImg = new Image("Theme "+ themeNo + "/Brick.png");
+			noDmgImg = new Image("Theme " + themeNo + "/Brick.png");
 		}
 		catch(IllegalArgumentException npe) {
 			noDmgImg = null;
 		}
 		try {
-			dmgLowImg = new Image("Theme "+ themeNo + "/BrickLowDmg.png");
+			dmgLowImg = new Image("Theme " + themeNo + "/BrickLowDmg.png");
 		}
 		catch(IllegalArgumentException npe) {
 			dmgLowImg = null;
 		}
 		try {
-			dmgHighImg = new Image("Theme "+ themeNo + "/BrickHighDmg.png");
+			dmgHighImg = new Image("Theme " + themeNo + "/BrickHighDmg.png");
 		}
 		catch(IllegalArgumentException npe) {
 			dmgHighImg = null;
@@ -654,8 +682,8 @@ class GameInfo {
 	static final int STANDARD_MODE = 0;
 	static final int HARD_MODE = 1;
 	static final int TIME_TRIAL_MODE = 2;
-	static final int RANDOM_MODE = 3;
-	static final int ENDLESS_MODE = 4;
+	//static final int RANDOM_MODE = 3;
+	//static final int ENDLESS_MODE = 4;
 	static final int LEVEL_NULL = -1;
 	
 	class BrickInfo {
@@ -1057,6 +1085,7 @@ class GameEngine {
 		
 		ballIter = ballList.listIterator();
 		
+		//Ball Collisions
 		while(ballIter.hasNext()) {
 			Ball ball = ballIter.next();
 			ball.updateCoords(loopTime);
@@ -1113,6 +1142,9 @@ class GameEngine {
 			if((backtrack = paddleBallCollide(paddle, ball)) != 0)
 			{
 				System.out.println("Ball collided with Paddle having backtrack: " + backtrack);
+				newAngle = paddle.impartVelToBall(ball);
+				if(newAngle >= 0)
+					System.out.println("Imparted velocity to Ball with new Ball angle: " + newAngle);
 				//pause();
 			}
 		}
@@ -1129,15 +1161,6 @@ class GameEngine {
 				ball.eraseBall(ballGC);
 				ball.drawBall(ballGC);
 			}
-			
-			/*if(frameCount%150 == 0) { // Debugging block
-				brickIter = brickList.listIterator();
-				while(brickIter.hasNext()) {
-					Brick brick = brickIter.next();
-					brick.reduceHealth(1);
-					//System.out.println("Brick health reduced\nBrick Status: " + brick.status + "\nBrick Redraw: " + brick.reDraw+ "\nBrick Health: " + brick.health);
-				}
-			}*/
 			
 			brickIter = brickList.listIterator();
 			while(brickIter.hasNext()) {
@@ -1181,7 +1204,6 @@ class GameEngine {
 			System.out.println("Animation paused");
 		}
 	}
-	
 };
 
 public class Main extends Application {
@@ -1195,7 +1217,6 @@ public class Main extends Application {
 	AnimationTimer animTimer;
 	@Override
 	public void start(Stage primaryStage) {
-		
 		StackPane root = new StackPane();
 		FlowPane gamePane = new FlowPane();
 		
@@ -1231,7 +1252,7 @@ public class Main extends Application {
 		UIGC = UICanvas.getGraphicsContext2D();
 		canvasPane.getChildren().add(UICanvas);
 		
-		animTimer = new AnimationTimer() {
+		animTimer = new AnimationTimer() {                               //////////////////// Move AnimationTimer to GameEngine
 			public void handle(long currentNanoTime) {
 				timeLabel.setText(Long.toString(gameEngine.getGameTime(currentNanoTime)/1000000000) + "s");
 				gameEngine.updateGame(currentNanoTime);
