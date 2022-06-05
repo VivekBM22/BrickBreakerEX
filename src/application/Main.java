@@ -709,6 +709,8 @@ class GameInfo {
 		
 		ballInfo.x = GameEngine.GAME_LENGTH/2 + 400;
 		ballInfo.y = GameEngine.GAME_HEIGHT - 500;
+		ballInfo.angle = -Math.PI/1.1;
+		ballInfo.velocity = 0.5;
 		
 		paddleInfo.x = GameEngine.GAME_LENGTH/2;
 		paddleInfo.y =  GameEngine.GAME_HEIGHT - 100 + (int)(Paddle.PADDLE_WIDTH_2) + (int)(Ball.BALL_SIZE_2) + 2;
@@ -717,9 +719,6 @@ class GameInfo {
 		if(mode == STANDARD_MODE) {
 			health = 3;
 			if(level == 1) {
-				ballInfo.angle = -Math.PI/1.1;
-				ballInfo.velocity = 0.5;
-				
 				bi.x = GameEngine.GAME_LENGTH/2;
 				bi.y = GameEngine.GAME_HEIGHT - 100 - 250;
 				bi.angle = Math.PI/6;
@@ -731,7 +730,7 @@ class GameInfo {
 		}
 	}
 	
-	static void getBallDetails(GameEngine gameEngine) {
+	static void getBall(GameEngine gameEngine) {
 		Ball ball = new Ball(ballInfo.x, ballInfo.y, ballInfo.angle);
 		ball.setVelocity(ballInfo.velocity);
 		gameEngine.ballList.add(ball);
@@ -1290,7 +1289,7 @@ class GameEngine {
 					if(ballList.isEmpty()) {
 						lives--;
 						if(lives > 0) {
-							GameInfo.getBallDetails(this);
+							GameInfo.getBall(this);
 							setCountdown();
 						}
 					}
