@@ -55,12 +55,7 @@ class Ball {
 	private int status;
 	
 	static {
-		try {
-			ballImg = new Image("Theme 1/Ball.png");
-		}
-		catch(IllegalArgumentException npe) {
-			ballImg = null;
-		}
+		setTheme(1);
 	}
 	
 	static void setTheme(int themeNo) {
@@ -211,12 +206,7 @@ class Paddle {
 	private boolean moveRight = false;
 	
 	static {
-		try {
-			paddleImg = new Image("Theme "+ 1 + "/Paddle.png");
-		}
-		catch(IllegalArgumentException npe) {
-			paddleImg = null;
-		}
+		setTheme(1);
 	}
 	
 	static void setTheme(int themeNo) {
@@ -423,31 +413,7 @@ class Brick {
 	private double aOnN2, bOnN2; 
 	
 	static {
-		noDmgColor = Color.BLUE;
-		dmgLowColor = Color.YELLOW;
-		dmgHighColor = Color.RED;
-
-		try {
-			noDmgImg = new Image("Theme " + 1 + "/Brick.png");
-		}
-		catch(IllegalArgumentException npe) {
-			noDmgImg = null;
-		}
-		try {
-			dmgLowImg = new Image("Theme " + 1 + "/BrickLowDmg.png");
-		}
-		catch(IllegalArgumentException npe) {
-			dmgLowImg = null;
-		}
-		try {
-			dmgHighImg = new Image("Theme " + 1 + "/BrickHighDmg.png");
-		}
-		catch(IllegalArgumentException npe) {
-			dmgHighImg = null;
-		}
-		
-		brickImg = noDmgImg;
-		brickColor = noDmgColor;
+		setTheme(1);
 	}
 	
 	static void setTheme(int themeNo) {
@@ -675,7 +641,7 @@ class Brick {
 			if(brickImg != null) {
 				gc.save();
 				rotateGC(gc, -angle*180/Math.PI, x, y);
-				gc.drawImage(brickImg, x - BRICK_LENGTH_2, y - BRICK_WIDTH_2);
+				gc.drawImage(brickImg, x - BRICK_LENGTH/2, y - BRICK_WIDTH/2);
 				gc.restore();
 			}
 			else {
@@ -691,11 +657,30 @@ class Brick {
 			
 			gc.save();
 			rotateGC(gc, -angle*180/Math.PI, x, y);
-			gc.clearRect(x - BRICK_LENGTH_2, y - BRICK_WIDTH_2, BRICK_LENGTH, BRICK_WIDTH);
+			gc.clearRect(x - BRICK_LENGTH/2, y - BRICK_WIDTH/2, BRICK_LENGTH, BRICK_WIDTH);
 			gc.restore();
 		}
 	}
 };
+
+class BrickInfo {
+	int x;
+	int y;
+	double angle;
+}
+
+class BallInfo {
+	int x;
+	int y;
+	double angle;
+	double velocity;
+}
+
+class PaddleInfo {
+	int x;
+	int y;
+	double velocity;
+}
 
 class GameInfo {
 	static final int THEME_COUNT = 5;
@@ -706,32 +691,73 @@ class GameInfo {
 	//static final int ENDLESS_MODE = 4;
 	static final int LEVEL_NULL = -1;
 	
-	class BrickInfo {
-		int x;
-		int y;
-		double angle;
-		int health;
+	private static ArrayList<BrickInfo> brickInfoList;
+	private static ListIterator<BrickInfo> brickInfoIter;
+	private static BallInfo ballInfo;
+	private static PaddleInfo paddleInfo;
+	private static int health;
+	
+	static {
+		readyGameInfo(STANDARD_MODE, 1);
 	}
 	
-	static void setDetails(GameEngine gameEngine, final int mode, final int level) {
-		gameEngine.ballList.clear(); //Power-ups do not carry over
-		gameEngine.brickList.clear();
+	private static void readyGameInfo(final int mode, final int level) {
+		BrickInfo bi = new BrickInfo();
+		ballInfo = new BallInfo();
+		paddleInfo = new PaddleInfo();
+		brickInfoList = new ArrayList<BrickInfo>();
 		
-		Ball ball = new Ball(GameEngine.GAME_LENGTH/2 + 400, GameEngine.GAME_HEIGHT - 500, -Math.PI/1.1);
-		ball.setVelocity(0.5);
-		gameEngine.ballList.add(ball);
+		ballInfo.x = GameEngine.GAME_LENGTH/2 + 400;
+		ballInfo.y = GameEngine.GAME_HEIGHT - 500;
 		
-		gameEngine.paddle = new Paddle(GameEngine.GAME_LENGTH/2, GameEngine.GAME_HEIGHT - 100 + (int)(Paddle.PADDLE_WIDTH_2) + (int)(Ball.BALL_SIZE_2) + 2);
-		gameEngine.paddle.setVelocity(0.8);
+		paddleInfo.x = GameEngine.GAME_LENGTH/2;
+		paddleInfo.y =  GameEngine.GAME_HEIGHT - 100 + (int)(Paddle.PADDLE_WIDTH_2) + (int)(Ball.BALL_SIZE_2) + 2;
+		paddleInfo.velocity = 0.8;
 		
 		if(mode == STANDARD_MODE) {
-			final int health = 3;
+			health = 3;
 			if(level == 1) {
-				ListIterator<Brick> brickIter = gameEngine.brickList.listIterator();
+				ballInfo.angle = -Math.PI/1.1;
+				ballInfo.velocity = 0.5;
 				
-				Brick brick = new Brick(GameEngine.GAME_LENGTH/2, GameEngine.GAME_HEIGHT - 100 - 250, Math.PI/6, health);
-				brickIter.add(brick);
+				bi.x = GameEngine.GAME_LENGTH/2;
+				bi.y = GameEngine.GAME_HEIGHT - 100 - 250;
+				bi.angle = Math.PI/6;
+				brickInfoList.add(bi);
 			}
+		}
+		else if(mode == HARD_MODE) {
+			health = 5;
+		}
+	}
+	
+	static void getBallDetails(GameEngine gameEngine) {
+		Ball ball = new Ball(ballInfo.x, ballInfo.y, ballInfo.angle);
+		ball.setVelocity(ballInfo.velocity);
+		gameEngine.ballList.add(ball);
+	}
+	
+	static void getDetails(GameEngine gameEngine, final int mode, final int level) {
+		gameEngine.ballList.clear(); //Power-ups do not carry over(Multi-ball)
+		gameEngine.brickList.clear();
+		readyGameInfo(mode, level);
+		
+		Ball ball = new Ball(ballInfo.x, ballInfo.y, ballInfo.angle);
+		ball.setVelocity(ballInfo.velocity);
+		gameEngine.ballList.add(ball);
+		
+		gameEngine.paddle = new Paddle(paddleInfo.x, paddleInfo.y);
+		gameEngine.paddle.setVelocity(paddleInfo.velocity);
+				
+		ListIterator<Brick> brickIter = gameEngine.brickList.listIterator();
+		brickInfoIter = brickInfoList.listIterator();
+		BrickInfo brickInfo;
+		Brick brick;
+		
+		while(brickInfoIter.hasNext()) {
+			brickInfo = brickInfoIter.next();
+			brick = new Brick(brickInfo.x, brickInfo.y, brickInfo.angle, health);
+			brickIter.add(brick);
 		}
 	}
 }
@@ -747,6 +773,7 @@ class GameEngine {
 	final static int WON = 1;
 	final static int LOST = 2;
 	final static int PAUSED = 3;
+	final static int WAITING = 4;
 	
 	private final int UPPER_WALL = 10;
 	private final int LEFT_WALL = 10;
@@ -757,15 +784,21 @@ class GameEngine {
 	private final static Color TIME_FILL_COLOR = Color.BLACK;
 	private final static int TIME_FONT_SIZE = 25;
 	private final static Font TIME_FONT = Font.font("Courier New", FontWeight.BOLD, FontPosture.REGULAR, TIME_FONT_SIZE);
+	private final static Color COUNTDOWN_FILL_COLOR = Color.GREENYELLOW;
+	private final static int COUNTDOWN_FONT_SIZE = 50;
+	private final static Font COUNTDOWN_FONT = Font.font("Courier New", FontWeight.BOLD, FontPosture.REGULAR, COUNTDOWN_FONT_SIZE);
 	
 	private static Image bgImg;
 	private long startTime;
 	private long lastNanoTime;
 	private long elapsedNanoTime = 0;
 	private long totalPauseTime = 0;
+	private long totalWaitTime = 0;
 	private int frameCount = 0;
 	private long pauseTime;
-	Boolean pauseRequest = false; 
+	private long waitTime;
+	Boolean pauseRequest = false;
+	Boolean waitRequest = false;
 	private int status = 0;
 	
 	ArrayList<Ball> ballList;
@@ -779,7 +812,7 @@ class GameEngine {
 	
 	GraphicsContext bgGC, ballGC, brickPaddleGC, UIGC;
 	Canvas ballCanvas, brickPaddleCanvas;
-	AnimationTimer animTimer;
+	AnimationTimer gameTimer, waitTimer;
 	
 	WritableImage ballImg;
 	PixelReader ballImgReader;
@@ -809,14 +842,42 @@ class GameEngine {
 		}
 	}
 	
-	GameEngine(GraphicsContext bgGC, Canvas ballCanvas, GraphicsContext ballGC, Canvas brickPaddleCanvas, GraphicsContext brickPaddleGC, GraphicsContext UIGC, AnimationTimer animTimer) {
+	GameEngine(GraphicsContext bgGC, Canvas ballCanvas, GraphicsContext ballGC, Canvas brickPaddleCanvas, GraphicsContext brickPaddleGC, GraphicsContext UIGC, AnimationTimer gameTimer) {
 		this.bgGC = bgGC;
 		this.ballCanvas = ballCanvas;
 		this.ballGC = ballGC;
 		this.brickPaddleCanvas = brickPaddleCanvas;
 		this.brickPaddleGC = brickPaddleGC;
 		this.UIGC = UIGC;
-		this.animTimer = animTimer;
+		this.gameTimer = gameTimer;
+		
+		this.waitTimer = new AnimationTimer() {
+			public void handle(long currentNanoTime) {
+				String displayStr = "START";
+				if((currentNanoTime - waitTime)/1000000000 < 1)
+					displayStr = "3";
+				else if((currentNanoTime - waitTime)/1000000000 < 2)
+					displayStr = "2";
+				else if((currentNanoTime - waitTime)/1000000000 < 3)
+					displayStr = "1";
+				
+				UIGC.clearRect(GAME_LENGTH/2 - displayStr.length()*0.5*COUNTDOWN_FONT_SIZE*0.5625, GAME_HEIGHT/2 - COUNTDOWN_FONT_SIZE*0.2, COUNTDOWN_FONT_SIZE*4.8, GAME_HEIGHT/2 + COUNTDOWN_FONT_SIZE*0.2);
+				
+				if((currentNanoTime - waitTime)/1000000000 >= 4) {
+					status = IN_GAME;
+					UIGC.setFill(TIME_FILL_COLOR);
+					UIGC.setFont(TIME_FONT);
+					lastNanoTime = currentNanoTime;
+					waitTime = currentNanoTime - waitTime;
+					totalWaitTime += waitTime;
+					gameTimer.start();
+					stop();
+					displayStr = "";
+				}
+				
+				UIGC.fillText(displayStr, GAME_LENGTH/2 - displayStr.length()*0.5*COUNTDOWN_FONT_SIZE*0.5625, GAME_HEIGHT/2 - COUNTDOWN_FONT_SIZE*0.2);
+			}
+		};
 		
 		ballList = new ArrayList<Ball>();
 		brickList = new ArrayList<Brick>();
@@ -829,12 +890,13 @@ class GameEngine {
 	}
 	
 	void pause() {
+		if(status == IN_GAME)
 			pauseRequest = true;
 	}
 	
 	void unpause() {
 		pauseTime = System.nanoTime() - pauseTime;
-		animTimer.start();
+		gameTimer.start();
 		totalPauseTime += pauseTime;
 		lastNanoTime += pauseTime;
 		status = IN_GAME;
@@ -846,8 +908,38 @@ class GameEngine {
 		return totalPauseTime;
 	}
 	
+	void pauseGame() {
+		if(status != IN_GAME)
+			pauseRequest = false;
+		
+		if(pauseRequest) {
+			gameTimer.stop();
+			pauseTime = System.nanoTime();
+			status = PAUSED;
+			pauseRequest = false;
+			System.out.println("Animation paused");
+		}
+	}
+	
+	void setCountdown() {
+		waitRequest = true;
+	}
+	
+	void startCountdown() {
+		if(waitRequest && status != WAITING) {
+			gameTimer.stop();
+			UIGC.setFill(COUNTDOWN_FILL_COLOR);
+			UIGC.setFont(COUNTDOWN_FONT);
+			waitTime = System.nanoTime();
+			status = WAITING;
+			waitRequest = false;
+			waitTimer.start();
+			System.out.println("Countdown started");
+		}
+	}
+	
 	long getGameTime(long curNanoTime) {
-		return curNanoTime - startTime - totalPauseTime;
+		return curNanoTime - startTime - totalPauseTime - totalWaitTime;
 	}
 	
 	String getTimeString(long time) {
@@ -1081,7 +1173,7 @@ class GameEngine {
 			UIGC.drawImage(lifeImg, GAME_LENGTH - (i+1)*(lifeImg.getWidth() + 3), 0);
 		}
 		
-		GameInfo.setDetails(this, GameInfo.STANDARD_MODE, 1);
+		GameInfo.getDetails(this, GameInfo.STANDARD_MODE, 1);
 		
 		ballIter = ballList.listIterator();
 		brickIter = brickList.listIterator();
@@ -1093,7 +1185,10 @@ class GameEngine {
 			brickIter.next().drawBrick(brickPaddleGC);
 		
 		startTime = lastNanoTime = System.nanoTime();
-		animTimer.start();
+		setCountdown();
+		startCountdown();
+		
+		//gameTimer.start();
 	}
 	
 	void updateGame(long curNanoTime) {
@@ -1194,6 +1289,10 @@ class GameEngine {
 					//All balls fell off the screen
 					if(ballList.isEmpty()) {
 						lives--;
+						if(lives > 0) {
+							GameInfo.getBallDetails(this);
+							setCountdown();
+						}
 					}
 				}
 			}
@@ -1230,16 +1329,6 @@ class GameEngine {
 			System.out.println("200 frames printed");
 		}
 	}
-	
-	void pauseGame() {
-		if(pauseRequest && status != PAUSED) {
-			animTimer.stop();
-			pauseTime = System.nanoTime();
-			status = PAUSED;
-			pauseRequest = false;
-			System.out.println("Animation paused");
-		}
-	}
 };
 
 public class Main extends Application {
@@ -1250,7 +1339,7 @@ public class Main extends Application {
 	WritableImage ballImg;
 	PixelReader ballImgReader;
 	
-	AnimationTimer animTimer;
+	AnimationTimer gameTimer;
 	@Override
 	public void start(Stage primaryStage) {
 		StackPane root = new StackPane();
@@ -1288,16 +1377,17 @@ public class Main extends Application {
 		UIGC = UICanvas.getGraphicsContext2D();
 		canvasPane.getChildren().add(UICanvas);
 		
-		animTimer = new AnimationTimer() {                               //////////////////// Move AnimationTimer to GameEngine
+		gameTimer = new AnimationTimer() {                               //////////////////// Move AnimationTimer to GameEngine
 			public void handle(long currentNanoTime) {
 				timeLabel.setText(Long.toString(gameEngine.getGameTime(currentNanoTime)/1000000000) + "s");
 				gameEngine.updateGame(currentNanoTime);
 				gameEngine.drawFrame(currentNanoTime);
 				gameEngine.pauseGame();
+				gameEngine.startCountdown();
 			}
 		};
 		
-		gameEngine = new GameEngine(bgGC, ballCanvas, ballGC, brickPaddleCanvas, brickPaddleGC, UIGC, animTimer);
+		gameEngine = new GameEngine(bgGC, ballCanvas, ballGC, brickPaddleCanvas, brickPaddleGC, UIGC, gameTimer);
 		
 		gameEngine.startGame();
 		
