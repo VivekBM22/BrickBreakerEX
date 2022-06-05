@@ -31,8 +31,12 @@ import javafx.scene.transform.Rotate;
 
 class Ball {	
 	final static int BALL_SIZE = 27;
-	final static int BALL_SIZE_2 = BALL_SIZE/2;
+	final static double BALL_SIZE_2 = BALL_SIZE/2.0;
 	final static Color ballColor = Color.DARKGOLDENROD;
+	
+	final static int NORMAL = 1;
+	final static int DESTROYED = 0;
+	
 	private static Image ballImg;
 	
 	private int x;
@@ -47,6 +51,8 @@ class Ball {
 	private double velocity;
 	private double xVelocity;
 	private double yVelocity;
+	
+	private int status;
 	
 	static {
 		try {
@@ -76,6 +82,7 @@ class Ball {
 		oldY = y;
 		xVelocity = 0;
 		yVelocity = 0;
+		status = NORMAL;
 	}
 	
 	void setPos(int X, int Y) {
@@ -110,12 +117,12 @@ class Ball {
 		return velocity;
 	}
 	
-	double getVelocityX() {
-		return velocity * Math.cos(angle);
+	double getXVelocity() {
+		return xVelocity;
 	}
 	
-	double getVelocityY() {
-		return velocity * Math.sin(angle);
+	double getYVelocity() {
+		return yVelocity;
 	}
 	
 	Vector2D getVelocityUnitVector() {
@@ -128,6 +135,16 @@ class Ball {
 	
 	double getYCoord() {
 		return yCoord;
+	}
+	
+	boolean isDestroyed() {
+		if(status == DESTROYED)
+			return true;
+		return false;
+	}
+	
+	void markAsDestroyed() {
+		status = DESTROYED;
 	}
 	
 	void move(double backtrack) {
@@ -145,6 +162,9 @@ class Ball {
 	}
 	
 	void drawBall(GraphicsContext gc) {
+		if(status == DESTROYED)
+			return;
+		
 		if(ballImg != null) {
 			gc.drawImage(ballImg, x - BALL_SIZE_2, y - BALL_SIZE_2, BALL_SIZE, BALL_SIZE);
 		}
@@ -173,9 +193,9 @@ class Ball {
 
 class Paddle {
 	final static int PADDLE_LENGTH = 130;
-	final static int PADDLE_LENGTH_2 = PADDLE_LENGTH/2;
+	final static double PADDLE_LENGTH_2 = PADDLE_LENGTH/2.0;
 	final static int PADDLE_WIDTH = (Ball.BALL_SIZE + 1)/2;
-	final static int PADDLE_WIDTH_2 = PADDLE_WIDTH/2;
+	final static double PADDLE_WIDTH_2 = PADDLE_WIDTH/2.0;
 	final static Color paddleColor = Color.PURPLE;
 	private static Image paddleImg;
 	
@@ -310,13 +330,13 @@ class Paddle {
 		double newAngle = -1;
 		
 		if(moveRight && !moveLeft) {
-			newAngle = Math.atan(ball.getVelocityY() / (ball.getVelocityX() + velocity*impartFactor));
+			newAngle = Math.atan(ball.getYVelocity() / (ball.getXVelocity() + velocity*impartFactor));
 			if(newAngle < 0)
 				newAngle += Math.PI;
 			ball.setAngle(newAngle);
 		}
 		else if(moveLeft && !moveRight) {
-			newAngle = Math.atan(ball.getVelocityY() / (ball.getVelocityX() - velocity*impartFactor));
+			newAngle = Math.atan(ball.getYVelocity() / (ball.getXVelocity() - velocity*impartFactor));
 			if(newAngle < 0)
 				newAngle += Math.PI;
 			ball.setAngle(newAngle);
@@ -327,7 +347,7 @@ class Paddle {
 
 	void drawPaddle(GraphicsContext gc) {
 		if(paddleImg != null) {
-			;
+			gc.drawImage(paddleImg, x - PADDLE_LENGTH_2, y - PADDLE_WIDTH_2);
 		}
 		else {
 			gc.setFill(paddleColor);
@@ -701,7 +721,7 @@ class GameInfo {
 		ball.setVelocity(0.5);
 		gameEngine.ballList.add(ball);
 		
-		gameEngine.paddle = new Paddle(GameEngine.GAME_LENGTH/2, GameEngine.GAME_HEIGHT - 100 + Paddle.PADDLE_WIDTH_2 + Ball.BALL_SIZE_2 + 2);
+		gameEngine.paddle = new Paddle(GameEngine.GAME_LENGTH/2, GameEngine.GAME_HEIGHT - 100 + (int)(Paddle.PADDLE_WIDTH_2) + (int)(Ball.BALL_SIZE_2) + 2);
 		gameEngine.paddle.setVelocity(0.8);
 		
 		if(mode == STANDARD_MODE) {
@@ -731,6 +751,7 @@ class GameEngine {
 	private final int UPPER_WALL = 10;
 	private final int LEFT_WALL = 10;
 	private final int RIGHT_WALL = GAME_LENGTH - 10;
+	private final int BOTTOM_LIMIT = GAME_HEIGHT - 30;
 	
 	private static Image lifeImg;
 	private final static Color TIME_FILL_COLOR = Color.BLACK;
@@ -1105,7 +1126,7 @@ class GameEngine {
 			//Left Wall Collision test
 			backtrack = 0;
 			if(ball.getX() - Ball.BALL_SIZE/2.0 < LEFT_WALL) {
-				backtrack = (LEFT_WALL - ball.getX() + Ball.BALL_SIZE/2.0) /  Math.abs(new Vector2D(0,1).dot(ball.getVelocityUnitVector()));
+				backtrack = (LEFT_WALL - ball.getX() + Ball.BALL_SIZE/2.0) / Math.abs(new Vector2D(0,1).dot(ball.getVelocityUnitVector()));
 				ball.move(-backtrack);
 				newAngle = (Math.PI - ball.getAngle())%(2 * Math.PI);
 				if(newAngle < 0)
@@ -1117,7 +1138,7 @@ class GameEngine {
 			//Right Wall Collision test
 			backtrack = 0;
 			if(ball.getX() + Ball.BALL_SIZE/2.0 > RIGHT_WALL) {
-				backtrack = (ball.getX() + Ball.BALL_SIZE/2.0 - RIGHT_WALL) /  Math.abs(new Vector2D(0,1).dot(ball.getVelocityUnitVector()));
+				backtrack = (ball.getX() + Ball.BALL_SIZE/2.0 - RIGHT_WALL) / Math.abs(new Vector2D(0,1).dot(ball.getVelocityUnitVector()));
 				ball.move(-backtrack);
 				newAngle = (Math.PI - ball.getAngle())%(2 * Math.PI);
 				if(newAngle < 0)
@@ -1147,6 +1168,12 @@ class GameEngine {
 					System.out.println("Imparted velocity to Ball with new Ball angle: " + newAngle);
 				//pause();
 			}
+			
+			//Ball falls below the limit
+			if(ball.getY() > BOTTOM_LIMIT) {
+				ball.markAsDestroyed();
+				System.out.println("Ball fell off the bottom");
+			}
 		}
 
 		System.out.println("Loop Time: " + loopTime);
@@ -1160,6 +1187,15 @@ class GameEngine {
 				Ball ball = ballIter.next();
 				ball.eraseBall(ballGC);
 				ball.drawBall(ballGC);
+				if(ball.isDestroyed()) {
+					ballIter.remove();
+					System.out.println("Deleted ball");
+					
+					//All balls fell off the screen
+					if(ballList.isEmpty()) {
+						lives--;
+					}
+				}
 			}
 			
 			brickIter = brickList.listIterator();
