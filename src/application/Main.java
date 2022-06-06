@@ -667,6 +667,11 @@ class BrickInfo {
 	int x;
 	int y;
 	double angle;
+	BrickInfo(int x, int y, double angle) {
+		this.x = x;
+		this.y = y;
+		this.angle = angle;
+	}
 }
 
 class BallInfo {
@@ -702,7 +707,7 @@ class GameInfo {
 	}
 	
 	private static void readyGameInfo(final int mode, final int level) {
-		BrickInfo bi = new BrickInfo();
+		BrickInfo bi;
 		ballInfo = new BallInfo();
 		paddleInfo = new PaddleInfo();
 		brickInfoList = new ArrayList<BrickInfo>();
@@ -719,9 +724,7 @@ class GameInfo {
 		if(mode == STANDARD_MODE) {
 			health = 3;
 			if(level == 1) {
-				bi.x = GameEngine.GAME_LENGTH/2;
-				bi.y = GameEngine.GAME_HEIGHT - 100 - 250;
-				bi.angle = Math.PI/6;
+				bi = new BrickInfo(GameEngine.GAME_LENGTH/2, GameEngine.GAME_HEIGHT - 100 - 250,  Math.PI/6);
 				brickInfoList.add(bi);
 			}
 		}
@@ -1186,8 +1189,6 @@ class GameEngine {
 		startTime = lastNanoTime = System.nanoTime();
 		setCountdown();
 		startCountdown();
-		
-		//gameTimer.start();
 	}
 	
 	void updateGame(long curNanoTime) {
@@ -1277,9 +1278,9 @@ class GameEngine {
 		if(elapsedNanoTime > NANO_FRAME_TIME) {
 			ballIter = ballList.listIterator();
 			
+			ballGC.clearRect(0, 0, GAME_LENGTH, GAME_HEIGHT);
 			while(ballIter.hasNext()) {
 				Ball ball = ballIter.next();
-				ball.eraseBall(ballGC);
 				ball.drawBall(ballGC);
 				if(ball.isDestroyed()) {
 					ballIter.remove();
@@ -1357,7 +1358,7 @@ public class Main extends Application {
 		Label timeLabel = new Label();
 		gamePane.getChildren().add(timeLabel);
 		
-		StackPane canvasPane = new StackPane();
+		StackPane canvasPane = new StackPane(); /////////////Move starting here
 		gamePane.getChildren().add(canvasPane);
 		
 		bgCanvas = new Canvas(GameEngine.GAME_LENGTH, GameEngine.GAME_HEIGHT);
