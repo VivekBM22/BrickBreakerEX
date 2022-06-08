@@ -803,6 +803,8 @@ class GameEngine {
 	private final int RIGHT_WALL = GAME_LENGTH - 10;
 	private final int BOTTOM_LIMIT = GAME_HEIGHT - 10;
 	
+	private final double IMPART_FACTOR = 0.5;
+	
 	private static Image lifeImg;
 	private final static Color TIME_FILL_COLOR = Color.BLACK;
 	private final static int TIME_FONT_SIZE = 25;
@@ -1099,8 +1101,8 @@ class GameEngine {
 			paddleVel = paddle.getVelocity();
 		else if(paddleDir == -1)
 			paddleVel = -paddle.getVelocity();
-		Vector2D relativeDirection = new Vector2D(ball.getXVelocity() - paddleVel, ball.getYVelocity());
-		relativeDirection.normalize();
+		Vector2D relativeVelocity = new Vector2D(ball.getXVelocity() - paddleVel, ball.getYVelocity());
+		Vector2D relativeDirection = relativeVelocity.getNormalized();
 		
 		ballX = ball.getXCoord();
 		ballY = ball.getYCoord();
@@ -1177,22 +1179,47 @@ class GameEngine {
 				backtrack = overlap / Math.abs(mtv.dot(relativeDirection));
 			}
 		}
+		
 		//Debugging block
 		/*System.out.println("Normalized Ball Velocity: " + ball.getVelocityUnitVector());
 		System.out.println("Normalized Relative Velocity: " + relativeDirection);
 		if(relativeDirection.x < 0) {
 			System.out.println("Relative Angle: " + (Math.atan(relativeDirection.y / relativeDirection.x) * 180 / Math.PI + 180));
 		}
+		else if(relativeDirection.y < 0)
+			System.out.println("Relative Angle: " + (Math.atan2(relativeDirection.y, relativeDirection.x) * 180 / Math.PI + 360));
 		else
 			System.out.println("Relative Angle: " + (Math.atan2(relativeDirection.y, relativeDirection.x) * 180 / Math.PI));
 		System.out.println("Ball Angle: " + (ball.getAngle() * 180 / Math.PI));*/
 		
 		ball.move(-backtrack, relativeDirection);
-		double newAngle = ((2 * Math.atan2(mtv.x,mtv.y)) - ball.getAngle())%(2 * Math.PI);
+		
+		//Change this///////////////////////////////////////////////////////////////////////////////
+		/*double newAngle = ((2 * Math.atan2(mtv.x,mtv.y)) - ball.getAngle())%(2 * Math.PI);
 		if(newAngle < 0)
 			newAngle += 2 * Math.PI;
+		ball.setAngle(newAngle);*/
+		
+		double impartVel = relativeDirection.cross(mtv) * IMPART_FACTOR*paddleVel;
+		double va = -relativeVelocity.dot(mtv); //Velocity along axis
+		double vap = relativeVelocity.cross(mtv) + impartVel; //Velocity along surface
+		double sinPhi = mtv.y;
+		double cosPhi = mtv.x;
+		
+		double vx = va*cosPhi + vap*sinPhi + paddleVel;
+		double vy = va*sinPhi - vap*cosPhi;
+		
+		System.out.println("Old Angle: " + ball.getAngle() * 180 / Math.PI);
+		double newAngle = Math.atan(vy / vx);
+		if(vx < 0)
+			newAngle += Math.PI;
+		else if(vy < 0)
+			newAngle += 2*Math.PI;
 		ball.setAngle(newAngle);
+		System.out.println("New Angle: " + newAngle * 180 / Math.PI);
+		
 		ball.move(backtrack);
+		////////////////////////////////////////////////////////////////////////////////////////////
 
 		return backtrack;
 	}
@@ -1297,9 +1324,9 @@ class GameEngine {
 			if((backtrack = paddleBallCollide(paddle, ball, paddleDir)) != 0)
 			{
 				System.out.println("Ball collided with Paddle having backtrack: " + backtrack);
-				newAngle = paddle.impartVelToBall(ball);
+				/*newAngle = paddle.impartVelToBall(ball);
 				if(newAngle >= 0)
-					System.out.println("Imparted velocity to Ball with new Ball angle: " + newAngle);
+					System.out.println("Imparted velocity to Ball with new Ball angle: " + newAngle);*/
 				//pause();
 			}
 			
