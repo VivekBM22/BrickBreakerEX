@@ -149,6 +149,13 @@ class Ball {
 		y = (int) Math.round(yCoord);
 	}
 	
+	void move(double backtrack, Vector2D direction) {
+		xCoord += backtrack * direction.x;
+		yCoord -= backtrack * direction.y;
+		x = (int) Math.round(xCoord);
+		y = (int) Math.round(yCoord);
+	}
+	
 	WritableImage getBallImg(Canvas canvas) {
 		SnapshotParameters snapParams = new SnapshotParameters();
 		snapParams.setViewport(new Rectangle2D(x - BALL_SIZE_2 - 1, y + BALL_SIZE_2 - 2, BALL_SIZE + 2, BALL_SIZE + 2));
@@ -273,6 +280,10 @@ class Paddle {
 		return CY;
 	}
 	
+	double getVelocity() {
+		return velocity;
+	}
+	
 	void setVelocity(double velocity) {
 		this.velocity = velocity;
 	}
@@ -351,22 +362,32 @@ class Paddle {
 		gc.clearRect(oldX - PADDLE_LENGTH_2, y - PADDLE_WIDTH_2, PADDLE_LENGTH, PADDLE_WIDTH);
 	}
 	
-	void updateCoords(long nanoTime) {
+	int updateCoords(long nanoTime) {
 		long time = nanoTime / 1000000;
+		int direction = 0; //0: Not moving, 1: Moving right, -1: Moving left
 		double displace = velocity * time;
 		
 		if(moveLeft && !moveRight)
-			if(xCoord - displace > PADDLE_LENGTH/2.0)
+			if(xCoord - displace > PADDLE_LENGTH/2.0) {
 				xCoord -= displace;
-			else
+				direction = -1;
+			}
+			else {
 				xCoord = PADDLE_LENGTH/2.0;
+				direction = -1;
+			}
 		else if(!moveLeft && moveRight)
-			if(xCoord + displace < GameEngine.GAME_LENGTH - PADDLE_LENGTH/2.0)
+			if(xCoord + displace < GameEngine.GAME_LENGTH - PADDLE_LENGTH/2.0) {
 				xCoord += displace;
-			else
+				direction = 1;
+			}
+			else {
 				xCoord = GameEngine.GAME_LENGTH - PADDLE_LENGTH/2.0;
+				direction = 1;
+			}
 		
 		x = (int) Math.round(xCoord);
+		return direction;
 	}
 };
 
@@ -780,7 +801,7 @@ class GameEngine {
 	private final int UPPER_WALL = 10;
 	private final int LEFT_WALL = 10;
 	private final int RIGHT_WALL = GAME_LENGTH - 10;
-	private final int BOTTOM_LIMIT = GAME_HEIGHT - 30;
+	private final int BOTTOM_LIMIT = GAME_HEIGHT - 10;
 	
 	private static Image lifeImg;
 	private final static Color TIME_FILL_COLOR = Color.BLACK;
@@ -1066,12 +1087,20 @@ class GameEngine {
 		return backtrack;
 	}
 	
-	double paddleBallCollide(Paddle paddle, Ball ball) {
+	double paddleBallCollide(Paddle paddle, Ball ball, int paddleDir) {
 		double ballCProj, paddleAProj, paddleBProj, paddleCProj, paddleDProj;
 		double ballMinProj, ballMaxProj, paddleMinProj, paddleMaxProj;
 		double ballX, ballY;
 		Vector2D axis1, axis2, axis3, mtv; // mtv -> Minimum Translation Vector
 		double overlap, backtrack = 0; // overlap -> Magnitude of mtv
+		
+		double paddleVel = 0;
+		if(paddleDir == 1)
+			paddleVel = paddle.getVelocity();
+		else if(paddleDir == -1)
+			paddleVel = -paddle.getVelocity();
+		Vector2D relativeDirection = new Vector2D(ball.getXVelocity() - paddleVel, ball.getYVelocity());
+		relativeDirection.normalize();
 		
 		ballX = ball.getXCoord();
 		ballY = ball.getYCoord();
@@ -1091,7 +1120,7 @@ class GameEngine {
 				overlap = ballMaxProj - paddleMinProj;
 				mtv = axis1.getReversed();
 			}
-			backtrack = overlap / Math.abs(mtv.dot(ball.getVelocityUnitVector()));
+			backtrack = overlap / Math.abs(mtv.dot(relativeDirection));
 		}
 		
 		//Checking along second axis
@@ -1106,12 +1135,13 @@ class GameEngine {
 			if(paddleMaxProj - ballMinProj < overlap) {
 				overlap = paddleMaxProj - ballMinProj;
 				mtv = axis2;
+				backtrack = overlap / Math.abs(mtv.dot(relativeDirection));
 			}
 			if(ballMaxProj - paddleMinProj < overlap) {
 				overlap = ballMaxProj - paddleMinProj;
 				mtv = axis2.getReversed();
+				backtrack = overlap / Math.abs(mtv.dot(relativeDirection));
 			}
-			backtrack = overlap / Math.abs(mtv.dot(ball.getVelocityUnitVector()));
 		}
 		
 		//Checking along third axis
@@ -1144,11 +1174,20 @@ class GameEngine {
 			if(ballMaxProj - paddleMinProj < overlap) {
 				overlap = ballMaxProj - paddleMinProj;
 				mtv = axis3;
-				backtrack = overlap / Math.abs(mtv.dot(ball.getVelocityUnitVector()));
+				backtrack = overlap / Math.abs(mtv.dot(relativeDirection));
 			}
 		}
+		//Debugging block
+		/*System.out.println("Normalized Ball Velocity: " + ball.getVelocityUnitVector());
+		System.out.println("Normalized Relative Velocity: " + relativeDirection);
+		if(relativeDirection.x < 0) {
+			System.out.println("Relative Angle: " + (Math.atan(relativeDirection.y / relativeDirection.x) * 180 / Math.PI + 180));
+		}
+		else
+			System.out.println("Relative Angle: " + (Math.atan2(relativeDirection.y, relativeDirection.x) * 180 / Math.PI));
+		System.out.println("Ball Angle: " + (ball.getAngle() * 180 / Math.PI));*/
 		
-		ball.move(-backtrack);
+		ball.move(-backtrack, relativeDirection);
 		double newAngle = ((2 * Math.atan2(mtv.x,mtv.y)) - ball.getAngle())%(2 * Math.PI);
 		if(newAngle < 0)
 			newAngle += 2 * Math.PI;
@@ -1197,7 +1236,7 @@ class GameEngine {
 		lastNanoTime = System.nanoTime();
 		elapsedNanoTime += loopTime;
 		
-		paddle.updateCoords(loopTime);
+		int paddleDir = paddle.updateCoords(loopTime);
 		
 		ballIter = ballList.listIterator();
 		
@@ -1255,7 +1294,7 @@ class GameEngine {
 			}
 			
 			//Paddle Collision test
-			if((backtrack = paddleBallCollide(paddle, ball)) != 0)
+			if((backtrack = paddleBallCollide(paddle, ball, paddleDir)) != 0)
 			{
 				System.out.println("Ball collided with Paddle having backtrack: " + backtrack);
 				newAngle = paddle.impartVelToBall(ball);
@@ -1293,6 +1332,7 @@ class GameEngine {
 							GameInfo.getBall(this);
 							setCountdown();
 						}
+						break;
 					}
 				}
 			}
