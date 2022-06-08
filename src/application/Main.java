@@ -1095,6 +1095,7 @@ class GameEngine {
 		double ballX, ballY;
 		Vector2D axis1, axis2, axis3, mtv; // mtv -> Minimum Translation Vector
 		double overlap, backtrack = 0; // overlap -> Magnitude of mtv
+		boolean reflect = false;
 		
 		double paddleVel = 0;
 		if(paddleDir == 1)
@@ -1116,6 +1117,8 @@ class GameEngine {
 		if(ballMaxProj < paddleMinProj || ballMinProj > paddleMaxProj)
 			return 0;
 		else {
+			if(ballMinProj >= paddleMinProj)
+				reflect = true;
 			overlap = paddleMaxProj - ballMinProj;
 			mtv = axis1;
 			if(ballMaxProj - paddleMinProj < overlap) {
@@ -1180,46 +1183,16 @@ class GameEngine {
 			}
 		}
 		
-		//Debugging block
-		/*System.out.println("Normalized Ball Velocity: " + ball.getVelocityUnitVector());
-		System.out.println("Normalized Relative Velocity: " + relativeDirection);
-		if(relativeDirection.x < 0) {
-			System.out.println("Relative Angle: " + (Math.atan(relativeDirection.y / relativeDirection.x) * 180 / Math.PI + 180));
-		}
-		else if(relativeDirection.y < 0)
-			System.out.println("Relative Angle: " + (Math.atan2(relativeDirection.y, relativeDirection.x) * 180 / Math.PI + 360));
-		else
-			System.out.println("Relative Angle: " + (Math.atan2(relativeDirection.y, relativeDirection.x) * 180 / Math.PI));
-		System.out.println("Ball Angle: " + (ball.getAngle() * 180 / Math.PI));*/
-		
 		ball.move(-backtrack, relativeDirection);
-		
-		//Change this///////////////////////////////////////////////////////////////////////////////
-		/*double newAngle = ((2 * Math.atan2(mtv.x,mtv.y)) - ball.getAngle())%(2 * Math.PI);
-		if(newAngle < 0)
-			newAngle += 2 * Math.PI;
-		ball.setAngle(newAngle);*/
-		
-		double impartVel = relativeDirection.cross(mtv) * IMPART_FACTOR*paddleVel;
-		double va = -relativeVelocity.dot(mtv); //Velocity along axis
-		double vap = relativeVelocity.cross(mtv) + impartVel; //Velocity along surface
-		double sinPhi = mtv.y;
-		double cosPhi = mtv.x;
-		
-		double vx = va*cosPhi + vap*sinPhi + paddleVel;
-		double vy = va*sinPhi - vap*cosPhi;
-		
-		System.out.println("Old Angle: " + ball.getAngle() * 180 / Math.PI);
-		double newAngle = Math.atan(vy / vx);
-		if(vx < 0)
-			newAngle += Math.PI;
-		else if(vy < 0)
-			newAngle += 2*Math.PI;
-		ball.setAngle(newAngle);
-		System.out.println("New Angle: " + newAngle * 180 / Math.PI);
-		
-		ball.move(backtrack);
-		////////////////////////////////////////////////////////////////////////////////////////////
+		if(reflect)
+		{
+			double newAngle = ((2 * Math.atan2(mtv.x,mtv.y)) - ball.getAngle())%(2 * Math.PI);
+			if(newAngle < 0)
+				newAngle += 2 * Math.PI;
+			ball.setAngle(newAngle);
+			
+			ball.move(backtrack);
+		}
 
 		return backtrack;
 	}
