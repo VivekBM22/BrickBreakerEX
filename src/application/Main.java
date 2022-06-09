@@ -710,21 +710,26 @@ class PaddleInfo {
 
 class GameInfo {
 	static final int THEME_COUNT = 5;
-	static final int STANDARD_MODE = 0;
-	static final int HARD_MODE = 1;
-	static final int TIME_TRIAL_MODE = 2;
-	//static final int RANDOM_MODE = 3;
-	//static final int ENDLESS_MODE = 4;
+	
+	static final int TOURNAMENT_MODE = 0;
+	static final int TOURNAMENT_HARD_MODE = 1;
+	static final int LEVEL_SELECT_MODE = 2;
+	static final int TIME_TRIAL_MODE = 3;
+	//static final int RANDOM_MODE = 4;
+	//static final int ENDLESS_MODE = 5;
 	static final int LEVEL_NULL = -1;
 	
 	private static ArrayList<BrickInfo> brickInfoList;
 	private static ListIterator<BrickInfo> brickInfoIter;
 	private static BallInfo ballInfo;
 	private static PaddleInfo paddleInfo;
-	private static int health;
+	
+	private static int brickHealth;
+	private static int ballDamage;
+	private static double powerUpSpawnTime;
 	
 	static {
-		readyGameInfo(STANDARD_MODE, 1);
+		readyGameInfo(TOURNAMENT_MODE, 1);
 	}
 	
 	private static void readyGameInfo(final int mode, final int level) {
@@ -736,21 +741,26 @@ class GameInfo {
 		ballInfo.x = GameEngine.GAME_LENGTH/2 + 400;
 		ballInfo.y = GameEngine.GAME_HEIGHT - 500;
 		ballInfo.angle = -Math.PI/1.1;
-		ballInfo.velocity = 0.5;
+		
+		ballDamage = 1;
 		
 		paddleInfo.x = GameEngine.GAME_LENGTH/2;
 		paddleInfo.y =  GameEngine.GAME_HEIGHT - 100 + (int)(Paddle.PADDLE_WIDTH_2) + (int)(Ball.BALL_SIZE_2) + 2;
 		paddleInfo.velocity = 0.8;
 		
-		if(mode == STANDARD_MODE) {
-			health = 3;
+		if(mode == TOURNAMENT_MODE) {
+			brickHealth = 3;
+			powerUpSpawnTime = 10;
+			ballInfo.velocity = 0.5;
 			if(level == 1) {
 				bi = new BrickInfo(GameEngine.GAME_LENGTH/2, GameEngine.GAME_HEIGHT - 100 - 250,  Math.PI/6);
 				brickInfoList.add(bi);
 			}
 		}
-		else if(mode == HARD_MODE) {
-			health = 5;
+		else if(mode == TOURNAMENT_HARD_MODE) {
+			brickHealth = 5;
+			powerUpSpawnTime = 15;
+			ballInfo.velocity = 0.5;
 		}
 	}
 	
@@ -764,6 +774,12 @@ class GameInfo {
 		gameEngine.ballList.clear(); //Power-ups do not carry over(Multi-ball)
 		gameEngine.brickList.clear();
 		readyGameInfo(mode, level);
+		
+		Brick.setTheme(level);
+		Ball.setTheme(level);
+		Paddle.setTheme(level);
+		
+		gameEngine.setDamage(ballDamage);
 		
 		Ball ball = new Ball(ballInfo.x, ballInfo.y, ballInfo.angle);
 		ball.setVelocity(ballInfo.velocity);
@@ -779,7 +795,7 @@ class GameInfo {
 		
 		while(brickInfoIter.hasNext()) {
 			brickInfo = brickInfoIter.next();
-			brick = new Brick(brickInfo.x, brickInfo.y, brickInfo.angle, health);
+			brick = new Brick(brickInfo.x, brickInfo.y, brickInfo.angle, brickHealth);
 			brickIter.add(brick);
 		}
 	}
@@ -832,6 +848,7 @@ class GameEngine {
 	
 	private int lives = 3;
 	private int displayedLives = 3;
+	private int damage;
 	
 	GraphicsContext bgGC, ballGC, brickPaddleGC, UIGC;
 	Canvas ballCanvas, brickPaddleCanvas;
@@ -904,6 +921,10 @@ class GameEngine {
 		
 		ballList = new ArrayList<Ball>();
 		brickList = new ArrayList<Brick>();
+	}
+	
+	void setDamage(int damage) {
+		this.damage = damage;
 	}
 	
 	Boolean isPaused() {
@@ -1087,21 +1108,13 @@ class GameEngine {
 		return backtrack;
 	}
 	
-	int paddleBallCollide(Paddle paddle, Ball ball, int paddleDir) {
+	int paddleBallCollide(Paddle paddle, Ball ball) {
 		double ballCProj, paddleAProj, paddleBProj, paddleCProj, paddleDProj;
 		double ballMinProj, ballMaxProj, paddleMinProj, paddleMaxProj;
 		double ballX, ballY;
 		Vector2D axis1, axis2, axis3, mtv; // mtv -> Minimum Translation Vector
 		double overlap, backtrack = 0; // overlap -> Magnitude of mtv
 		boolean reflect = false;
-		
-		/*double paddleVel = 0;
-		if(paddleDir == 1)
-			paddleVel = paddle.getVelocity();
-		else if(paddleDir == -1)
-			paddleVel = -paddle.getVelocity();
-		Vector2D relativeVelocity = new Vector2D(ball.getXVelocity() - paddleVel, ball.getYVelocity());
-		Vector2D relativeDirection = relativeVelocity.getNormalized();*/
 		
 		ballX = ball.getXCoord();
 		ballY = ball.getYCoord();
@@ -1221,7 +1234,7 @@ class GameEngine {
 			UIGC.drawImage(lifeImg, GAME_LENGTH - (i+1)*(lifeImg.getWidth() + 3), 0);
 		}
 		
-		GameInfo.getDetails(this, GameInfo.STANDARD_MODE, 1);
+		GameInfo.getDetails(this, GameInfo.TOURNAMENT_MODE, 1);
 		
 		ballIter = ballList.listIterator();
 		brickIter = brickList.listIterator();
@@ -1243,7 +1256,7 @@ class GameEngine {
 		lastNanoTime = System.nanoTime();
 		elapsedNanoTime += loopTime;
 		
-		int paddleDir = paddle.updateCoords(loopTime);
+		/*int paddleDir = */paddle.updateCoords(loopTime);
 		
 		ballIter = ballList.listIterator();
 		
@@ -1295,13 +1308,13 @@ class GameEngine {
 				if((backtrack = brickBallCollide(brick, ball)) != 0)
 				{
 					System.out.println("Ball collided with Brick having backtrack: " + backtrack);
-					brick.reduceHealth(1);                  //////////////////////////////// Set Damage
+					brick.reduceHealth(damage);                  //////////////////////////////// Set Damage
 					//pause();
 				}
 			}
 			
 			//Paddle Collision test
-			if((backtrack = paddleBallCollide(paddle, ball, paddleDir)) != 0)
+			if((backtrack = paddleBallCollide(paddle, ball)) != 0)
 			{
 				System.out.println("Ball collided with Paddle having backtrack: " + backtrack);
 				if(backtrack == 1) {
