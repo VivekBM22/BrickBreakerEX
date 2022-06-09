@@ -803,8 +803,6 @@ class GameEngine {
 	private final int RIGHT_WALL = GAME_LENGTH - 10;
 	private final int BOTTOM_LIMIT = GAME_HEIGHT - 10;
 	
-	private final double IMPART_FACTOR = 0.5;
-	
 	private static Image lifeImg;
 	private final static Color TIME_FILL_COLOR = Color.BLACK;
 	private final static int TIME_FONT_SIZE = 25;
@@ -1089,7 +1087,7 @@ class GameEngine {
 		return backtrack;
 	}
 	
-	double paddleBallCollide(Paddle paddle, Ball ball, int paddleDir) {
+	int paddleBallCollide(Paddle paddle, Ball ball, int paddleDir) {
 		double ballCProj, paddleAProj, paddleBProj, paddleCProj, paddleDProj;
 		double ballMinProj, ballMaxProj, paddleMinProj, paddleMaxProj;
 		double ballX, ballY;
@@ -1097,13 +1095,13 @@ class GameEngine {
 		double overlap, backtrack = 0; // overlap -> Magnitude of mtv
 		boolean reflect = false;
 		
-		double paddleVel = 0;
+		/*double paddleVel = 0;
 		if(paddleDir == 1)
 			paddleVel = paddle.getVelocity();
 		else if(paddleDir == -1)
 			paddleVel = -paddle.getVelocity();
 		Vector2D relativeVelocity = new Vector2D(ball.getXVelocity() - paddleVel, ball.getYVelocity());
-		Vector2D relativeDirection = relativeVelocity.getNormalized();
+		Vector2D relativeDirection = relativeVelocity.getNormalized();*/
 		
 		ballX = ball.getXCoord();
 		ballY = ball.getYCoord();
@@ -1117,15 +1115,16 @@ class GameEngine {
 		if(ballMaxProj < paddleMinProj || ballMinProj > paddleMaxProj)
 			return 0;
 		else {
-			if(ballMinProj >= paddleMinProj)
-				reflect = true;
+			reflect = true;
 			overlap = paddleMaxProj - ballMinProj;
 			mtv = axis1;
+			backtrack = overlap / Math.abs(mtv.dot(ball.getVelocityUnitVector()));
 			if(ballMaxProj - paddleMinProj < overlap) {
+				reflect = false;
 				overlap = ballMaxProj - paddleMinProj;
 				mtv = axis1.getReversed();
+				backtrack = overlap;
 			}
-			backtrack = overlap / Math.abs(mtv.dot(relativeDirection));
 		}
 		
 		//Checking along second axis
@@ -1138,14 +1137,16 @@ class GameEngine {
 			return 0;
 		else {
 			if(paddleMaxProj - ballMinProj < overlap) {
+				reflect = false;
 				overlap = paddleMaxProj - ballMinProj;
 				mtv = axis2;
-				backtrack = overlap / Math.abs(mtv.dot(relativeDirection));
+				backtrack = overlap;
 			}
 			if(ballMaxProj - paddleMinProj < overlap) {
+				reflect = false;
 				overlap = ballMaxProj - paddleMinProj;
 				mtv = axis2.getReversed();
-				backtrack = overlap / Math.abs(mtv.dot(relativeDirection));
+				backtrack = overlap;
 			}
 		}
 		
@@ -1177,24 +1178,30 @@ class GameEngine {
 			return 0;
 		else {
 			if(ballMaxProj - paddleMinProj < overlap) {
+				reflect = false;
 				overlap = ballMaxProj - paddleMinProj;
 				mtv = axis3;
-				backtrack = overlap / Math.abs(mtv.dot(relativeDirection));
+				backtrack = -overlap;
 			}
 		}
 		
-		ball.move(-backtrack, relativeDirection);
 		if(reflect)
 		{
+			ball.move(-backtrack);
 			double newAngle = ((2 * Math.atan2(mtv.x,mtv.y)) - ball.getAngle())%(2 * Math.PI);
 			if(newAngle < 0)
 				newAngle += 2 * Math.PI;
 			ball.setAngle(newAngle);
-			
 			ball.move(backtrack);
+			System.out.println("MTV: " + mtv);
+			
+			return 1;
 		}
+		else
+			ball.move(backtrack, mtv);
+		System.out.println("MTV: " + mtv);
 
-		return backtrack;
+		return -1; //0: No Collision, 1: Reflect, -1: No Reflect
 	}
 	
 	void startGame() {
@@ -1297,9 +1304,11 @@ class GameEngine {
 			if((backtrack = paddleBallCollide(paddle, ball, paddleDir)) != 0)
 			{
 				System.out.println("Ball collided with Paddle having backtrack: " + backtrack);
-				/*newAngle = paddle.impartVelToBall(ball);
-				if(newAngle >= 0)
-					System.out.println("Imparted velocity to Ball with new Ball angle: " + newAngle);*/
+				if(backtrack == 1) {
+					newAngle = paddle.impartVelToBall(ball);
+					if(newAngle >= 0)
+						System.out.println("Imparted velocity to Ball with new Ball angle: " + newAngle);
+				}
 				//pause();
 			}
 			
