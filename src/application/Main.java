@@ -859,8 +859,9 @@ class GameEngine {
 	private int displayedLives = 3;
 	private int damage;
 	
+	StackPane canvasPane;
 	GraphicsContext bgGC, ballGC, brickPaddleGC, UIGC;
-	Canvas ballCanvas, brickPaddleCanvas;
+	Canvas bgCanvas, ballCanvas, brickPaddleCanvas, UICanvas;
 	AnimationTimer gameTimer, waitTimer, levelAnimTimer;
 	
 	WritableImage ballImg;
@@ -891,16 +892,37 @@ class GameEngine {
 		}
 	}
 	
-	GameEngine(GraphicsContext bgGC, Canvas ballCanvas, GraphicsContext ballGC, Canvas brickPaddleCanvas, GraphicsContext brickPaddleGC, GraphicsContext UIGC, AnimationTimer gameTimer) {
-		this.bgGC = bgGC;
-		this.ballCanvas = ballCanvas;
-		this.ballGC = ballGC;
-		this.brickPaddleCanvas = brickPaddleCanvas;
-		this.brickPaddleGC = brickPaddleGC;
-		this.UIGC = UIGC;
-		this.gameTimer = gameTimer;
-		
+	GameEngine(Label timeLabel) {
 		status = INITIAL;
+		
+		canvasPane = new StackPane();
+		
+		bgCanvas = new Canvas(GameEngine.GAME_LENGTH, GameEngine.GAME_HEIGHT);
+		bgGC = bgCanvas.getGraphicsContext2D();
+		canvasPane.getChildren().add(bgCanvas);
+		
+		ballCanvas = new Canvas(GameEngine.GAME_LENGTH, GameEngine.GAME_HEIGHT);
+		ballGC = ballCanvas.getGraphicsContext2D();
+		canvasPane.getChildren().add(ballCanvas);
+		
+		brickPaddleCanvas = new Canvas(GameEngine.GAME_LENGTH, GameEngine.GAME_HEIGHT);
+		brickPaddleGC = brickPaddleCanvas.getGraphicsContext2D();
+		canvasPane.getChildren().add(brickPaddleCanvas);
+		
+		UICanvas = new Canvas(GameEngine.GAME_LENGTH, GameEngine.GAME_HEIGHT);
+		UIGC = UICanvas.getGraphicsContext2D();
+		canvasPane.getChildren().add(UICanvas);
+		
+		gameTimer = new AnimationTimer() {                               //////////////////// Move AnimationTimer to GameEngine
+			public void handle(long currentNanoTime) {
+				timeLabel.setText(Long.toString(getGameTime(currentNanoTime)/1000000000) + "s");
+				updateGame(currentNanoTime);
+				drawFrame(currentNanoTime);
+				pauseGame();
+				startCountdown();
+				levelCheck();
+			}
+		};
 		
 		this.waitTimer = new AnimationTimer() {
 			public void handle(long currentNanoTime) {
@@ -949,6 +971,10 @@ class GameEngine {
 		
 		ballList = new ArrayList<Ball>();
 		brickList = new ArrayList<Brick>();
+	}
+	
+	StackPane getCanvasPane() {
+		return canvasPane;
 	}
 	
 	void setDamage(int damage) {
@@ -1508,37 +1534,8 @@ public class Main extends Application {
 		Label timeLabel = new Label();
 		gamePane.getChildren().add(timeLabel);
 		
-		StackPane canvasPane = new StackPane(); /////////////Move starting here
-		gamePane.getChildren().add(canvasPane);
-		
-		bgCanvas = new Canvas(GameEngine.GAME_LENGTH, GameEngine.GAME_HEIGHT);
-		bgGC = bgCanvas.getGraphicsContext2D();
-		canvasPane.getChildren().add(bgCanvas);
-		
-		ballCanvas = new Canvas(GameEngine.GAME_LENGTH, GameEngine.GAME_HEIGHT);
-		ballGC = ballCanvas.getGraphicsContext2D();
-		canvasPane.getChildren().add(ballCanvas);
-		
-		brickPaddleCanvas = new Canvas(GameEngine.GAME_LENGTH, GameEngine.GAME_HEIGHT);
-		brickPaddleGC = brickPaddleCanvas.getGraphicsContext2D();
-		canvasPane.getChildren().add(brickPaddleCanvas);
-		
-		UICanvas = new Canvas(GameEngine.GAME_LENGTH, GameEngine.GAME_HEIGHT);
-		UIGC = UICanvas.getGraphicsContext2D();
-		canvasPane.getChildren().add(UICanvas);
-		
-		gameTimer = new AnimationTimer() {                               //////////////////// Move AnimationTimer to GameEngine
-			public void handle(long currentNanoTime) {
-				timeLabel.setText(Long.toString(gameEngine.getGameTime(currentNanoTime)/1000000000) + "s");
-				gameEngine.updateGame(currentNanoTime);
-				gameEngine.drawFrame(currentNanoTime);
-				gameEngine.pauseGame();
-				gameEngine.startCountdown();
-				gameEngine.levelCheck();
-			}
-		};
-		
-		gameEngine = new GameEngine(bgGC, ballCanvas, ballGC, brickPaddleCanvas, brickPaddleGC, UIGC, gameTimer);
+		gameEngine = new GameEngine(timeLabel);
+		gamePane.getChildren().add(gameEngine.getCanvasPane());
 		
 		gameEngine.startGame(GameInfo.TOURNAMENT_MODE, 1);
 		
