@@ -67,7 +67,7 @@ class GameInfo {
 		
 		if(mode == TOURNAMENT_MODE) {
 			brickHealth = 3;
-			powerUpSpawnTime = 10;
+			powerUpSpawnTime = 3;
 			ballInfo.velocity = 0.5;
 			if(level == 1) {
 				bi = new BrickInfo(GameEngine.GAME_LENGTH/2, GameEngine.GAME_HEIGHT - 100 - 250,  Math.PI/6);

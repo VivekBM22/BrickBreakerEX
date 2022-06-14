@@ -5,8 +5,8 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 class PowerUp {
-	private static final int POWERUP_LENGTH = 35;
-	private static final int POWERUP_HEIGHT = 35;
+	static final int POWERUP_LENGTH = 35;
+	static final int POWERUP_HEIGHT = 35;
 	
 	private static Image[] POWERUP_IMG = new Image[4];
 	private static Color[] POWERUP_COLOR = new Color[4];
@@ -20,8 +20,8 @@ class PowerUp {
 	private static final int ACTIVE = 1;
 	private static final int DESTROYED = 2;
 	
-	private static final int PSU_DURATION = 5000000;
-	private static final int DU_DURATION = 5000000;
+	private static final int PSU_DURATION = 5000;
+	private static final int DU_DURATION = 5000;
 	private static final int BOOSTED_DAMAGE = 2;
 	private static final double PADDLE_SPEED_INC = 0.2;
 	private static final double VELOCITY = 0.25;
@@ -36,6 +36,7 @@ class PowerUp {
 	private int x;
 	private int y, oldY;
 	private long duration; //In milliseconds
+	private boolean erase; 
 	
 	static {
 		try {
@@ -74,6 +75,7 @@ class PowerUp {
 	PowerUp(int ID, GameEngine gameEngine) {
 		this.ID = ID;
 		status = SPAWNED;
+		erase = true;
 		yCoord = y = oldY = 0;
 		x = (int)(Math.random()*(GameEngine.GAME_LENGTH - POWERUP_LENGTH));
 		this.gameEngine = gameEngine;
@@ -106,6 +108,14 @@ class PowerUp {
 		if(status == DESTROYED)
 			return true;
 		return false;
+	}
+	
+	double getX() {
+		return x;
+	}
+	
+	double getY() {
+		return yCoord;
 	}
 	
 	void activatePowerUp() {
@@ -159,6 +169,11 @@ class PowerUp {
 	}
 	
 	void erasePowerUp(GraphicsContext gc) {
+		if(!erase)
+			return;
+		
 		gc.clearRect(x, oldY, POWERUP_LENGTH, POWERUP_HEIGHT);
+		if(status != SPAWNED)
+			erase = false;
 	}	
 }

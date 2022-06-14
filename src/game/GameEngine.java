@@ -66,8 +66,8 @@ class GameEngine {
 	private int frameCount = 0;
 	private long pauseTime;
 	private long waitTime;
-	private Boolean pauseRequest = false;
-	private Boolean waitRequest = false;
+	private boolean pauseRequest = false;
+	private boolean waitRequest = false;
 	
 	private int status;
 	private int level;
@@ -218,13 +218,13 @@ class GameEngine {
 		GameInfo.getBall(this);
 	}
 	
-	Boolean isPaused() {
+	boolean isPaused() {
 		if(status == PAUSED)
 			return true;
 		return false;
 	}
 	
-	Boolean isInGame() {
+	boolean isInGame() {
 		if(status == IN_GAME)
 			return true;
 		return false;
@@ -466,9 +466,11 @@ class GameEngine {
 	}
 	
 	boolean paddlePowerUpCollide() {
-		/* Perform Bounding-Box collision test*/
+		/* Perform Axis-Aligned Bounding-Box collision test*/
+		if (powerUp.getX() < paddle.getBX() && powerUp.getX() + PowerUp.POWERUP_LENGTH > paddle.getAX() &&  powerUp.getY() < paddle.getCY() && powerUp.getY() + PowerUp.POWERUP_HEIGHT > paddle.getAY())
+		        return true;
 		
-		return true;
+		return false;
 	}
 	
 	void pause() {
@@ -596,8 +598,11 @@ class GameEngine {
 			powerUp = new PowerUp(powerUpID, this);
 		}
 		
-		if(powerUp != null)
+		if(powerUp != null) {
 			powerUp.updatePowerUp(loopTime);
+			if(powerUp.isSpawned() && paddlePowerUpCollide())
+				powerUp.activatePowerUp();
+		}
 		
 		paddle.updateCoords(loopTime);
 		
@@ -683,8 +688,8 @@ class GameEngine {
 			UIGC.fillText(timeStr, 0, 0);
 			
 			if(powerUp != null) {
+				powerUp.erasePowerUp(powerUpGC);
 				if(powerUp.isSpawned()) {
-					powerUp.erasePowerUp(powerUpGC);
 					powerUp.drawPowerUp(powerUpGC);
 				}
 				if(powerUp.isDestroyed()) {
