@@ -10,7 +10,7 @@
    <children>
       <AnchorPane layoutX="-3.0" layoutY="-4.0" prefHeight="800.0" prefWidth="1300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Button layoutX="415.0" layoutY="375.0" mnemonicParsing="false" onAction="#SwitchtoScene2" prefHeight="70.0" prefWidth="450.0" text="Game Modes">
+            <Button layoutX="415.0" layoutY="375.0" mnemonicParsing="false" onAction="#SwitchtoGameModes" prefHeight="70.0" prefWidth="450.0" text="Game Modes">
                <font>
                   <Font size="18.0" />
                </font></Button>

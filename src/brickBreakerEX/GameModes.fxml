@@ -23,7 +23,7 @@
                   <Font size="72.0" />
                </font>
             </Label>
-            <Button fx:id="obutton" layoutX="79.0" layoutY="70.0" mnemonicParsing="false" onAction="#SwitchtoScene1" prefHeight="80.0" prefWidth="80.0" text="&lt;-">
+            <Button fx:id="obutton" layoutX="79.0" layoutY="70.0" mnemonicParsing="false" onAction="#SwitchtoMenu" prefHeight="80.0" prefWidth="80.0" text="&lt;-">
                <font>
                   <Font size="24.0" />
                </font>

@@ -14,7 +14,7 @@
                   <Font size="96.0" />
                </font>
             </Label>
-            <Button layoutX="450.0" layoutY="500.0" mnemonicParsing="false" onAction="#SwitchtoScene1" prefHeight="70.0" prefWidth="470.0" text="Return to Menu">
+            <Button layoutX="450.0" layoutY="500.0" mnemonicParsing="false" onAction="#SwitchtoMenu" prefHeight="70.0" prefWidth="470.0" text="Return to Menu">
                <font>
                   <Font size="18.0" />
                </font>

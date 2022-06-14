@@ -14,8 +14,8 @@ public class SceneController {
 	private Scene scene;
 	private Parent root;
 	
-	public void SwitchtoScene1( ActionEvent event) throws IOException {
-		root = FXMLLoader.load(getClass().getResource("scene1.fxml"));
+	public void SwitchtoMenu( ActionEvent event) throws IOException {
+		root = FXMLLoader.load(getClass().getResource("Menu.fxml"));
 		scene = new Scene(root, 1300, 800);
 		String css = this.getClass().getResource("/application.css").toExternalForm();
 		scene.getStylesheets().add(css);
@@ -24,8 +24,8 @@ public class SceneController {
 		stage.show();
 	}
 	
-	public void SwitchtoScene2( ActionEvent event) throws IOException {
-		root = FXMLLoader.load(getClass().getResource("scene2.fxml"));
+	public void SwitchtoGameModes( ActionEvent event) throws IOException {
+		root = FXMLLoader.load(getClass().getResource("GameModes.fxml"));
 		scene = new Scene(root, 1300, 800);
 		String css = this.getClass().getResource("/application.css").toExternalForm();
 		scene.getStylesheets().add(css);
