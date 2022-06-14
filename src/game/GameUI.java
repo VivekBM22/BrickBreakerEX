@@ -1,4 +1,4 @@
-package GameUI;
+package game;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -40,7 +40,7 @@ public class GameUI extends Application {
 		Label timeLabel = new Label();
 		gamePane.getChildren().add(timeLabel);
 		
-		gameEngine = new GameEngine(timeLabel);
+		gameEngine = new GameEngine();
 		gamePane.getChildren().add(gameEngine.getCanvasPane());
 		
 		gameEngine.startGame(GameInfo.TOURNAMENT_MODE, 1);

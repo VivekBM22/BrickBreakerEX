@@ -1,4 +1,4 @@
-package GameUI;
+package game;
 
 import java.util.ArrayList;
 import java.util.ListIterator;
@@ -35,8 +35,6 @@ class GameInfo {
 	static final int TOURNAMENT_HARD_MODE = 1;
 	static final int LEVEL_SELECT_MODE = 2;
 	static final int TIME_TRIAL_MODE = 3;
-	//static final int RANDOM_MODE = 4;
-	//static final int ENDLESS_MODE = 5;
 	
 	private static ArrayList<BrickInfo> brickInfoList;
 	private static ListIterator<BrickInfo> brickInfoIter;
@@ -45,7 +43,7 @@ class GameInfo {
 	
 	private static int brickHealth;
 	private static int ballDamage;
-	private static double powerUpSpawnTime;
+	private static long powerUpSpawnTime;
 	
 	static {
 		readyGameInfo(TOURNAMENT_MODE, 1);
@@ -64,7 +62,7 @@ class GameInfo {
 		ballDamage = 1;
 		
 		paddleInfo.x = GameEngine.GAME_LENGTH/2;
-		paddleInfo.y =  GameEngine.GAME_HEIGHT - 100 + (int)(Paddle.PADDLE_WIDTH_2) + (int)(Ball.BALL_SIZE_2) + 2;
+		paddleInfo.y =  GameEngine.GAME_HEIGHT - 100 + (int)(Paddle.PADDLE_HEIGHT_2) + (int)(Ball.BALL_SIZE_2) + 2;
 		paddleInfo.velocity = 0.8;
 		
 		if(mode == TOURNAMENT_MODE) {
@@ -90,11 +88,12 @@ class GameInfo {
 	}
 	
 	static void getDetails(GameEngine gameEngine, final int mode, final int level) {
-		gameEngine.ballList.clear(); //Power-ups do not carry over(Multi-ball)
+		gameEngine.ballList.clear(); //Power-Ups do not carry over(Multi-balls)
 		gameEngine.brickList.clear();
 		readyGameInfo(mode, level);
 		
 		gameEngine.setDamage(ballDamage);
+		gameEngine.setPUSpawnTime(powerUpSpawnTime);
 		
 		Ball ball = new Ball(ballInfo.x, ballInfo.y, ballInfo.angle);
 		ball.setVelocity(ballInfo.velocity);

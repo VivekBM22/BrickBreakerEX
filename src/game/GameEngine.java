@@ -1,18 +1,14 @@
-package GameUI;
+package game;
 
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.Random;
 import Vector2D.Vector2D;
 import javafx.animation.AnimationTimer;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.VPos;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
@@ -21,10 +17,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
-import javafx.stage.Stage;
 
-class GameEngine extends Thread{
-	final static Color GAME_BG_COLOR = Color.LIGHTGREEN;
+class GameEngine {
 	final static int GAME_LENGTH = 1280;
 	final static int GAME_HEIGHT = 720;
 	final static int FRAME_RATE = 60;
@@ -37,10 +31,10 @@ class GameEngine extends Thread{
 	final static int PAUSED = 4;
 	final static int WAITING = 5;
 	
-	private final int UPPER_WALL = 10;
-	private final int LEFT_WALL = 10;
-	private final int RIGHT_WALL = GAME_LENGTH - 10;
-	private final int BOTTOM_LIMIT = GAME_HEIGHT - 10;
+	static final int UPPER_WALL = 10;
+	static final int LEFT_WALL = 10;
+	static final int RIGHT_WALL = GAME_LENGTH - 10;
+	static final int BOTTOM_LIMIT = GAME_HEIGHT - 10;
 	
 	private static Image lifeImg;
 	private final static Color TIME_FILL_COLOR = Color.BLACK;
@@ -60,46 +54,46 @@ class GameEngine extends Thread{
 	private final static Font LOSE_FONT = Font.font("Courier New", FontWeight.BOLD, FontPosture.REGULAR, LOSE_FONT_SIZE);
 	
 	private static Image bgImg;
+	private static Color bgColor;
+	
 	private long startTime;
 	private long lastNanoTime;
-	private long elapsedNanoTime = 0;
-	private long totalPauseTime = 0;
-	private long totalWaitTime = 0;
+	private long elapsedNanoTime;
+	private long totalPauseTime;
+	private long totalWaitTime;
+	private long powerUpSpawnTime;
+	private long lastPUSpawnTime;
 	private int frameCount = 0;
 	private long pauseTime;
 	private long waitTime;
-	Boolean pauseRequest = false;
-	Boolean waitRequest = false;
-	private int status = 0;
+	private Boolean pauseRequest = false;
+	private Boolean waitRequest = false;
 	
+	private int status;
 	private int level;
 	private int mode;
+	private Random powerUpIDGenerator;
 	
 	LinkedList<Ball> ballList;
 	Paddle paddle;
 	LinkedList<Brick> brickList;
 	ListIterator<Ball> ballIter;
 	ListIterator<Brick> brickIter;
-	
-	private int lives = 3;
-	private int displayedLives = 3;
+	PowerUp powerUp;
+	private int lives;
 	private int damage;
+	private int displayedLives = 3;
 	
 	StackPane canvasPane;
-	GraphicsContext bgGC, ballGC, brickPaddleGC, UIGC;
-	Canvas bgCanvas, ballCanvas, brickPaddleCanvas, UICanvas;
+	GraphicsContext bgGC, ballGC, brickPaddleGC, powerUpGC, UIGC;
+	Canvas bgCanvas, ballCanvas, brickPaddleCanvas, powerUpCanvas, UICanvas;
 	AnimationTimer gameTimer, waitTimer, levelAnimTimer;
 	
 	WritableImage ballImg;
 	PixelReader ballImgReader;
 	
 	static {
-		try {
-			bgImg = new Image("Theme " + 1 + "/Background.png");
-		}
-		catch(IllegalArgumentException iae) {
-			bgImg = null;
-		}
+		setTheme(1);
 		
 		try {
 			lifeImg = new Image("Life.png");
@@ -115,10 +109,11 @@ class GameEngine extends Thread{
 		}
 		catch(IllegalArgumentException npe) {
 			bgImg = null;
+			bgColor = Color.LIGHTGREEN;;
 		}
 	}
 	
-	GameEngine(Label timeLabel) {
+	GameEngine() {
 		status = INITIAL;
 		
 		canvasPane = new StackPane();
@@ -135,18 +130,21 @@ class GameEngine extends Thread{
 		brickPaddleGC = brickPaddleCanvas.getGraphicsContext2D();
 		canvasPane.getChildren().add(brickPaddleCanvas);
 		
+		powerUpCanvas = new Canvas(GameEngine.GAME_LENGTH, GameEngine.GAME_HEIGHT);
+		powerUpGC = powerUpCanvas.getGraphicsContext2D();
+		canvasPane.getChildren().add(powerUpCanvas);
+		
 		UICanvas = new Canvas(GameEngine.GAME_LENGTH, GameEngine.GAME_HEIGHT);
 		UIGC = UICanvas.getGraphicsContext2D();
 		canvasPane.getChildren().add(UICanvas);
 		
 		gameTimer = new AnimationTimer() {
 			public void handle(long currentNanoTime) {
-				timeLabel.setText(Long.toString(getGameTime(currentNanoTime)/1000000000) + "s");
 				updateGame(currentNanoTime);
 				drawFrame(currentNanoTime);
 				pauseGame();
 				startCountdown();
-				levelCheck();
+				levelCheck(currentNanoTime);
 			}
 		};
 		
@@ -183,7 +181,7 @@ class GameEngine extends Thread{
 				String displayStr = "LEVEL " + level;
 				
 				UIGC.fillText(displayStr, GAME_LENGTH/2 - displayStr.length()*0.5*LEVEL_FONT_SIZE*0.5625, GAME_HEIGHT/2 - LEVEL_FONT_SIZE*0.5);
-				if((currentNanoTime - waitTime)/1000000000 >= 1) {
+				if((currentNanoTime - waitTime)/1000000000 >= 2) {
 					UIGC.clearRect(GAME_LENGTH/2 - displayStr.length()*0.5*LEVEL_FONT_SIZE*0.5625, GAME_HEIGHT/2 - LEVEL_FONT_SIZE*0.5, LEVEL_FONT_SIZE*4.8, GAME_HEIGHT/2 + LEVEL_FONT_SIZE*0.5);
 					waitTime = currentNanoTime - waitTime;
 					totalWaitTime += waitTime;
@@ -197,6 +195,7 @@ class GameEngine extends Thread{
 		
 		ballList = new LinkedList<Ball>();
 		brickList = new LinkedList<Brick>();
+		powerUp = null;
 	}
 	
 	StackPane getCanvasPane() {
@@ -207,8 +206,26 @@ class GameEngine extends Thread{
 		this.damage = damage;
 	}
 	
+	void setPUSpawnTime(long powerUpSpawnTime) {
+		this.powerUpSpawnTime = powerUpSpawnTime;
+	}
+	
+	void incrementLives() {
+		lives++;
+	}
+
+	void addBall() {
+		GameInfo.getBall(this);
+	}
+	
 	Boolean isPaused() {
 		if(status == PAUSED)
+			return true;
+		return false;
+	}
+	
+	Boolean isInGame() {
+		if(status == IN_GAME)
 			return true;
 		return false;
 	}
@@ -339,7 +356,7 @@ class GameEngine extends Thread{
 		return backtrack;
 	}
 	
-	int paddleBallCollide(Paddle paddle, Ball ball) {
+	int paddleBallCollide(Ball ball) {
 		double ballCProj, paddleAProj, paddleBProj, paddleCProj, paddleDProj;
 		double ballMinProj, ballMaxProj, paddleMinProj, paddleMaxProj;
 		double ballX, ballY;
@@ -448,6 +465,12 @@ class GameEngine extends Thread{
 		return -1; //0: No Collision, 1: Reflect, -1: No Reflect
 	}
 	
+	boolean paddlePowerUpCollide() {
+		/* Perform Bounding-Box collision test*/
+		
+		return true;
+	}
+	
 	void pause() {
 		if(status == IN_GAME)
 			pauseRequest = true;
@@ -506,24 +529,26 @@ class GameEngine extends Thread{
 		if(bgImg != null)
 			bgGC.drawImage(bgImg, 0, 0);
 		else {
-			bgGC.setFill(GameEngine.GAME_BG_COLOR);
+			bgGC.setFill(GameEngine.bgColor);
 			bgGC.fillRect(0, 0, GameEngine.GAME_LENGTH, GameEngine.GAME_HEIGHT);
 		}
 		
 		UIGC.clearRect(0, 0, GAME_LENGTH, GAME_HEIGHT);
 		
-		UIGC.setTextBaseline(VPos.TOP);
-		/*UIGC.setFill(TIME_FILL_COLOR);
-		UIGC.setFont(TIME_FONT);*/
-		
 		displayedLives = lives;
 		for(int i = 0; i < lives; i++)
 			UIGC.drawImage(lifeImg, GAME_LENGTH - (i+1)*(lifeImg.getWidth() + 3), 0);
 		
+		UIGC.setTextBaseline(VPos.TOP);
 		UIGC.setFill(LEVEL_FILL_COLOR);
 		UIGC.setFont(LEVEL_FONT);
 		
+		powerUpIDGenerator = new Random();
+		powerUpGC.clearRect(0, 0, GAME_LENGTH, GAME_HEIGHT);
+		powerUp = null;
+		
 		GameInfo.getDetails(this, mode, level);
+		damage = 1;
 		
 		ballGC.clearRect(0, 0, GAME_LENGTH, GAME_HEIGHT);
 		brickPaddleGC.clearRect(0, 0, GAME_LENGTH, GAME_HEIGHT);
@@ -539,13 +564,14 @@ class GameEngine extends Thread{
 		
 		System.out.println("Level started");
 		
-		totalWaitTime = totalPauseTime = elapsedNanoTime = frameCount = 0;
+		totalWaitTime = totalPauseTime = elapsedNanoTime = lastPUSpawnTime = frameCount = 0;
 		startTime = lastNanoTime = waitTime = System.nanoTime();
 		levelAnimTimer.start();
 	}
 	
 	void startGame(int mode, int level) {
 		this.mode = mode;
+		lives = 3;
 		if(mode == GameInfo.LEVEL_SELECT_MODE)
 			this.level = level;
 		else
@@ -557,10 +583,23 @@ class GameEngine extends Thread{
 	void updateGame(long curNanoTime) {
 		long loopTime = curNanoTime - lastNanoTime;
 		double backtrack, newAngle;
-		lastNanoTime = System.nanoTime();
+		lastNanoTime = curNanoTime;
 		elapsedNanoTime += loopTime;
 		
-		/*int paddleDir = */paddle.updateCoords(loopTime);
+		//Power_up Spawn
+		if(powerUp == null)
+			lastPUSpawnTime += loopTime;
+		if(lastPUSpawnTime/1000000000.0 >= powerUpSpawnTime) {
+			lastPUSpawnTime -= powerUpSpawnTime*1000000000;
+			
+			int powerUpID = powerUpIDGenerator.nextInt(4);
+			powerUp = new PowerUp(powerUpID, this);
+		}
+		
+		if(powerUp != null)
+			powerUp.updatePowerUp(loopTime);
+		
+		paddle.updateCoords(loopTime);
 		
 		ballIter = ballList.listIterator();
 		
@@ -612,13 +651,12 @@ class GameEngine extends Thread{
 				if((backtrack = brickBallCollide(brick, ball)) != 0)
 				{
 					System.out.println("Ball collided with Brick having backtrack: " + backtrack);
-					brick.reduceHealth(damage);                  //////////////////////////////// Set Damage
-					//pause();
+					brick.reduceHealth(damage);
 				}
 			}
 			
 			//Paddle Collision test
-			if((backtrack = paddleBallCollide(paddle, ball)) != 0)
+			if((backtrack = paddleBallCollide(ball)) != 0)
 			{
 				System.out.println("Ball collided with Paddle having backtrack: " + backtrack);
 				if(backtrack == 1) {
@@ -626,7 +664,6 @@ class GameEngine extends Thread{
 					if(newAngle >= 0)
 						System.out.println("Imparted velocity to Ball with new Ball angle: " + newAngle);
 				}
-				//pause();
 			}
 			
 			//Ball falls below the limit
@@ -645,12 +682,15 @@ class GameEngine extends Thread{
 			UIGC.clearRect(0, 0, TIME_FONT_SIZE*4.8, TIME_FONT_SIZE);
 			UIGC.fillText(timeStr, 0, 0);
 			
-			for(; displayedLives < lives; displayedLives++) {
-				UIGC.drawImage(lifeImg, GAME_LENGTH - (displayedLives+1)*(lifeImg.getWidth() + 3), 0);
-			}
-			
-			for(; displayedLives > lives; displayedLives--) {
-				UIGC.clearRect(GAME_LENGTH - (displayedLives)*(lifeImg.getWidth() + 3), 0, lifeImg.getWidth(), lifeImg.getHeight());
+			if(powerUp != null) {
+				if(powerUp.isSpawned()) {
+					powerUp.erasePowerUp(powerUpGC);
+					powerUp.drawPowerUp(powerUpGC);
+				}
+				if(powerUp.isDestroyed()) {
+					powerUp.erasePowerUp(powerUpGC);
+					powerUp = null;
+				}
 			}
 			
 			brickIter = brickList.listIterator();
@@ -683,7 +723,8 @@ class GameEngine extends Thread{
 			if(ballList.isEmpty()) {
 				lives--;
 				if(lives > 0) {
-					GameInfo.getBall(this);
+					addBall();
+					ballList.get(0).drawBall(ballGC);
 					setCountdown();
 				}
 				else {
@@ -693,6 +734,14 @@ class GameEngine extends Thread{
 					UIGC.fillText("YOU LOSE", GAME_LENGTH/2 - 4*LEVEL_FONT_SIZE*0.5625, GAME_HEIGHT/2.0 - LOSE_FONT_SIZE/2.0);
 				}
 			}
+			
+			for(; displayedLives < lives; displayedLives++) {
+				UIGC.drawImage(lifeImg, GAME_LENGTH - (displayedLives+1)*(lifeImg.getWidth() + 3), 0);
+			}
+			
+			for(; displayedLives > lives; displayedLives--) {
+				UIGC.clearRect(GAME_LENGTH - (displayedLives)*(lifeImg.getWidth() + 3), 0, lifeImg.getWidth(), lifeImg.getHeight());
+			}
 	
 			paddle.erasePaddle(brickPaddleGC);
 			paddle.drawPaddle(brickPaddleGC);
@@ -701,20 +750,21 @@ class GameEngine extends Thread{
 			frameCount ++;
 		}
 		if(frameCount%200 == 0) {
+			frameCount -= 200;
 			System.out.println("200 frames printed");
 		}
 	}
 	
-	void levelCheck() {
+	void levelCheck(long curNanoTime) {
+		//long curTime = System.nanoTime();
 		if(status == WON) {
 			//////////////////////////////////////////// Record level details
 			gameTimer.stop();
 			if(mode != GameInfo.LEVEL_SELECT_MODE && level < GameInfo.LEVEL_COUNT) {
 				level++;
-				long curTime = System.nanoTime();
 				new AnimationTimer() {
 					public void handle(long currentNanoTime) {
-						if((currentNanoTime - curTime)/1000000000 >= 3) {
+						if((currentNanoTime - curNanoTime)/1000000000 >= 3) {
 							stop();
 							startLevel();
 						}
@@ -722,40 +772,44 @@ class GameEngine extends Thread{
 				}.start();
 			}
 			else {
+				status = INITIAL;
+				new AnimationTimer() {
+					public void handle(long currentNanoTime) {
+						if((currentNanoTime - curNanoTime)/1000000000 >= 3) {
+							stop();
+							// Game Over, Won
+							SceneController2 sc = new SceneController2();
+							try {
+								sc.switchToGameOver(canvasPane);
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+							
+						}
+					}
+				}.start();
 				//////////////////////////////////////////////// Record game details to LeaderBoard
-				
-				////////////////////////////////////////////////
-				
-				try {
-					Thread.sleep(1000);
-					SceneController2 sc = new SceneController2();
-					sc.switchToGameOver(ballCanvas);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
 			}
 		}
 		else if(status == LOST) {
+			new AnimationTimer() {
+				public void handle(long currentNanoTime) {
+					if((currentNanoTime - curNanoTime)/1000000000 >= 3) {
+						stop();
+						// Game Over, Lost
+						SceneController2 sc = new SceneController2();
+						try {
+							sc.switchToGameOver(canvasPane);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}.start();
 			//////////////////////////////////////////// Record level details
 			gameTimer.stop();
+			status = INITIAL;
 			//////////////////////////////////////////// Record game details to LeaderBoard
-			
-			////////////////////////////////////////////
-			try {
-				Thread.sleep(1000);					
-				SceneController2 sc = new SceneController2();
-				sc.switchToGameOver(ballCanvas);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
 		}
 	}
 };

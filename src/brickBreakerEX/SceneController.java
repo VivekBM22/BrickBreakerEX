@@ -35,7 +35,7 @@ public class SceneController {
 	}
 	
 	public void SwitchtoGameUI( ActionEvent e) {
-		GameUI.GameUI.begin(e);
+		game.GameUI.begin(e);
 	}
 	
 }

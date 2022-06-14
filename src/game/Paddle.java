@@ -1,4 +1,4 @@
-package GameUI;
+ package game;
 
 import Vector2D.Vector2D;
 import javafx.scene.canvas.GraphicsContext;
@@ -8,9 +8,10 @@ import javafx.scene.paint.Color;
 class Paddle {
 	final static int PADDLE_LENGTH = 130;
 	final static double PADDLE_LENGTH_2 = PADDLE_LENGTH/2.0;
-	final static int PADDLE_WIDTH = (Ball.BALL_SIZE + 1)/2;
-	final static double PADDLE_WIDTH_2 = PADDLE_WIDTH/2.0;
-	final static Color paddleColor = Color.PURPLE;
+	final static int PADDLE_HEIGHT = (Ball.BALL_SIZE + 1)/2;
+	final static double PADDLE_HEIGHT_2 = PADDLE_HEIGHT/2.0;
+	
+	private static Color paddleColor;
 	private static Image paddleImg;
 	
 	private int x;
@@ -30,10 +31,22 @@ class Paddle {
 	
 	static void setTheme(int themeNo) {
 		try {
-			paddleImg = new Image("Theme "+ themeNo + "/Paddle.png");
+			paddleImg = new Image("Theme " + themeNo + "/Paddle.png");
 		}
 		catch(IllegalArgumentException npe) {
 			paddleImg = null;
+			if(themeNo == 0)
+				paddleColor = Color.PURPLE;
+			else if(themeNo == 1)
+				paddleColor = Color.PURPLE;
+			else if(themeNo == 2)
+				paddleColor = Color.PURPLE;
+			else if(themeNo == 3)
+				paddleColor = Color.PURPLE;
+			else if(themeNo == 4)
+				paddleColor = Color.PURPLE;
+			else
+				paddleColor = Color.PURPLE;
 		}
 	}
 	
@@ -42,14 +55,8 @@ class Paddle {
 		this.y = y;
 		xCoord = x;
 		
-		AY = y - PADDLE_WIDTH/2.0;
-		CY = y + PADDLE_WIDTH/2.0;
-	}
-	
-	void setPos(int x, int y) {
-		this.x = x;
-		this.y = y;
-		xCoord = x;
+		AY = y - PADDLE_HEIGHT_2;
+		CY = y + PADDLE_HEIGHT_2;
 	}
 	
 	int getX() {
@@ -61,19 +68,19 @@ class Paddle {
 	}
 	
 	double getAX() {
-		return xCoord - PADDLE_LENGTH/2.0;
+		return xCoord - PADDLE_LENGTH_2;
 	}
 	
 	double getBX() {
-		return xCoord + PADDLE_LENGTH/2.0;
+		return xCoord + PADDLE_LENGTH_2;
 	}
 	
 	double getCX() {
-		return xCoord + PADDLE_LENGTH/2.0;
+		return xCoord + PADDLE_LENGTH_2;
 	}
 	
 	double getDX() {
-		return xCoord - PADDLE_LENGTH/2.0;
+		return xCoord - PADDLE_LENGTH_2;
 	}
 	
 	double getAY() {
@@ -160,18 +167,18 @@ class Paddle {
 
 	void drawPaddle(GraphicsContext gc) {
 		if(paddleImg != null) {
-			gc.drawImage(paddleImg, x - PADDLE_LENGTH_2, y - PADDLE_WIDTH_2);
+			gc.drawImage(paddleImg, x - PADDLE_LENGTH_2, y - PADDLE_HEIGHT_2);
 		}
 		else {
 			gc.setFill(paddleColor);
-			gc.fillRect(x - PADDLE_LENGTH_2, y - PADDLE_WIDTH_2, PADDLE_LENGTH, PADDLE_WIDTH);
+			gc.fillRect(x - PADDLE_LENGTH_2, y - PADDLE_HEIGHT_2, PADDLE_LENGTH, PADDLE_HEIGHT);
 		}
 		
 		oldX = x;
 	}
 	
 	void erasePaddle(GraphicsContext gc) {
-		gc.clearRect(oldX - PADDLE_LENGTH_2, y - PADDLE_WIDTH_2, PADDLE_LENGTH, PADDLE_WIDTH);
+		gc.clearRect(oldX - PADDLE_LENGTH_2, y - PADDLE_HEIGHT_2, PADDLE_LENGTH, PADDLE_HEIGHT);
 	}
 	
 	int updateCoords(long nanoTime) {
@@ -180,21 +187,21 @@ class Paddle {
 		double displace = velocity * time;
 		
 		if(moveLeft && !moveRight)
-			if(xCoord - displace > PADDLE_LENGTH/2.0) {
+			if(xCoord - displace > PADDLE_LENGTH_2) {
 				xCoord -= displace;
 				direction = -1;
 			}
 			else {
-				xCoord = PADDLE_LENGTH/2.0;
+				xCoord = PADDLE_LENGTH_2;
 				direction = -1;
 			}
 		else if(!moveLeft && moveRight)
-			if(xCoord + displace < GameEngine.GAME_LENGTH - PADDLE_LENGTH/2.0) {
+			if(xCoord + displace < GameEngine.GAME_LENGTH - PADDLE_LENGTH_2) {
 				xCoord += displace;
 				direction = 1;
 			}
 			else {
-				xCoord = GameEngine.GAME_LENGTH - PADDLE_LENGTH/2.0;
+				xCoord = GameEngine.GAME_LENGTH - PADDLE_LENGTH_2;
 				direction = 1;
 			}
 		

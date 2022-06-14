@@ -1,32 +1,25 @@
-package GameUI;
+package game;
 
 import Vector2D.Vector2D;
-import javafx.geometry.Rectangle2D;
-import javafx.scene.SnapshotParameters;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
 class Ball {
 	final static int BALL_SIZE = 27;
 	final static double BALL_SIZE_2 = BALL_SIZE/2.0;
-	final static Color ballColor = Color.DARKGOLDENROD;
 	
 	final static int NORMAL = 1;
 	final static int DESTROYED = 0;
 	
 	private static Image ballImg;
+	private static Color ballColor;
 	
 	private int x;
 	private int y;
 	private double xCoord;
 	private double yCoord;
 	private double angle;
-	
-	private int oldX;
-	private int oldY;
 	
 	private double velocity;
 	private double xVelocity;
@@ -44,6 +37,18 @@ class Ball {
 		}
 		catch(IllegalArgumentException npe) {
 			ballImg = null;
+			if(themeNo == 0)
+				ballColor = Color.DARKGOLDENROD;
+			else if(themeNo == 1)
+				ballColor = Color.DARKGOLDENROD;
+			else if(themeNo == 2)
+				ballColor = Color.DARKGOLDENROD;
+			else if(themeNo == 3)
+				ballColor = Color.DARKGOLDENROD;
+			else if(themeNo == 4)
+				ballColor = Color.DARKGOLDENROD;
+			else
+				ballColor = Color.DARKGOLDENROD;
 		}
 	}
 	
@@ -53,16 +58,9 @@ class Ball {
 		xCoord = x;
 		yCoord = y;
 		this.angle = angle;
-		oldX = x;
-		oldY = y;
 		xVelocity = 0;
 		yVelocity = 0;
 		status = NORMAL;
-	}
-	
-	void setPos(int X, int Y) {
-		x = X;
-		y = Y;
 	}
 	
 	void setVelocity(double velocity) {
@@ -122,25 +120,18 @@ class Ball {
 		status = DESTROYED;
 	}
 	
-	void move(double backtrack) {
-		xCoord += backtrack * Math.cos(angle);
-		yCoord -= backtrack * Math.sin(angle);
+	void move(double distance) {
+		xCoord += distance * Math.cos(angle);
+		yCoord -= distance * Math.sin(angle);
 		x = (int) Math.round(xCoord);
 		y = (int) Math.round(yCoord);
 	}
 	
-	void move(double backtrack, Vector2D direction) {
-		xCoord += backtrack * direction.x;
-		yCoord -= backtrack * direction.y;
+	void move(double distance, Vector2D direction) {
+		xCoord += distance * direction.x;
+		yCoord -= distance * direction.y;
 		x = (int) Math.round(xCoord);
 		y = (int) Math.round(yCoord);
-	}
-	
-	WritableImage getBallImg(Canvas canvas) {
-		SnapshotParameters snapParams = new SnapshotParameters();
-		snapParams.setViewport(new Rectangle2D(x - BALL_SIZE_2 - 1, y + BALL_SIZE_2 - 2, BALL_SIZE + 2, BALL_SIZE + 2));
-		snapParams.setFill(Color.TRANSPARENT);
-		return canvas.snapshot(snapParams, null);
 	}
 	
 	void drawBall(GraphicsContext gc) {
@@ -152,16 +143,8 @@ class Ball {
 		}
 		else {
 			gc.setFill(ballColor);
-			gc.setStroke(ballColor);
-			gc.stroke();
 			gc.fillOval(x - BALL_SIZE_2, y - BALL_SIZE_2, BALL_SIZE, BALL_SIZE);
 		}
-		oldX = x;
-		oldY = y;
-	}
-	
-	void eraseBall(GraphicsContext gc) {
-		gc.clearRect(oldX - BALL_SIZE_2, oldY - BALL_SIZE_2, BALL_SIZE, BALL_SIZE);
 	}
 	
 	void updateCoords(long nanoTime) {
