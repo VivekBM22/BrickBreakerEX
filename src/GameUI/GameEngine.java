@@ -1,10 +1,15 @@
-package brickBreakerEX;
+package GameUI;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import Vector2D.Vector2D;
 import javafx.animation.AnimationTimer;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.VPos;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
@@ -16,8 +21,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
+import javafx.stage.Stage;
 
-class GameEngine {
+class GameEngine extends Thread{
 	final static Color GAME_BG_COLOR = Color.LIGHTGREEN;
 	final static int GAME_LENGTH = 1280;
 	final static int GAME_HEIGHT = 720;
@@ -717,12 +723,39 @@ class GameEngine {
 			}
 			else {
 				//////////////////////////////////////////////// Record game details to LeaderBoard
+				
+				////////////////////////////////////////////////
+				
+				try {
+					Thread.sleep(1000);
+					SceneController2 sc = new SceneController2();
+					sc.switchToGameOver(ballCanvas);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		}
 		else if(status == LOST) {
 			//////////////////////////////////////////// Record level details
 			gameTimer.stop();
 			//////////////////////////////////////////// Record game details to LeaderBoard
+			
+			////////////////////////////////////////////
+			try {
+				Thread.sleep(1000);					
+				SceneController2 sc = new SceneController2();
+				sc.switchToGameOver(ballCanvas);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 	}
 };

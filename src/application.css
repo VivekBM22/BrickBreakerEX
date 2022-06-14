@@ -1,0 +1,36 @@
+//.button {
+//  -fx-background-color: #04AA6D;
+//  -fx-border: none;
+//  //-fx-fill: white;
+//
+//  -fx-color: white;
+//  -fx-padding: 20px;
+//  -fx-text-align: center;
+//  -fx-text-decoration: none;
+//  -fx-display: inline-block;
+//  -fx-font-size: 16px;
+//  -fx-margin: 4px 2px;
+//}
+//}
+
+//@font-face {
+//    font-family: 'Press Start 2P';
+//    src: url('/PressStart2P-Regular.ttf');
+//}
+
+//.label{
+//	-fx-font-family : 'Press Start 2P', cursive;
+//}
+//
+//.button{
+//	-fx-font-family : 'Press Start 2P', cursive;
+//}
+
+#obutton { 
+	-fx-background-radius: 80px;
+    -fx-border-radius: 80px;
+}
+//.button2 {border-radius: 4px;}
+//.button3 {border-radius: 8px;}
+//.button4 {border-radius: 12px;}
+//.button5 {border-radius: 50%;}
