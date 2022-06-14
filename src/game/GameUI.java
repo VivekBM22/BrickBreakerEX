@@ -43,7 +43,7 @@ public class GameUI extends Application {
 		gameEngine = new GameEngine();
 		gamePane.getChildren().add(gameEngine.getCanvasPane());
 		
-		gameEngine.startGame(GameInfo.TOURNAMENT_MODE, 1);
+		gameEngine.startGame(GameInfo.TIME_TRIAL_MODE, 1);
 		
 		/*ballImg = gameEngine.ball.getBallImg(ballCanvas);
 		ballImgReader = ballImg.getPixelReader();

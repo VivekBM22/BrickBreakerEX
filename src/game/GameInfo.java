@@ -6,10 +6,12 @@ import java.util.ListIterator;
 class BrickInfo {
 	int x;
 	int y;
+	int health;
 	double angle;
-	BrickInfo(int x, int y, double angle) {
+	BrickInfo(int x, int y, double angle, int health) {
 		this.x = x;
 		this.y = y;
+		this.health = health;
 		this.angle = angle;
 	}
 }
@@ -34,16 +36,17 @@ class GameInfo {
 	static final int TOURNAMENT_MODE = 0;
 	static final int TOURNAMENT_HARD_MODE = 1;
 	static final int LEVEL_SELECT_MODE = 2;
-	static final int TIME_TRIAL_MODE = 3;
+	static final int LEVEL_SELECT_HARD_MODE = 3;
+	static final int TIME_TRIAL_MODE = 4;
 	
 	private static ArrayList<BrickInfo> brickInfoList;
 	private static ListIterator<BrickInfo> brickInfoIter;
 	private static BallInfo ballInfo;
 	private static PaddleInfo paddleInfo;
 	
-	private static int brickHealth;
 	private static int ballDamage;
 	private static long powerUpSpawnTime;
+	private static long levelTime; // In seconds
 	
 	static {
 		readyGameInfo(TOURNAMENT_MODE, 1);
@@ -60,25 +63,36 @@ class GameInfo {
 		ballInfo.angle = -Math.PI/1.1;
 		
 		ballDamage = 1;
+		levelTime = -1;
 		
 		paddleInfo.x = GameEngine.GAME_LENGTH/2;
 		paddleInfo.y =  GameEngine.GAME_HEIGHT - 100 + (int)(Paddle.PADDLE_HEIGHT_2) + (int)(Ball.BALL_SIZE_2) + 2;
 		paddleInfo.velocity = 0.8;
 		
-		if(mode == TOURNAMENT_MODE) {
-			brickHealth = 3;
+		if(mode == TOURNAMENT_MODE || mode == LEVEL_SELECT_MODE || mode == TIME_TRIAL_MODE) {
 			powerUpSpawnTime = 3;
 			ballInfo.velocity = 0.5;
-			if(level == 1) {
-				bi = new BrickInfo(GameEngine.GAME_LENGTH/2, GameEngine.GAME_HEIGHT - 100 - 250,  Math.PI/6);
-				brickInfoList.add(bi);
-			}
 		}
-		else if(mode == TOURNAMENT_HARD_MODE) {
-			brickHealth = 5;
+		else {
 			powerUpSpawnTime = 15;
 			ballInfo.velocity = 0.5;
 		}
+		
+		if(mode == TIME_TRIAL_MODE) {
+			if(level == 1) {
+				levelTime = 15;
+				bi = new BrickInfo(GameEngine.GAME_LENGTH/2, GameEngine.GAME_HEIGHT - 100 - 250,  Math.PI/6, 3);
+				brickInfoList.add(bi);
+			}
+			
+		}
+		else {
+			if(level == 1) {
+				bi = new BrickInfo(GameEngine.GAME_LENGTH/2, GameEngine.GAME_HEIGHT - 100 - 250,  Math.PI/6, 3);
+				brickInfoList.add(bi);
+			}
+		}
+		
 	}
 	
 	static void getBall(GameEngine gameEngine) {
@@ -93,6 +107,7 @@ class GameInfo {
 		readyGameInfo(mode, level);
 		
 		gameEngine.setDamage(ballDamage);
+		gameEngine.setLevelTime(levelTime);
 		gameEngine.setPUSpawnTime(powerUpSpawnTime);
 		
 		Ball ball = new Ball(ballInfo.x, ballInfo.y, ballInfo.angle);
@@ -109,7 +124,7 @@ class GameInfo {
 		
 		while(brickInfoIter.hasNext()) {
 			brickInfo = brickInfoIter.next();
-			brick = new Brick(brickInfo.x, brickInfo.y, brickInfo.angle, brickHealth);
+			brick = new Brick(brickInfo.x, brickInfo.y, brickInfo.angle, brickInfo.health);
 			brickIter.add(brick);
 		}
 	}

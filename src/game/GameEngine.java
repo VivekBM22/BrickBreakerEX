@@ -57,6 +57,7 @@ class GameEngine {
 	private static Color bgColor;
 	
 	private long startTime;
+	private long levelTime;
 	private long lastNanoTime;
 	private long elapsedNanoTime;
 	private long totalPauseTime;
@@ -204,6 +205,10 @@ class GameEngine {
 	
 	void setDamage(int damage) {
 		this.damage = damage;
+	}
+	
+	void setLevelTime(long levelTime) {
+		this.levelTime = levelTime;
 	}
 	
 	void setPUSpawnTime(long powerUpSpawnTime) {
@@ -541,10 +546,6 @@ class GameEngine {
 		for(int i = 0; i < lives; i++)
 			UIGC.drawImage(lifeImg, GAME_LENGTH - (i+1)*(lifeImg.getWidth() + 3), 0);
 		
-		UIGC.setTextBaseline(VPos.TOP);
-		UIGC.setFill(LEVEL_FILL_COLOR);
-		UIGC.setFont(LEVEL_FONT);
-		
 		powerUpIDGenerator = new Random();
 		powerUpGC.clearRect(0, 0, GAME_LENGTH, GAME_HEIGHT);
 		powerUp = null;
@@ -564,10 +565,25 @@ class GameEngine {
 		while(brickIter.hasNext())
 			brickIter.next().drawBrick(brickPaddleGC);
 		
-		System.out.println("Level started");
-		
 		totalWaitTime = totalPauseTime = elapsedNanoTime = lastPUSpawnTime = frameCount = 0;
 		startTime = lastNanoTime = waitTime = System.nanoTime();
+		
+		UIGC.setTextBaseline(VPos.TOP);
+		UIGC.setFill(TIME_FILL_COLOR);
+		UIGC.setFont(TIME_FONT);
+		
+		String timeStr;
+		if(mode == GameInfo.TIME_TRIAL_MODE)
+			timeStr = getTimeString(levelTime*1000000000 - getGameTime(startTime));
+		else
+			timeStr = getTimeString(getGameTime(startTime));
+		UIGC.clearRect(0, 0, TIME_FONT_SIZE*4.8, TIME_FONT_SIZE);
+		UIGC.fillText(timeStr, 0, 0);
+		
+		UIGC.setFill(LEVEL_FILL_COLOR);
+		UIGC.setFont(LEVEL_FONT);
+		
+		System.out.println("Level started");
 		levelAnimTimer.start();
 	}
 	
@@ -683,7 +699,11 @@ class GameEngine {
 	
 	public void drawFrame(long curNanoTime) {
 		if(elapsedNanoTime > NANO_FRAME_TIME) {
-			String timeStr = getTimeString(getGameTime(curNanoTime));
+			String timeStr;
+			if(mode == GameInfo.TIME_TRIAL_MODE)
+				timeStr = getTimeString(levelTime*1000000000 - getGameTime(curNanoTime));
+			else
+				timeStr = getTimeString(getGameTime(curNanoTime));
 			UIGC.clearRect(0, 0, TIME_FONT_SIZE*4.8, TIME_FONT_SIZE);
 			UIGC.fillText(timeStr, 0, 0);
 			
@@ -710,9 +730,9 @@ class GameEngine {
 			}
 			if(brickList.isEmpty()) {
 				status = WON;
-				UIGC.setFill(WIN_FILL_COLOR);
+				/*UIGC.setFill(WIN_FILL_COLOR);
 				UIGC.setFont(WIN_FONT);
-				UIGC.fillText("YOU WIN", GAME_LENGTH/2 - 3.5*LEVEL_FONT_SIZE*0.5625, GAME_HEIGHT/2.0 - WIN_FONT_SIZE/2.0);
+				UIGC.fillText("YOU WIN", GAME_LENGTH/2 - 3.5*LEVEL_FONT_SIZE*0.5625, GAME_HEIGHT/2.0 - WIN_FONT_SIZE/2.0);*/
 			}
 			
 			ballIter = ballList.listIterator();
@@ -734,10 +754,28 @@ class GameEngine {
 				}
 				else {
 					status = LOST;
-					UIGC.setFill(LOSE_FILL_COLOR);
+					/*UIGC.setFill(LOSE_FILL_COLOR);
 					UIGC.setFont(LOSE_FONT);
-					UIGC.fillText("YOU LOSE", GAME_LENGTH/2 - 4*LEVEL_FONT_SIZE*0.5625, GAME_HEIGHT/2.0 - LOSE_FONT_SIZE/2.0);
+					UIGC.fillText("YOU LOSE", GAME_LENGTH/2 - 4*LEVEL_FONT_SIZE*0.5625, GAME_HEIGHT/2.0 - LOSE_FONT_SIZE/2.0);*/
 				}
+			}
+			if(levelTime - getGameTime(curNanoTime)/1000000000 <= 1) {
+				status = LOST;
+				/*UIGC.setFill(LOSE_FILL_COLOR);
+				UIGC.setFont(LOSE_FONT);
+				UIGC.fillText("YOU LOSE", GAME_LENGTH/2 - 4*LEVEL_FONT_SIZE*0.5625, GAME_HEIGHT/2.0 - LOSE_FONT_SIZE/2.0);*/
+			}
+			
+			if(status == WON) {
+				UIGC.setFill(WIN_FILL_COLOR);
+				UIGC.setFont(WIN_FONT);
+				UIGC.fillText("YOU WIN", GAME_LENGTH/2 - 3.5*LEVEL_FONT_SIZE*0.5625, GAME_HEIGHT/2.0 - WIN_FONT_SIZE/2.0);
+			}
+			else if(status == LOST) {
+				UIGC.setFill(LOSE_FILL_COLOR);
+				UIGC.setFont(LOSE_FONT);
+				UIGC.fillText("YOU LOSE", GAME_LENGTH/2 - 4*LEVEL_FONT_SIZE*0.5625, GAME_HEIGHT/2.0 - LOSE_FONT_SIZE/2.0);
+				
 			}
 			
 			for(; displayedLives < lives; displayedLives++) {
