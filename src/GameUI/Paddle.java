@@ -1,4 +1,4 @@
-package brickBreakerEX;
+package GameUI;
 
 import Vector2D.Vector2D;
 import javafx.scene.canvas.GraphicsContext;

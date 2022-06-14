@@ -1,4 +1,4 @@
-package brickBreakerEX;
+package GameUI;
 
 import java.util.ArrayList;
 import java.util.ListIterator;

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="brickBreakerEX.SceneController">
+   <children>
+      <AnchorPane layoutX="-2.0" layoutY="-11.0" prefHeight="800.0" prefWidth="1300.0">
+         <children>
+            <Button layoutX="415.0" layoutY="375.0" mnemonicParsing="false" onAction="#SwitchtoGameUI" prefHeight="70.0" prefWidth="450.0" text="Standard">
+               <font>
+                  <Font size="18.0" />
+               </font></Button>
+            <Button layoutX="415.0" layoutY="575.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="450.0" text="Hard Mode">
+               <font>
+                  <Font size="18.0" />
+               </font></Button>
+            <Label alignment="CENTER" layoutX="221.0" layoutY="104.0" prefHeight="215.0" prefWidth="840.0" text="Game Modes">
+               <font>
+                  <Font size="72.0" />
+               </font>
+            </Label>
+            <Button fx:id="obutton" layoutX="79.0" layoutY="70.0" mnemonicParsing="false" onAction="#SwitchtoScene1" prefHeight="80.0" prefWidth="80.0" text="&lt;-">
+               <font>
+                  <Font size="24.0" />
+               </font>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets></Button>
+            <Button layoutX="415.0" layoutY="475.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="450.0" text="Time Trial">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Button>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
