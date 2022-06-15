@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Random;
 import Vector2D.Vector2D;
+import highScore.HighScore;
 import javafx.animation.AnimationTimer;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
@@ -85,6 +86,9 @@ class GameEngine {
 	private int damage;
 	private int displayedLives = 3;
 	
+	LevelInfo[] levelInfo;
+	int livesLost;
+	
 	StackPane canvasPane;
 	GraphicsContext bgGC, ballGC, brickPaddleGC, powerUpGC, UIGC;
 	Canvas bgCanvas, ballCanvas, brickPaddleCanvas, powerUpCanvas, UICanvas;
@@ -116,6 +120,7 @@ class GameEngine {
 	
 	GameEngine() {
 		status = INITIAL;
+		levelInfo = new LevelInfo[5];
 		
 		canvasPane = new StackPane();
 		
@@ -552,6 +557,7 @@ class GameEngine {
 		
 		GameInfo.getDetails(this, mode, level);
 		damage = 1;
+		livesLost = 0;
 		
 		ballGC.clearRect(0, 0, GAME_LENGTH, GAME_HEIGHT);
 		brickPaddleGC.clearRect(0, 0, GAME_LENGTH, GAME_HEIGHT);
@@ -728,12 +734,8 @@ class GameEngine {
 					
 				}
 			}
-			if(brickList.isEmpty()) {
+			if(brickList.isEmpty())
 				status = WON;
-				/*UIGC.setFill(WIN_FILL_COLOR);
-				UIGC.setFont(WIN_FONT);
-				UIGC.fillText("YOU WIN", GAME_LENGTH/2 - 3.5*LEVEL_FONT_SIZE*0.5625, GAME_HEIGHT/2.0 - WIN_FONT_SIZE/2.0);*/
-			}
 			
 			ballIter = ballList.listIterator();
 			ballGC.clearRect(0, 0, GAME_LENGTH, GAME_HEIGHT);
@@ -747,24 +749,17 @@ class GameEngine {
 			}
 			if(ballList.isEmpty()) {
 				lives--;
+				livesLost++;
 				if(lives > 0) {
 					addBall();
 					ballList.get(0).drawBall(ballGC);
 					setCountdown();
 				}
-				else {
+				else
 					status = LOST;
-					/*UIGC.setFill(LOSE_FILL_COLOR);
-					UIGC.setFont(LOSE_FONT);
-					UIGC.fillText("YOU LOSE", GAME_LENGTH/2 - 4*LEVEL_FONT_SIZE*0.5625, GAME_HEIGHT/2.0 - LOSE_FONT_SIZE/2.0);*/
-				}
 			}
-			if(levelTime - getGameTime(curNanoTime)/1000000000 <= 1) {
+			if(mode == GameInfo.TIME_TRIAL_MODE && levelTime - getGameTime(curNanoTime)/1000000000.0 <= 0.5)
 				status = LOST;
-				/*UIGC.setFill(LOSE_FILL_COLOR);
-				UIGC.setFont(LOSE_FONT);
-				UIGC.fillText("YOU LOSE", GAME_LENGTH/2 - 4*LEVEL_FONT_SIZE*0.5625, GAME_HEIGHT/2.0 - LOSE_FONT_SIZE/2.0);*/
-			}
 			
 			if(status == WON) {
 				UIGC.setFill(WIN_FILL_COLOR);
@@ -799,9 +794,10 @@ class GameEngine {
 	}
 	
 	void levelCheck(long curNanoTime) {
-		//long curTime = System.nanoTime();
 		if(status == WON) {
-			//////////////////////////////////////////// Record level details
+			if(mode != GameInfo.LEVEL_SELECT_MODE && level <= GameInfo.LEVEL_COUNT)
+				levelInfo[level - 1] = new LevelInfo(livesLost, getGameTime(curNanoTime)/1000000);
+				
 			gameTimer.stop();
 			if(mode != GameInfo.LEVEL_SELECT_MODE && level < GameInfo.LEVEL_COUNT) {
 				level++;
@@ -820,18 +816,21 @@ class GameEngine {
 					public void handle(long currentNanoTime) {
 						if((currentNanoTime - curNanoTime)/1000000000 >= 3) {
 							stop();
-							// Game Over, Won
+							
+							if(mode != GameInfo.LEVEL_SELECT_MODE && mode != GameInfo.LEVEL_SELECT_HARD_MODE) {
+								System.out.println(HighScore.calcScore(levelInfo, mode));
+								////////////////////////////////////// Record game details to LeaderBoard
+							}
 							SceneController2 sc = new SceneController2();
 							try {
 								sc.switchToGameOver(canvasPane);
-							} catch (IOException e) {
+							}
+							catch (IOException e) {
 								e.printStackTrace();
 							}
-							
 						}
 					}
 				}.start();
-				//////////////////////////////////////////////// Record game details to LeaderBoard
 			}
 		}
 		else if(status == LOST) {
@@ -839,7 +838,6 @@ class GameEngine {
 				public void handle(long currentNanoTime) {
 					if((currentNanoTime - curNanoTime)/1000000000 >= 3) {
 						stop();
-						// Game Over, Lost
 						SceneController2 sc = new SceneController2();
 						try {
 							sc.switchToGameOver(canvasPane);

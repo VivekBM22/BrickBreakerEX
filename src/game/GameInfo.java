@@ -3,41 +3,15 @@ package game;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
-class BrickInfo {
-	int x;
-	int y;
-	int health;
-	double angle;
-	BrickInfo(int x, int y, double angle, int health) {
-		this.x = x;
-		this.y = y;
-		this.health = health;
-		this.angle = angle;
-	}
-}
-
-class BallInfo {
-	int x;
-	int y;
-	double angle;
-	double velocity;
-}
-
-class PaddleInfo {
-	int x;
-	int y;
-	double velocity;
-}
-
-class GameInfo {
-	static final int THEME_COUNT = 5;
-	static final int LEVEL_COUNT = 5;
+public class GameInfo {
+	public static final int LEVEL_COUNT = 5;
+	public static final int THEME_COUNT = 5;
 	
-	static final int TOURNAMENT_MODE = 0;
-	static final int TOURNAMENT_HARD_MODE = 1;
-	static final int LEVEL_SELECT_MODE = 2;
-	static final int LEVEL_SELECT_HARD_MODE = 3;
-	static final int TIME_TRIAL_MODE = 4;
+	public static final int TOURNAMENT_MODE = 0;
+	public static final int TOURNAMENT_HARD_MODE = 1;
+	public static final int LEVEL_SELECT_MODE = 2;
+	public static final int LEVEL_SELECT_HARD_MODE = 3;
+	public static final int TIME_TRIAL_MODE = 4;
 	
 	private static ArrayList<BrickInfo> brickInfoList;
 	private static ListIterator<BrickInfo> brickInfoIter;
@@ -70,11 +44,11 @@ class GameInfo {
 		paddleInfo.velocity = 0.8;
 		
 		if(mode == TOURNAMENT_MODE || mode == LEVEL_SELECT_MODE || mode == TIME_TRIAL_MODE) {
-			powerUpSpawnTime = 3;
+			powerUpSpawnTime = 15;
 			ballInfo.velocity = 0.5;
 		}
 		else {
-			powerUpSpawnTime = 15;
+			powerUpSpawnTime = 25;
 			ballInfo.velocity = 0.5;
 		}
 		
@@ -92,7 +66,6 @@ class GameInfo {
 				brickInfoList.add(bi);
 			}
 		}
-		
 	}
 	
 	static void getBall(GameEngine gameEngine) {

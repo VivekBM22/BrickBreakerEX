@@ -19,8 +19,10 @@ class PowerUp {
 	private static final int SPAWNED = 0;
 	private static final int ACTIVE = 1;
 	private static final int DESTROYED = 2;
-	
+
+	private static final int LU_DURATION = 5000;
 	private static final int PSU_DURATION = 5000;
+	private static final int EB_DURATION = 5000;
 	private static final int DU_DURATION = 5000;
 	private static final int BOOSTED_DAMAGE = 2;
 	private static final double PADDLE_SPEED_INC = 0.2;
@@ -85,11 +87,11 @@ class PowerUp {
 			powerUpColor = POWERUP_COLOR[ID];
 		
 		if(ID == LIFE_UP)
-			duration = -1;
+			duration = LU_DURATION;
 		else if(ID == PADDLE_SPEED_UP)
 			duration = PSU_DURATION;
 		else if(ID == EXTRA_BALL)
-			duration = -1;
+			duration = EB_DURATION;
 		else if(ID == DAMAGE_UP)
 			duration = DU_DURATION;
 		
