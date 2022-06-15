@@ -29,7 +29,6 @@ public class GameUI extends Application {
 		
 		Scene scene  = new Scene(root, 1300, 800);
 		primaryStage.setScene(scene);
-		primaryStage.setTitle("Test Application 1");
 		primaryStage.show();
 		
 		root.getChildren().add(gamePane);
