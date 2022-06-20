@@ -19,12 +19,12 @@
 }
 
 .label{
-	-fx-font-family : 'Press Start 2P', cursive;
+	-fx-font-family : 'Press Start 2P';
 }
 
-//.button{
-//	-fx-font-family : 'Press Start 2P', cursive;
-//}
+.button{
+	-fx-font-family : 'Press Start 2P';
+}
 
 #obutton { 
 	-fx-background-radius: 80px;
