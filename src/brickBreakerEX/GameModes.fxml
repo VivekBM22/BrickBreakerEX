@@ -8,29 +8,37 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="brickBreakerEX.SceneController">
    <children>
-      <AnchorPane layoutX="-2.0" layoutY="-11.0" prefHeight="800.0" prefWidth="1300.0">
+      <AnchorPane layoutX="-2.0" layoutY="-11.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1300.0">
          <children>
-            <Button layoutX="415.0" layoutY="375.0" mnemonicParsing="false" onAction="#SwitchtoGameUI" prefHeight="70.0" prefWidth="450.0" text="Standard">
+            <Button layoutX="200.0" layoutY="450.0" mnemonicParsing="false" prefHeight="80.0" prefWidth="450.0" text="Tornament" AnchorPane.bottomAnchor="270.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="700.0" AnchorPane.topAnchor="450.0">
                <font>
                   <Font size="18.0" />
-               </font></Button>
-            <Button layoutX="415.0" layoutY="575.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="450.0" text="Hard Mode">
+               </font>
+            </Button>
+            <Button layoutX="740.0" layoutY="450.0" mnemonicParsing="false" prefHeight="80.0" prefWidth="450.0" text="Tornament EX" AnchorPane.bottomAnchor="270.0" AnchorPane.leftAnchor="690.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="450.0">
                <font>
                   <Font size="18.0" />
-               </font></Button>
-            <Label alignment="CENTER" layoutX="221.0" layoutY="104.0" prefHeight="215.0" prefWidth="840.0" text="Game Modes">
+               </font>
+            </Button>
+            <Label alignment="CENTER" layoutX="120.0" layoutY="150.0" prefHeight="250.0" prefWidth="1100.0" text="Game Modes" AnchorPane.bottomAnchor="420.0" AnchorPane.leftAnchor="120.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="130.0">
                <font>
                   <Font size="72.0" />
                </font>
             </Label>
-            <Button fx:id="obutton" layoutX="79.0" layoutY="70.0" mnemonicParsing="false" onAction="#SwitchtoMenu" prefHeight="80.0" prefWidth="80.0" text="&lt;-">
+            <Button fx:id="obutton" layoutX="45.0" layoutY="45.0" mnemonicParsing="false" onAction="#SwitchtoMenu" prefHeight="80.0" prefWidth="80.0" text="&lt;-" AnchorPane.bottomAnchor="660.0" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="1160.0" AnchorPane.topAnchor="60.0">
                <font>
                   <Font size="24.0" />
                </font>
                <opaqueInsets>
                   <Insets />
-               </opaqueInsets></Button>
-            <Button layoutX="415.0" layoutY="475.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="450.0" text="Time Trial">
+               </opaqueInsets>
+            </Button>
+            <Button layoutX="200.0" layoutY="590.0" mnemonicParsing="false" prefHeight="80.0" prefWidth="450.0" text="Time Trial" AnchorPane.bottomAnchor="130.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="700.0" AnchorPane.topAnchor="590.0">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Button>
+            <Button layoutX="740.0" layoutY="600.0" mnemonicParsing="false" onAction="#SwitchtoLevelSelect" prefHeight="80.0" prefWidth="450.0" text="Level Select" AnchorPane.bottomAnchor="130.0" AnchorPane.leftAnchor="690.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="590.0">
                <font>
                   <Font size="18.0" />
                </font>
