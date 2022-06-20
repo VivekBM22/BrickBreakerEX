@@ -13,18 +13,18 @@
 //}
 //}
 
-//@font-face {
-//    font-family: 'Press Start 2P';
-//    src: url('/PressStart2P-Regular.ttf');
-//}
+@font-face {
+    font-family: 'Press Start 2P';
+    src: url('fonts/PressStart2P-Regular.ttf');
+}
 
-//.label{
-//	-fx-font-family : 'Press Start 2P', cursive;
-//}
-//
-//.button{
-//	-fx-font-family : 'Press Start 2P', cursive;
-//}
+.label{
+	-fx-font-family : 'Press Start 2P';
+}
+
+.button{
+	-fx-font-family : 'Press Start 2P';
+}
 
 #obutton { 
 	-fx-background-radius: 80px;

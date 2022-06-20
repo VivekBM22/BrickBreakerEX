@@ -10,23 +10,24 @@
    <children>
       <AnchorPane layoutX="-3.0" layoutY="-4.0" prefHeight="800.0" prefWidth="1300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Button layoutX="415.0" layoutY="375.0" mnemonicParsing="false" onAction="#SwitchtoGameModes" prefHeight="70.0" prefWidth="450.0" text="Game Modes">
+            <Button mnemonicParsing="false" onAction="#SwitchtoGameModes" prefHeight="70.0" prefWidth="450.0" text="Start" AnchorPane.bottomAnchor="290.0" AnchorPane.leftAnchor="415.0" AnchorPane.rightAnchor="435.0">
                <font>
                   <Font size="18.0" />
                </font></Button>
-            <Label alignment="CENTER" layoutX="99.0" layoutY="115.0" prefHeight="215.0" prefWidth="1100.0" text="BRICK BREAKER EX">
+            <Label alignment="CENTER" layoutX="50.0" layoutY="115.0" prefHeight="300.0" prefWidth="1200.0" text="BRICK BREAKER EX" AnchorPane.bottomAnchor="410.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="110.0">
                <font>
                   <Font size="72.0" />
                </font>
             </Label>
-            <Button layoutX="415.0" layoutY="575.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="450.0" text="Exit">
+            <Button mnemonicParsing="false" prefHeight="70.0" prefWidth="450.0" text="Exit" AnchorPane.bottomAnchor="90.0" AnchorPane.leftAnchor="415.0" AnchorPane.rightAnchor="435.0">
                <font>
                   <Font size="18.0" />
                </font></Button>
-            <Button layoutX="415.0" layoutY="475.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="450.0" text="LeaderBoard">
+            <Button mnemonicParsing="false" prefHeight="70.0" prefWidth="450.0" text="LeaderBoard" AnchorPane.bottomAnchor="190.0" AnchorPane.leftAnchor="415.0" AnchorPane.rightAnchor="435.0">
                <font>
                   <Font size="18.0" />
                </font></Button>
+            <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" text="Music" AnchorPane.bottomAnchor="80.0" AnchorPane.rightAnchor="150.0" />
          </children>
       </AnchorPane>
       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
