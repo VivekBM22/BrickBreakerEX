@@ -103,6 +103,11 @@ class Paddle {
 		return velocity;
 	}
 	
+	void resetX(double x) {
+		this.xCoord = x;
+		this.x = (int) Math.round(x);
+	}
+	
 	void setVelocity(double velocity) {
 		this.velocity = velocity;
 	}

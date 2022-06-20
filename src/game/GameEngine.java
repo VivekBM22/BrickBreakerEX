@@ -92,7 +92,7 @@ class GameEngine {
 	StackPane canvasPane;
 	GraphicsContext bgGC, ballGC, brickPaddleGC, powerUpGC, UIGC;
 	Canvas bgCanvas, ballCanvas, brickPaddleCanvas, powerUpCanvas, UICanvas;
-	AnimationTimer gameTimer, waitTimer, levelAnimTimer;
+	AnimationTimer gameTimer, waitTimer, levelTimer;
 	
 	WritableImage ballImg;
 	PixelReader ballImgReader;
@@ -182,7 +182,7 @@ class GameEngine {
 			}
 		};
 			
-		this.levelAnimTimer = new AnimationTimer() {
+		this.levelTimer = new AnimationTimer() {
 			public void handle(long currentNanoTime) {
 				String displayStr = "LEVEL " + level;
 				
@@ -476,7 +476,7 @@ class GameEngine {
 	}
 	
 	boolean paddlePowerUpCollide() {
-		/* Perform Axis-Aligned Bounding-Box collision test*/
+		// Perform Axis-Aligned Bounding-Box collision test
 		if (powerUp.getX() < paddle.getBX() && powerUp.getX() + PowerUp.POWERUP_LENGTH > paddle.getAX() &&  powerUp.getY() < paddle.getCY() && powerUp.getY() + PowerUp.POWERUP_HEIGHT > paddle.getAY())
 		        return true;
 		
@@ -590,7 +590,7 @@ class GameEngine {
 		UIGC.setFont(LEVEL_FONT);
 		
 		System.out.println("Level started");
-		levelAnimTimer.start();
+		levelTimer.start();
 	}
 	
 	void startGame(int mode, int level) {
@@ -751,6 +751,7 @@ class GameEngine {
 				lives--;
 				livesLost++;
 				if(lives > 0) {
+					GameInfo.resetPaddle(this);
 					addBall();
 					ballList.get(0).drawBall(ballGC);
 					setCountdown();
@@ -758,6 +759,10 @@ class GameEngine {
 				else
 					status = LOST;
 			}
+	
+			paddle.erasePaddle(brickPaddleGC);
+			paddle.drawPaddle(brickPaddleGC);
+			
 			if(mode == GameInfo.TIME_TRIAL_MODE && levelTime - getGameTime(curNanoTime)/1000000000.0 <= 0.5)
 				status = LOST;
 			
@@ -780,9 +785,6 @@ class GameEngine {
 			for(; displayedLives > lives; displayedLives--) {
 				UIGC.clearRect(GAME_LENGTH - (displayedLives)*(lifeImg.getWidth() + 3), 0, lifeImg.getWidth(), lifeImg.getHeight());
 			}
-	
-			paddle.erasePaddle(brickPaddleGC);
-			paddle.drawPaddle(brickPaddleGC);
 			
 			elapsedNanoTime -= NANO_FRAME_TIME;
 			frameCount ++;
@@ -834,6 +836,9 @@ class GameEngine {
 			}
 		}
 		else if(status == LOST) {
+			gameTimer.stop();
+			status = INITIAL;
+			
 			new AnimationTimer() {
 				public void handle(long currentNanoTime) {
 					if((currentNanoTime - curNanoTime)/1000000000 >= 3) {
@@ -847,10 +852,6 @@ class GameEngine {
 					}
 				}
 			}.start();
-			//////////////////////////////////////////// Record level details
-			gameTimer.stop();
-			status = INITIAL;
-			//////////////////////////////////////////// Record game details to LeaderBoard
 		}
 	}
 };

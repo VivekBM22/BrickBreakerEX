@@ -9,17 +9,17 @@
    <children>
       <AnchorPane layoutX="-10.0" layoutY="-13.0" prefHeight="800.0" prefWidth="1300.0">
          <children>
-            <Label alignment="CENTER" layoutX="430.0" layoutY="105.0" prefHeight="350.0" prefWidth="1000.0" text="Game Over" AnchorPane.bottomAnchor="320.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="110.0">
+            <Label alignment="CENTER" layoutX="430.0" layoutY="105.0" prefHeight="350.0" prefWidth="500.0" text="Game Over">
                <font>
                   <Font size="96.0" />
                </font>
             </Label>
-            <Button layoutX="450.0" layoutY="500.0" mnemonicParsing="false" onAction="#SwitchtoMenu" prefHeight="70.0" prefWidth="470.0" text="Return to Menu" AnchorPane.bottomAnchor="230.0" AnchorPane.leftAnchor="415.0" AnchorPane.rightAnchor="415.0">
+            <Button layoutX="450.0" layoutY="500.0" mnemonicParsing="false" onAction="#SwitchtoMenu" prefHeight="70.0" prefWidth="470.0" text="Return to Menu">
                <font>
                   <Font size="18.0" />
                </font>
             </Button>
-            <Button layoutX="450.0" layoutY="600.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="470.0" text="Exit" AnchorPane.bottomAnchor="130.0" AnchorPane.leftAnchor="415.0" AnchorPane.rightAnchor="415.0">
+            <Button layoutX="450.0" layoutY="600.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="470.0" text="Exit">
                <font>
                   <Font size="18.0" />
                </font>

@@ -32,20 +32,20 @@ public class GameInfo {
 		paddleInfo = new PaddleInfo();
 		brickInfoList = new ArrayList<BrickInfo>();
 		
-		ballInfo.x = GameEngine.GAME_LENGTH/2 + 400;
-		ballInfo.y = GameEngine.GAME_HEIGHT - 500;
-		ballInfo.angle = -Math.PI/1.1;
-		
 		ballDamage = 1;
 		levelTime = -1;
 		
 		paddleInfo.x = GameEngine.GAME_LENGTH/2;
-		paddleInfo.y =  GameEngine.GAME_HEIGHT - 100 + (int)(Paddle.PADDLE_HEIGHT_2) + (int)(Ball.BALL_SIZE_2) + 2;
-		paddleInfo.velocity = 0.8;
+		paddleInfo.y =  GameEngine.GAME_HEIGHT - 100;
+		paddleInfo.velocity = 0.6;
+		
+		ballInfo.x = paddleInfo.x + 100;
+		ballInfo.y = GameEngine.GAME_HEIGHT - 200;
+		ballInfo.angle = -Math.PI*0.75;
 		
 		if(mode == TOURNAMENT_MODE || mode == LEVEL_SELECT_MODE || mode == TIME_TRIAL_MODE) {
 			powerUpSpawnTime = 15;
-			ballInfo.velocity = 0.5;
+			ballInfo.velocity = 0.4;
 		}
 		else {
 			powerUpSpawnTime = 25;
@@ -55,14 +55,173 @@ public class GameInfo {
 		if(mode == TIME_TRIAL_MODE) {
 			if(level == 1) {
 				levelTime = 15;
-				bi = new BrickInfo(GameEngine.GAME_LENGTH/2, GameEngine.GAME_HEIGHT - 100 - 250,  Math.PI/6, 3);
+				bi = new BrickInfo(GameEngine.GAME_LENGTH/2, GameEngine.GAME_HEIGHT - 100 - 250, 0, 3);
 				brickInfoList.add(bi);
 			}
 			
 		}
 		else {
 			if(level == 1) {
-				bi = new BrickInfo(GameEngine.GAME_LENGTH/2, GameEngine.GAME_HEIGHT - 100 - 250,  Math.PI/6, 3);
+				//Row 5
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 2, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 3, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 4, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 5, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 6, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 7, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 8, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 9, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 300, 0, 3);
+				brickInfoList.add(bi);
+
+				//Row 4
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 2*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 2*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 2, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 2*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 3, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 2*(Brick.BRICK_HEIGHT + 5)- 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 4, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 2*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 5, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 2*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 6, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 2*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 7, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 2*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 8, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 2*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 9, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 2*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+
+				//Row 3
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 4*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 4*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 2, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 4*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 3, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 4*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 4, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 4*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 5, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 4*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 6, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 4*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 7, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 4*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 8, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 4*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 9, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 4*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+
+				//Row 2
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 6*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 6*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 2, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 6*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 3, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 6*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 4, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 6*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 5, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 6*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 6, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 6*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 7, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 6*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 8, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 6*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 9, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 6*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+
+				//Row 3
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 8*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 8*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 2, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 8*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 3, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 8*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 4, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 8*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 5, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 8*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 6, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 8*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 7, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 8*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 8, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 8*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 9, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 8*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+			}
+			else if(level == 2) {
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 2, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 3, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 4, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 5, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 6, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 7, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 8, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 9, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 300, 0, 3);
+				brickInfoList.add(bi);
+				
+				bi = new BrickInfo(GameEngine.GAME_LENGTH/2 - 100, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 2*(Brick.BRICK_HEIGHT + 5) - 325,  Math.PI/4, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo(GameEngine.GAME_LENGTH/2 + 100, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 2*(Brick.BRICK_HEIGHT + 5) - 325,  -Math.PI/4, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo(GameEngine.GAME_LENGTH/2 - 100, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 4*(Brick.BRICK_HEIGHT + 5) - 375,  -Math.PI/4, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo(GameEngine.GAME_LENGTH/2 + 100, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 4*(Brick.BRICK_HEIGHT + 5) - 375,  Math.PI/4, 3);
+				brickInfoList.add(bi);
+				
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 9*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 9*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 2, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 9*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 3, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 9*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 4, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 9*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 5, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 9*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 6, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 9*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 7, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 9*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 8, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 9*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
+				brickInfoList.add(bi);
+				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2 + Brick.BRICK_LENGTH * 9, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 9*(Brick.BRICK_HEIGHT + 5) - 300, 0, 3);
 				brickInfoList.add(bi);
 			}
 		}
@@ -72,6 +231,10 @@ public class GameInfo {
 		Ball ball = new Ball(ballInfo.x, ballInfo.y, ballInfo.angle);
 		ball.setVelocity(ballInfo.velocity);
 		gameEngine.ballList.add(ball);
+	}
+	
+	static void resetPaddle(GameEngine gameEngine) {
+		gameEngine.paddle.resetX(paddleInfo.x);
 	}
 	
 	static void getDetails(GameEngine gameEngine, final int mode, final int level) {
