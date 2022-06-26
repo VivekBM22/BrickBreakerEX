@@ -392,9 +392,9 @@ class GameEngine {
 			backtrack = overlap / Math.abs(mtv.dot(ball.getVelocityUnitVector()));
 			if(ballMaxProj - paddleMinProj < overlap) {
 				reflect = false;
-				overlap = ballMaxProj - paddleMinProj;
+				/*overlap = ballMaxProj - paddleMinProj;
 				mtv = axis1.getReversed();
-				backtrack = overlap;
+				backtrack = overlap;*/
 			}
 		}
 		
@@ -409,15 +409,15 @@ class GameEngine {
 		else {
 			if(paddleMaxProj - ballMinProj < overlap) {
 				reflect = false;
-				overlap = paddleMaxProj - ballMinProj;
+				/*overlap = paddleMaxProj - ballMinProj;
 				mtv = axis2;
-				backtrack = overlap;
+				backtrack = overlap;*/
 			}
 			if(ballMaxProj - paddleMinProj < overlap) {
 				reflect = false;
-				overlap = ballMaxProj - paddleMinProj;
+				/*overlap = ballMaxProj - paddleMinProj;
 				mtv = axis2.getReversed();
-				backtrack = overlap;
+				backtrack = overlap;*/
 			}
 		}
 		
@@ -450,9 +450,9 @@ class GameEngine {
 		else {
 			if(ballMaxProj - paddleMinProj < overlap) {
 				reflect = false;
-				overlap = ballMaxProj - paddleMinProj;
+				/*overlap = ballMaxProj - paddleMinProj;
 				mtv = axis3;
-				backtrack = -overlap;
+				backtrack = -overlap;*/
 			}
 		}
 		
@@ -468,8 +468,10 @@ class GameEngine {
 			
 			return 1;
 		}
-		else
-			ball.move(backtrack, mtv);
+		else {
+			//ball.move(backtrack, mtv);
+			ball.setY(paddle.getY() + (int)(Ball.BALL_SIZE_2 + Paddle.PADDLE_HEIGHT_2));
+		}
 		System.out.println("MTV: " + mtv);
 
 		return -1; //0: No Collision, 1: Reflect, -1: No Reflect
@@ -679,6 +681,7 @@ class GameEngine {
 				{
 					System.out.println("Ball collided with Brick having backtrack: " + backtrack);
 					brick.reduceHealth(damage);
+					brickIter = brickList.listIterator();
 				}
 			}
 			

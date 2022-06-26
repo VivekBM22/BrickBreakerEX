@@ -62,6 +62,7 @@ public class GameInfo {
 		}
 		else {
 			if(level == 1) {
+				
 				//Row 5
 				bi = new BrickInfo((int)Brick.BRICK_LENGTH_2, GameEngine.GAME_HEIGHT - (int)Brick.BRICK_HEIGHT_2 - 300, 0, 3);
 				brickInfoList.add(bi);
@@ -228,7 +229,7 @@ public class GameInfo {
 	}
 	
 	static void getBall(GameEngine gameEngine) {
-		Ball ball = new Ball(ballInfo.x, ballInfo.y, ballInfo.angle);
+		Ball ball = new Ball(ballInfo.x - paddleInfo.x + gameEngine.paddle.getX(), ballInfo.y, ballInfo.angle);
 		ball.setVelocity(ballInfo.velocity);
 		gameEngine.ballList.add(ball);
 	}

@@ -69,6 +69,16 @@ class Ball {
 		yVelocity = velocity * Math.sin(angle);
 	}
 	
+	void setX(int x) {
+		this.x = x;
+		xCoord = x;
+	}
+	
+	void setY(int y) {
+		this.y = y;
+		yCoord = y;
+	}
+	
 	void setAngle(double angle) {
 		this.angle = angle;
 		setVelocity(velocity);
