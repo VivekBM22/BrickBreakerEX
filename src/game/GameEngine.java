@@ -378,7 +378,7 @@ class GameEngine {
 		ballY = ball.getYCoord();
 		
 		//Checking along first axis
-		axis1 = new Vector2D(0, -1);
+		//axis1 = new Vector2D(0, -1);
 		ballMaxProj = -ballY + Ball.BALL_SIZE/2.0;
 		ballMinProj = -ballY - Ball.BALL_SIZE/2.0;
 		paddleMaxProj = paddleAProj = -paddle.getAY();
@@ -388,7 +388,8 @@ class GameEngine {
 		else {
 			reflect = true;
 			overlap = paddleMaxProj - ballMinProj;
-			mtv = axis1;
+			//mtv = axis1;
+			mtv = new Vector2D(0, -1);
 			backtrack = overlap / Math.abs(mtv.dot(ball.getVelocityUnitVector()));
 			if(ballMaxProj - paddleMinProj < overlap) {
 				reflect = false;
@@ -399,7 +400,7 @@ class GameEngine {
 		}
 		
 		//Checking along second axis
-		axis2 = new Vector2D(1, 0);
+		//axis2 = new Vector2D(1, 0);
 		ballMaxProj = ballX + Ball.BALL_SIZE/2.0;
 		ballMinProj = ballX - Ball.BALL_SIZE/2.0;
 		paddleMaxProj = paddleBProj = paddle.getBX();
