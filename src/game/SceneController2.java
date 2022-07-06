@@ -15,10 +15,10 @@ public class SceneController2 {
 	public void switchToGameOver(StackPane canvasPane) throws IOException {
 
 			Stage stage = (Stage)canvasPane.getScene().getWindow();
-			Parent root = FXMLLoader.load(getClass().getResource("GameOver.fxml"));
+			Parent root = FXMLLoader.load(getClass().getResource("/brickBreakerEX/GameOver.fxml"));
 			Scene scene = new Scene(root, 1300, 800);
 			//String css = this.getClass().getResource().toExternalForm();
-			scene.getStylesheets().add("/application.css");
+			//scene.getStylesheets().add("/application.css");
 			stage.setScene(scene);
 			stage.show();
 		

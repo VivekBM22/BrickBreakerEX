@@ -1,6 +1,5 @@
 package game;
 
-import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.stage.Stage;
@@ -15,7 +14,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.Node;
 
-public class GameUI extends Application {
+public class GameUI  {
 	static GameEngine gameEngine;
 	
 	WritableImage ballImg;
@@ -29,7 +28,6 @@ public class GameUI extends Application {
 		
 		Scene scene  = new Scene(root, 1300, 800);
 		primaryStage.setScene(scene);
-		primaryStage.setTitle("Test Application 1");
 		primaryStage.show();
 		
 		root.getChildren().add(gamePane);
@@ -103,10 +101,6 @@ public class GameUI extends Application {
 		});
 	}
 
-	@Override
-	public void start(Stage arg0) throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
+	
 	
 }
