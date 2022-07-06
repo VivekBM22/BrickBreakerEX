@@ -7,53 +7,49 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="brickBreakerEX.SceneController">
+<AnchorPane prefHeight="800.0" prefWidth="1300.0" stylesheets="@../application.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="brickBreakerEX.SceneController">
    <children>
-      <AnchorPane layoutX="-3.0" layoutY="-11.0" prefHeight="800.0" prefWidth="1300.0">
-         <children>
-            <Label alignment="CENTER" layoutX="136.0" layoutY="125.0" prefHeight="250.0" prefWidth="1100.0" text="Level Select" AnchorPane.bottomAnchor="390.0" AnchorPane.leftAnchor="130.0" AnchorPane.rightAnchor="130.0" AnchorPane.topAnchor="140.0">
+      <Label alignment="CENTER" layoutX="127.0" layoutY="129.0" prefHeight="250.0" prefWidth="1100.0" text="Level Select" AnchorPane.bottomAnchor="390.0" AnchorPane.leftAnchor="130.0" AnchorPane.rightAnchor="130.0" AnchorPane.topAnchor="140.0">
+         <font>
+            <Font size="72.0" />
+         </font>
+      </Label>
+      <Button layoutX="57.0" layoutY="49.0" mnemonicParsing="false" onAction="#SwitchtoGameModes" prefHeight="80.0" prefWidth="80.0" text="&lt;-" AnchorPane.bottomAnchor="660.0" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="1160.0" AnchorPane.topAnchor="60.0">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Button>
+      <ButtonBar layoutX="172.0" layoutY="439.0" prefHeight="150.0" prefWidth="1000.0" AnchorPane.bottomAnchor="200.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="175.0" AnchorPane.topAnchor="450.0">
+        <buttons>
+          <Button mnemonicParsing="false" onAction="#SwitchtoGameUI" prefHeight="100.0" prefWidth="175.0" text="1">
                <font>
-                  <Font size="72.0" />
-               </font>
-            </Label>
-            <Button mnemonicParsing="false" onAction="#SwitchtoGameModes" prefHeight="80.0" prefWidth="80.0" text="&lt;-" AnchorPane.bottomAnchor="660.0" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="1160.0" AnchorPane.topAnchor="60.0">
-               <font>
-                  <Font size="18.0" />
+                  <Font size="24.0" />
                </font>
             </Button>
-            <ButtonBar prefHeight="150.0" prefWidth="1000.0" AnchorPane.bottomAnchor="200.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="175.0" AnchorPane.topAnchor="450.0">
-              <buttons>
-                <Button mnemonicParsing="false" onAction="#SwitchtoGameUI" prefHeight="100.0" prefWidth="175.0" text="1">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#SwitchtoGameUI" prefHeight="100.0" prefWidth="175.0" text="2">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#SwitchtoGameUI" prefHeight="100.0" text="3">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#SwitchtoGameUI" prefHeight="100.0" text="4">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#SwitchtoGameUI" prefHeight="100.0" text="5">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
-                  </Button>
-              </buttons>
-               <padding>
-                  <Insets bottom="25.0" left="25.0" right="50.0" top="25.0" />
-               </padding>
-            </ButtonBar>
-         </children>
-      </AnchorPane>
+            <Button mnemonicParsing="false" onAction="#SwitchtoGameUI" prefHeight="100.0" prefWidth="175.0" text="2">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#SwitchtoGameUI" prefHeight="100.0" text="3">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#SwitchtoGameUI" prefHeight="100.0" text="4">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#SwitchtoGameUI" prefHeight="100.0" text="5">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Button>
+        </buttons>
+         <padding>
+            <Insets bottom="25.0" left="25.0" right="50.0" top="25.0" />
+         </padding>
+      </ButtonBar>
    </children>
 </AnchorPane>
