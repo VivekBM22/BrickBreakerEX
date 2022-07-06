@@ -23,8 +23,6 @@ public class SceneController {
 	public void SwitchtoMenu( ActionEvent event) throws IOException {
 		root = FXMLLoader.load(getClass().getResource("Menu.fxml"));
 		scene = new Scene(root, 1300, 800);
-		//String css = this.getClass().getResource("/application.css").toExternalForm();
-		//scene.getStylesheets().add(css);
 		stage = (Stage)((Node)event.getSource()).getScene().getWindow();
 		stage.setScene(scene);
 		stage.show();
@@ -33,8 +31,6 @@ public class SceneController {
 	public void SwitchtoGameModes( ActionEvent event) throws IOException {
 		root = FXMLLoader.load(getClass().getResource("GameModes.fxml"));
 		scene = new Scene(root, 1300, 800);
-		//String css = this.getClass().getResource("/application.css").toExternalForm();
-		//scene.getStylesheets().add(css);
 		stage = (Stage)((Node)event.getSource()).getScene().getWindow();
 		stage.setScene(scene);
 		stage.show();
@@ -43,8 +39,6 @@ public class SceneController {
 	public void SwitchtoLevelSelect( ActionEvent event) throws IOException {
 		root = FXMLLoader.load(getClass().getResource("levelSelect.fxml"));
 		scene = new Scene(root, 1300, 800);
-		//String css = this.getClass().getResource("/application.css").toExternalForm();
-		//scene.getStylesheets().add(css);
 		stage = (Stage)((Node)event.getSource()).getScene().getWindow();
 		stage.setScene(scene);
 		stage.show();
