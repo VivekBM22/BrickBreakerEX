@@ -21,7 +21,7 @@ public class GameUI  {
 	PixelReader ballImgReader;
 	private static Stage primaryStage;
 	
-	public static void begin(ActionEvent e) {
+	public static void begin(ActionEvent e, String mode, int level) {
 		primaryStage = (Stage)((Node)e.getSource()).getScene().getWindow();
 		StackPane root = new StackPane();
 		FlowPane gamePane = new FlowPane();
@@ -41,7 +41,33 @@ public class GameUI  {
 		gameEngine = new GameEngine();
 		gamePane.getChildren().add(gameEngine.getCanvasPane());
 		
-		gameEngine.startGame(GameInfo.TOURNAMENT_MODE, 1);
+		System.out.println(mode);
+		
+		if( mode.equals("Tournament") )
+			gameEngine.startGame(GameInfo.TOURNAMENT_MODE, 1);
+		if( mode.equals("Time Trial") )
+			gameEngine.startGame(GameInfo.TIME_TRIAL_MODE, 1);
+		if( mode.equals("Tournament EX") )
+			gameEngine.startGame(GameInfo.TOURNAMENT_HARD_MODE, 1);
+		if( mode.equals("Easy") ) {
+			switch(level) {
+				case 1 : gameEngine.startGame(GameInfo.LEVEL_SELECT_MODE, 1); break;
+				case 2 : gameEngine.startGame(GameInfo.LEVEL_SELECT_MODE, 2); break;
+				case 3 : gameEngine.startGame(GameInfo.LEVEL_SELECT_MODE, 3); break;
+				case 4 : gameEngine.startGame(GameInfo.LEVEL_SELECT_MODE, 4); break;
+				case 5 : gameEngine.startGame(GameInfo.LEVEL_SELECT_MODE, 5); break;
+			}
+		}
+		
+		if( mode.equals("Hard") ) {
+			switch(level) {
+				case 1 : gameEngine.startGame(GameInfo.LEVEL_SELECT_HARD_MODE, 1); break;
+				case 2 : gameEngine.startGame(GameInfo.LEVEL_SELECT_HARD_MODE, 2); break;
+				case 3 : gameEngine.startGame(GameInfo.LEVEL_SELECT_HARD_MODE, 3); break;
+				case 4 : gameEngine.startGame(GameInfo.LEVEL_SELECT_HARD_MODE, 4); break;
+				case 5 : gameEngine.startGame(GameInfo.LEVEL_SELECT_HARD_MODE, 5); break;
+			}
+		}
 		
 		/*ballImg = gameEngine.ball.getBallImg(ballCanvas);
 		ballImgReader = ballImg.getPixelReader();
