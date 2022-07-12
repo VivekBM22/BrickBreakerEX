@@ -80,53 +80,58 @@ public class GameUI  {
 		btn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent ae) {
-				if(!gameEngine.isPaused()) {
-					gameEngine.pause();
-					txt.setText("Animation paused");
-				}
-				else {
-					gameEngine.unpause();
-					txt.setText("Animation continued\nTotal Pause Time: " + gameEngine.getPauseTime()/1000000000);
-				}
+				pauseButtonAction(ae);
 			}
 		});
 		
 		gamePane.requestFocus();
 		gamePane.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent ke) {
-				if(!gameEngine.isPaused()) {
-					if(ke.getCode().equals(KeyCode.LEFT)) {
-						gameEngine.paddle.setLeft(true);
-						txt.setText("Moving left");
-					}
-					else if(ke.getCode().equals(KeyCode.RIGHT)) {
-						gameEngine.paddle.setRight(true);
-						txt.setText("Moving right");
-					}
-				}
+				//gamePane.requestFocus();
+				keyPressedForGame(ke);
+				System.out.println("Key Pressed: " + ke.getCode());
 			}
 		});
 		gamePane.setOnKeyReleased(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent ke) {
-				if(ke.getCode().equals(KeyCode.ESCAPE)) {
-					if(!gameEngine.isPaused()) {
-						gameEngine.pause();
-						txt.setText("Animation paused");
-					}
-					else {
-						gameEngine.unpause();
-						txt.setText("Animation continued\nTotal Pause Time: " + gameEngine.getPauseTime()/1000000000);
-					}
-				}
-				else if(ke.getCode().equals(KeyCode.LEFT))
-					gameEngine.paddle.setLeft(false);
-				else if(ke.getCode().equals( KeyCode.RIGHT))
-					gameEngine.paddle.setRight(false);
+				//gamePane.requestFocus();
+				keyReleasedForGame(ke);
 			}
 		});
+		
+	}
+	
+	public static void pauseButtonAction(ActionEvent ae) {
+		if(gameEngine.isInGame())
+			gameEngine.pause();
+		else if(gameEngine.isPaused())
+			gameEngine.unpause();
+	}
+	
+	public static void keyPressedForGame(KeyEvent ke) {
+		if(gameEngine.isInGame()) {
+			if(ke.getCode().equals(KeyCode.LEFT)) {
+				gameEngine.paddle.setLeft(true);
+			}
+			else if(ke.getCode().equals(KeyCode.RIGHT)) {
+				gameEngine.paddle.setRight(true);
+			}
+		}
+	}
+	
+	public static void keyReleasedForGame(KeyEvent ke) {
+		if(ke.getCode().equals(KeyCode.ESCAPE)) {
+			if(gameEngine.isInGame()) {
+				gameEngine.pause();
+			}
+			else if(gameEngine.isPaused())
+				gameEngine.unpause();
+		}
+		else if(ke.getCode().equals(KeyCode.LEFT))
+			gameEngine.paddle.setLeft(false);
+		else if(ke.getCode().equals( KeyCode.RIGHT))
+			gameEngine.paddle.setRight(false);
 	}
 
-	
-	
 }
