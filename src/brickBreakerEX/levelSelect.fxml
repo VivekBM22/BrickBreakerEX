@@ -14,7 +14,7 @@
             <Font size="72.0" />
          </font>
       </Label>
-      <Button layoutX="57.0" layoutY="49.0" mnemonicParsing="false" onAction="#switchToDifficultySelect" prefHeight="80.0" prefWidth="80.0" styleClass="back_Button" AnchorPane.bottomAnchor="660.0" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="1160.0" AnchorPane.topAnchor="60.0">
+      <Button layoutX="57.0" layoutY="49.0" mnemonicParsing="false" onAction="#switchToDifficultySelect" prefHeight="80.0" prefWidth="90.0" styleClass="back_Button" AnchorPane.leftAnchor="60.0" AnchorPane.topAnchor="60.0">
          <font>
             <Font size="18.0" />
          </font>
