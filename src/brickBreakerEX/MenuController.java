@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -39,6 +40,17 @@ public class MenuController {
 	public void logout(ActionEvent e) {
 		stage = (Stage) Escene.getScene().getWindow();
 		stage.close();
+	}
+	
+	public void hoverOn( ActionEvent e ) {
+		Button but = ((Button)e.getSource());
+		but.setStyle("-fx-stroke-width: 5px;");
+		but.setStyle("-fx-stroke: #A9A9A9;");
+	}
+	
+	public void hoverOff( ActionEvent e ) {
+		Button but = ((Button)e.getSource());
+		but.setStyle("-fx-stroke-width: 0px; ");
 	}
 	
 }

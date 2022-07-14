@@ -16,7 +16,7 @@ public class GameModesController {
 	private Scene scene;
 	private Parent root;
 	
-	static String mode;
+	public static String mode;
 	
 	public void switchToGameUIFromGameMode( ActionEvent e ) {
 		mode = ((Button)e.getSource()).getText(); 

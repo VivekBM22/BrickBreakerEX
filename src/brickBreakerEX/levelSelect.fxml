@@ -21,27 +21,27 @@
       </Button>
       <ButtonBar layoutX="172.0" layoutY="439.0" prefHeight="150.0" prefWidth="1000.0" AnchorPane.bottomAnchor="200.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="175.0" AnchorPane.topAnchor="450.0">
         <buttons>
-          <Button mnemonicParsing="false" onAction="#switchToGameUIFromLevelSelect" prefHeight="100.0" prefWidth="175.0" styleClass="transperent-button" text="1">
+          <Button mnemonicParsing="false" onAction="#switchToGameUIFromLevelSelect" prefHeight="100.0" prefWidth="175.0" styleClass="transperent-but" text="1">
                <font>
                   <Font size="24.0" />
                </font>
             </Button>
-            <Button mnemonicParsing="false" onAction="#switchToGameUIFromLevelSelect" prefHeight="100.0" prefWidth="175.0" styleClass="transperent-button" text="2">
+            <Button mnemonicParsing="false" onAction="#switchToGameUIFromLevelSelect" prefHeight="100.0" prefWidth="175.0" styleClass="transperent-but" text="2">
                <font>
                   <Font size="24.0" />
                </font>
             </Button>
-            <Button mnemonicParsing="false" onAction="#switchToGameUIFromLevelSelect" prefHeight="100.0" styleClass="transperent-button" text="3">
+            <Button mnemonicParsing="false" onAction="#switchToGameUIFromLevelSelect" prefHeight="100.0" styleClass="transperent-but" text="3">
                <font>
                   <Font size="24.0" />
                </font>
             </Button>
-            <Button mnemonicParsing="false" onAction="#switchToGameUIFromLevelSelect" prefHeight="100.0" styleClass="transperent-button" text="4">
+            <Button mnemonicParsing="false" onAction="#switchToGameUIFromLevelSelect" prefHeight="100.0" styleClass="transperent-but" text="4">
                <font>
                   <Font size="24.0" />
                </font>
             </Button>
-            <Button mnemonicParsing="false" onAction="#switchToGameUIFromLevelSelect" prefHeight="100.0" styleClass="transperent-button" text="5">
+            <Button mnemonicParsing="false" onAction="#switchToGameUIFromLevelSelect" prefHeight="100.0" styleClass="transperent-but" text="5">
                <font>
                   <Font size="24.0" />
                </font>

@@ -126,7 +126,7 @@ class PowerUp {
 		if(ID == LIFE_UP)
 			gameEngine.incrementLives();
 		else if(ID == PADDLE_SPEED_UP)
-			gameEngine.paddle.setVelocity(gameEngine.paddle.getVelocity() + PADDLE_SPEED_INC);
+			gameEngine.getPaddle().setVelocity(gameEngine.getPaddle().getVelocity() + PADDLE_SPEED_INC);
 		else if(ID == EXTRA_BALL)
 			gameEngine.addBall();
 		else if(ID == DAMAGE_UP)
@@ -135,7 +135,7 @@ class PowerUp {
 	
 	void deactivatePowerUp() {
 		if(ID == PADDLE_SPEED_UP)
-			gameEngine.paddle.setVelocity(gameEngine.paddle.getVelocity() - PADDLE_SPEED_INC);
+			gameEngine.getPaddle().setVelocity(gameEngine.getPaddle().getVelocity() - PADDLE_SPEED_INC);
 		else if(ID == DAMAGE_UP)
 			gameEngine.setDamage(1);
 	}	

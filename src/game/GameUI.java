@@ -17,11 +17,15 @@ import javafx.scene.Node;
 public class GameUI  {
 	static GameEngine gameEngine;
 	
-	WritableImage ballImg;
-	PixelReader ballImgReader;
+	public static String mode = null;
+	public static int level = -1;
+	
 	private static Stage primaryStage;
 	
 	public static void begin(ActionEvent e, String mode, int level) {
+		GameUI.mode = mode;
+		GameUI.level = level;
+		
 		primaryStage = (Stage)((Node)e.getSource()).getScene().getWindow();
 		StackPane root = new StackPane();
 		FlowPane gamePane = new FlowPane();
@@ -31,10 +35,7 @@ public class GameUI  {
 		primaryStage.show();
 		
 		root.getChildren().add(gamePane);
-		
-		Button btn = new Button("Test Button");
-		gamePane.getChildren().add(btn);
-		
+	
 		Label timeLabel = new Label();
 		gamePane.getChildren().add(timeLabel);
 		
@@ -77,13 +78,13 @@ public class GameUI  {
 		Label txt = new Label();
 		gamePane.getChildren().add(txt);
 		
-		btn.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent ae) {
-				pauseButtonAction(ae);
-			}
-		});
-		
+//		btn.setOnAction(new EventHandler<ActionEvent>() {
+//			@Override
+//			public void handle(ActionEvent ae) {
+//				pauseButtonAction(ae);
+//			}
+//		});
+//		
 		gamePane.requestFocus();
 		gamePane.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent ke) {
@@ -102,20 +103,20 @@ public class GameUI  {
 		
 	}
 	
-	public static void pauseButtonAction(ActionEvent ae) {
-		if(gameEngine.isInGame())
-			gameEngine.pause();
-		else if(gameEngine.isPaused())
-			gameEngine.unpause();
-	}
+//	public static void pauseButtonAction(ActionEvent ae) {
+//		if(gameEngine.isInGame())
+//			gameEngine.pause();
+//		else if(gameEngine.isPaused())
+//			gameEngine.unpause();
+//	}
 	
 	public static void keyPressedForGame(KeyEvent ke) {
 		if(gameEngine.isInGame()) {
 			if(ke.getCode().equals(KeyCode.LEFT)) {
-				gameEngine.paddle.setLeft(true);
+				gameEngine.getPaddle().setLeft(true);
 			}
 			else if(ke.getCode().equals(KeyCode.RIGHT)) {
-				gameEngine.paddle.setRight(true);
+				gameEngine.getPaddle().setRight(true);
 			}
 		}
 	}
@@ -129,9 +130,9 @@ public class GameUI  {
 				gameEngine.unpause();
 		}
 		else if(ke.getCode().equals(KeyCode.LEFT))
-			gameEngine.paddle.setLeft(false);
+			gameEngine.getPaddle().setLeft(false);
 		else if(ke.getCode().equals( KeyCode.RIGHT))
-			gameEngine.paddle.setRight(false);
+			gameEngine.getPaddle().setRight(false);
 	}
 
 }

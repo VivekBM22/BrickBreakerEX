@@ -16,10 +16,11 @@ public class LevelSelectController {
 	private Parent root;
 	
 	static String mode;
+	static int level;
 	
 	public void switchToGameUIFromLevelSelect( ActionEvent e ) {
 		String l = ((Button)e.getSource()).getText();
-		int level = Integer.parseInt(l);
+		level = Integer.parseInt(l);
 		
 		game.GameUI.begin(e, mode, level);
 	}

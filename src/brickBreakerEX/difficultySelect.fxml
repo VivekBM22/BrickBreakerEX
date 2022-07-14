@@ -21,12 +21,12 @@
       </Button>
       <ButtonBar layoutX="172.0" layoutY="439.0" prefHeight="150.0" prefWidth="1000.0" AnchorPane.bottomAnchor="200.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="175.0" AnchorPane.topAnchor="450.0">
          <buttons>
-            <Button mnemonicParsing="false" onAction="#switchToLevelSelect" prefHeight="100.0" prefWidth="450.0" styleClass="transperent-button" text="Easy">
+            <Button mnemonicParsing="false" onAction="#switchToLevelSelect" prefHeight="100.0" prefWidth="450.0" styleClass="transperent-but" text="Easy">
                <font>
                   <Font size="24.0" />
                </font>
             </Button>
-            <Button mnemonicParsing="false" onAction="#switchToLevelSelect" prefHeight="100.0" prefWidth="400.0" styleClass="transperent-button" text="Hard">
+            <Button mnemonicParsing="false" onAction="#switchToLevelSelect" prefHeight="100.0" prefWidth="400.0" styleClass="transperent-but" text="Hard">
                <font>
                   <Font size="24.0" />
                </font>

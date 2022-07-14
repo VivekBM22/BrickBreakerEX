@@ -45,11 +45,11 @@ public class GameInfo {
 		
 		if(mode == TOURNAMENT_MODE || mode == LEVEL_SELECT_MODE || mode == TIME_TRIAL_MODE) {
 			powerUpSpawnTime = 15;
-			ballInfo.velocity = 0.4;
+			ballInfo.velocity = 0.35;
 		}
 		else {
 			powerUpSpawnTime = 25;
-			ballInfo.velocity = 0.5;
+			ballInfo.velocity = 0.45;
 		}
 		
 		if(mode == TIME_TRIAL_MODE) {
@@ -229,18 +229,18 @@ public class GameInfo {
 	}
 	
 	static void getBall(GameEngine gameEngine) {
-		Ball ball = new Ball(ballInfo.x - paddleInfo.x + gameEngine.paddle.getX(), ballInfo.y, ballInfo.angle);
+		Ball ball = new Ball(ballInfo.x - paddleInfo.x + gameEngine.getPaddle().getX(), ballInfo.y, ballInfo.angle);
 		ball.setVelocity(ballInfo.velocity);
-		gameEngine.ballList.add(ball);
+		gameEngine.getBallList().add(ball);
 	}
 	
 	static void resetPaddle(GameEngine gameEngine) {
-		gameEngine.paddle.resetX(paddleInfo.x);
+		gameEngine.getPaddle().resetX(paddleInfo.x);
 	}
 	
 	static void getDetails(GameEngine gameEngine, final int mode, final int level) {
-		gameEngine.ballList.clear(); //Power-Ups do not carry over(Multi-balls)
-		gameEngine.brickList.clear();
+		gameEngine.getBallList().clear(); //Power-Ups do not carry over(Multi-balls)
+		gameEngine.getBrickList().clear();
 		readyGameInfo(mode, level);
 		
 		gameEngine.setDamage(ballDamage);
@@ -249,12 +249,12 @@ public class GameInfo {
 		
 		Ball ball = new Ball(ballInfo.x, ballInfo.y, ballInfo.angle);
 		ball.setVelocity(ballInfo.velocity);
-		gameEngine.ballList.add(ball);
+		gameEngine.getBallList().add(ball);
 		
-		gameEngine.paddle = new Paddle(paddleInfo.x, paddleInfo.y);
-		gameEngine.paddle.setVelocity(paddleInfo.velocity);
+		gameEngine.setPaddle(new Paddle(paddleInfo.x, paddleInfo.y));
+		gameEngine.getPaddle().setVelocity(paddleInfo.velocity);
 				
-		ListIterator<Brick> brickIter = gameEngine.brickList.listIterator();
+		ListIterator<Brick> brickIter = gameEngine.getBrickList().listIterator();
 		brickInfoIter = brickInfoList.listIterator();
 		BrickInfo brickInfo;
 		Brick brick;

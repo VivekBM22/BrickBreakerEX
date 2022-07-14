@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Random;
 import Vector2D.Vector2D;
+import brickBreakerEX.GameOverController;
 import highScore.HighScore;
 import javafx.animation.AnimationTimer;
 import javafx.geometry.VPos;
@@ -19,15 +20,15 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 
-class GameEngine {
+public class GameEngine {
 	final static int GAME_LENGTH = 1280;
 	final static int GAME_HEIGHT = 720;
 	final static int FRAME_RATE = 60;
 	final static long NANO_FRAME_TIME = 1000000000/FRAME_RATE;
 	
 	final static int IN_GAME = 0;
-	final static int WON = 1;
-	final static int LOST = 2;
+	public final static int WON = 1;
+	public final static int LOST = 2;
 	final static int INITIAL = 3;
 	final static int PAUSED = 4;
 	final static int WAITING = 5;
@@ -76,26 +77,23 @@ class GameEngine {
 	private int mode;
 	private Random powerUpIDGenerator;
 	
-	LinkedList<Ball> ballList;
-	Paddle paddle;
-	LinkedList<Brick> brickList;
-	ListIterator<Ball> ballIter;
-	ListIterator<Brick> brickIter;
-	PowerUp powerUp;
+	private LinkedList<Ball> ballList;
+	private Paddle paddle;
+	private LinkedList<Brick> brickList;
+	private ListIterator<Ball> ballIter;
+	private ListIterator<Brick> brickIter;
+	private PowerUp powerUp;
 	private int lives;
 	private int damage;
 	private int displayedLives = 3;
 	
-	LevelInfo[] levelInfo;
-	int livesLost;
+	private LevelInfo[] levelInfo;
+	private int livesLost;
 	
-	StackPane canvasPane;
-	GraphicsContext bgGC, ballGC, brickPaddleGC, powerUpGC, UIGC;
-	Canvas bgCanvas, ballCanvas, brickPaddleCanvas, powerUpCanvas, UICanvas;
-	AnimationTimer gameTimer, waitTimer, levelTimer;
-	
-	WritableImage ballImg;
-	PixelReader ballImgReader;
+	private StackPane canvasPane;
+	private GraphicsContext bgGC, ballGC, brickPaddleGC, powerUpGC, UIGC;
+	private Canvas bgCanvas, ballCanvas, brickPaddleCanvas, powerUpCanvas, UICanvas;
+	private AnimationTimer gameTimer, waitTimer, levelTimer;
 	
 	static {
 		setTheme(1);
@@ -206,6 +204,22 @@ class GameEngine {
 	
 	StackPane getCanvasPane() {
 		return canvasPane;
+	}
+	
+	Paddle getPaddle() {
+		return paddle;
+	}
+	
+	LinkedList<Brick> getBrickList() {
+		return brickList;
+	}
+	
+	LinkedList<Ball> getBallList() {
+		return ballList;
+	}
+	
+	void setPaddle(Paddle paddle) {
+		this.paddle = paddle;
 	}
 	
 	void setDamage(int damage) {
@@ -599,7 +613,7 @@ class GameEngine {
 	void startGame(int mode, int level) {
 		this.mode = mode;
 		lives = 3;
-		if(mode == GameInfo.LEVEL_SELECT_MODE)
+		if(mode == GameInfo.LEVEL_SELECT_MODE || mode == GameInfo.LEVEL_SELECT_HARD_MODE)
 			this.level = level;
 		else
 			this.level = 1;
@@ -734,8 +748,7 @@ class GameEngine {
 				brick.drawBrick(brickPaddleGC);
 				if(brick.isDestroyed()) {
 					brickIter.remove();
-					System.out.println("Deleted brick");
-					
+					System.out.println("Deleted brick");	
 				}
 			}
 			if(brickList.isEmpty())
@@ -823,13 +836,16 @@ class GameEngine {
 						if((currentNanoTime - curNanoTime)/1000000000 >= 3) {
 							stop();
 							
+							int score = -1;
+							
 							if(mode != GameInfo.LEVEL_SELECT_MODE && mode != GameInfo.LEVEL_SELECT_HARD_MODE) {
-								System.out.println(HighScore.calcScore(levelInfo, mode));
+								score = HighScore.calcScore(levelInfo, mode);
+								System.out.println(score);
 								////////////////////////////////////// Record game details to LeaderBoard
 							}
 							SceneController2 sc = new SceneController2();
 							try {
-								sc.switchToGameOver(canvasPane);
+								sc.switchToGameOver(canvasPane, WON, score);
 							}
 							catch (IOException e) {
 								e.printStackTrace();
@@ -849,7 +865,7 @@ class GameEngine {
 						stop();
 						SceneController2 sc = new SceneController2();
 						try {
-							sc.switchToGameOver(canvasPane);
+							sc.switchToGameOver(canvasPane, LOST, -1);
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
