@@ -54,9 +54,25 @@ public class GameInfo {
 		
 		if(mode == TIME_TRIAL_MODE) {
 			if(level == 1) {
-				levelTime = 15;
+				levelTime = 20;
 				bi = new BrickInfo(GameEngine.GAME_LENGTH/2, GameEngine.GAME_HEIGHT - 100 - 250, 0, 3);
 				brickInfoList.add(bi);
+			} else if(level == 2) {
+				levelTime = 20;
+				bi = new BrickInfo(GameEngine.GAME_LENGTH/2, GameEngine.GAME_HEIGHT - 100 - 250, 0, 3);
+				brickInfoList.add(bi);
+			} else if(level == 3) {
+				levelTime = 20;
+//				bi = new BrickInfo(GameEngine.GAME_LENGTH/2, GameEngine.GAME_HEIGHT - 100 - 250, 0, 3);
+//				brickInfoList.add(bi);
+			} else if(level == 4) {
+				levelTime = 20;
+//				bi = new BrickInfo(GameEngine.GAME_LENGTH/2, GameEngine.GAME_HEIGHT - 100 - 250, 0, 3);
+//				brickInfoList.add(bi);
+			} else if(level == 5) {
+				levelTime = 20;
+//				bi = new BrickInfo(GameEngine.GAME_LENGTH/2, GameEngine.GAME_HEIGHT - 100 - 250, 0, 3);
+//				brickInfoList.add(bi);
 			}
 			
 		}

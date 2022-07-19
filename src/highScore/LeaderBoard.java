@@ -6,10 +6,11 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Paths;
 
 public class LeaderBoard {
-	int[] score = new int[10];
-	String[] name = new String[10];
+	public int[] score = new int[10];
+	public String[] name = new String[10];
 
     int entryCount;
 
@@ -20,8 +21,8 @@ public class LeaderBoard {
     public static LeaderBoard LSH_LB = new LeaderBoard();
 
     public static void setLeaderBoard(LeaderBoard leaderBoard, String pathname) {
-        File file = new File(pathname);
-
+    	String s = Paths.get(".").toAbsolutePath().normalize().toString();
+        File file = new File(s + "\\resources\\leaderboard\\" + pathname);
         leaderBoard.entryCount = 0;
 
         try {
@@ -74,7 +75,7 @@ public class LeaderBoard {
             }
         }
         catch (FileNotFoundException fnfe) {
-            System.out.println(pathname + ": File not found");
+            System.out.println(s + "\\resources\\leaderboard\\" + pathname + ": File not found");
             try {
                 for(int i = 0; i < 10; i++) {
             		leaderBoard.score[i] = -1;
@@ -84,7 +85,7 @@ public class LeaderBoard {
             	file.createNewFile();
             }
             catch(IOException ioe) {
-            	System.out.println("Failed to create file: " + pathname);
+            	System.out.println("Failed to create file: " + s + "\\resources\\leaderboard\\" + pathname);
             }
         }
     }
@@ -100,7 +101,8 @@ public class LeaderBoard {
     }
 
     public static void setFile(LeaderBoard leaderBoard, String pathname) {
-        File file = new File(pathname);
+    	String s = Paths.get(".").toAbsolutePath().normalize().toString();
+        File file = new File(s + "\\resources\\leaderboard\\" + pathname);
 
         try {
             PrintWriter outWriter = new PrintWriter(file);

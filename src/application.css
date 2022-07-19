@@ -1,4 +1,4 @@
-//.button {
+	//.button {
 //  -fx-background-color: #04AA6D;
 //  -fx-border: none;
 //  //-fx-fill: white;
@@ -43,7 +43,7 @@
 }
 
 .transperent-but {
-	-fx-background-color : transperent;
+	-fx-background-color : rgba(0,0,0,0);
 }
 
 .back_Button {
