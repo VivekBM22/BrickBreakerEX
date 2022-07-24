@@ -44,8 +44,7 @@ public class MenuController {
 	
 	public void hoverOn( ActionEvent e ) {
 		Button but = ((Button)e.getSource());
-		but.setStyle("-fx-stroke-width: 5px;");
-		but.setStyle("-fx-stroke: #A9A9A9;");
+		but.setStyle("-fx-font-size: 5px;");
 	}
 	
 	public void hoverOff( ActionEvent e ) {

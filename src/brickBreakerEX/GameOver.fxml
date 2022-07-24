@@ -45,16 +45,16 @@
             <Font size="18.0" />
          </font>
       </Button>
-      <TextField fx:id="nameTF" layoutX="629.0" layoutY="414.0" prefColumnCount="3" prefHeight="55.0" prefWidth="218.0">
+      <TextField fx:id="nameTF" layoutX="681.0" layoutY="407.0" prefColumnCount="3" prefHeight="55.0" prefWidth="218.0" AnchorPane.leftAnchor="681.0">
          <font>
             <Font size="18.0" />
          </font></TextField>
-      <Label fx:id="enterName" layoutX="374.0" layoutY="414.0" prefHeight="55.0" prefWidth="243.0" text="Enter name :">
+      <Label fx:id="enterName" layoutX="430.0" layoutY="407.0" prefHeight="55.0" prefWidth="243.0" text="Enter name :" AnchorPane.leftAnchor="430.0">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Button fx:id="enter" layoutX="867.0" layoutY="414.0" mnemonicParsing="false" onAction="#enteredName" prefHeight="55.0" prefWidth="180.0" text="Enter">
+      <Button fx:id="enter" layoutX="429.0" layoutY="490.0" mnemonicParsing="false" onAction="#enteredName" prefHeight="55.0" prefWidth="470.0" text="Enter">
          <font>
             <Font size="18.0" />
          </font>

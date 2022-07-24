@@ -8,7 +8,7 @@
 
 <AnchorPane fx:id="Escene" stylesheets="@../application.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="brickBreakerEX.MenuController">
    <children>
-      <Button layoutX="415.0" layoutY="439.6000061035156" mnemonicParsing="false" onAction="#switchToGameModes" prefHeight="70.0" prefWidth="450.0" stylesheets="@../application.css" text="Start" AnchorPane.bottomAnchor="290.0" AnchorPane.leftAnchor="415.0" AnchorPane.rightAnchor="435.0">
+      <Button layoutX="415.0" layoutY="439.6000061035156" mnemonicParsing="false" onAction="#switchToGameModes" onTouchMoved="#hoverOn" onTouchPressed="#hoverOn" onTouchReleased="#hoverOn" onTouchStationary="#hoverOn" prefHeight="70.0" prefWidth="450.0" stylesheets="@../application.css" text="Start" AnchorPane.bottomAnchor="290.0" AnchorPane.leftAnchor="425.0" AnchorPane.rightAnchor="425.0">
          <font>
             <Font size="24.0" />
          </font>
@@ -18,17 +18,16 @@
             <Font size="72.0" />
          </font>
       </Label>
-      <Button layoutX="415.0" layoutY="639.5999755859375" mnemonicParsing="false" onAction="#logout" prefHeight="70.0" prefWidth="450.0" stylesheets="@../application.css" text="Exit" AnchorPane.bottomAnchor="90.0" AnchorPane.leftAnchor="415.0" AnchorPane.rightAnchor="435.0">
+      <Button layoutX="415.0" layoutY="639.5999755859375" mnemonicParsing="false" onAction="#logout" prefHeight="70.0" prefWidth="450.0" stylesheets="@../application.css" text="Exit" AnchorPane.bottomAnchor="90.0" AnchorPane.leftAnchor="425.0" AnchorPane.rightAnchor="425.0">
          <font>
             <Font size="24.0" />
          </font>
       </Button>
-      <Button layoutX="415.0" layoutY="539.5999755859375" mnemonicParsing="false" onAction="#switchToLeaderboard" prefHeight="70.0" prefWidth="450.0" stylesheets="@../application.css" text="LeaderBoard" AnchorPane.bottomAnchor="190.0" AnchorPane.leftAnchor="415.0" AnchorPane.rightAnchor="435.0">
+      <Button layoutX="415.0" layoutY="539.5999755859375" mnemonicParsing="false" onAction="#switchToLeaderboard" prefHeight="70.0" prefWidth="450.0" stylesheets="@../application.css" text="LeaderBoard" AnchorPane.bottomAnchor="190.0" AnchorPane.leftAnchor="425.0" AnchorPane.rightAnchor="425.0">
          <font>
             <Font size="24.0" />
          </font>
       </Button>
-      <Button layoutX="1134.0" layoutY="711.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="33.0" style="-fx-background-color: black;" styleClass="music" AnchorPane.bottomAnchor="71.39999999999998" AnchorPane.rightAnchor="132.80000000000018" />
       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
    </children>
 </AnchorPane>

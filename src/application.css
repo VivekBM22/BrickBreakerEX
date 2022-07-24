@@ -26,12 +26,19 @@
 
 .label{
 	-fx-font-family : 'Press Start 2P';
-	
 }
 
 .button{
 	-fx-font-family : 'Press Start 2P';
 	-fx-background-color : rgba(0,0,0,0);
+}
+
+.button:hover{
+	-fx-font-size : 24px;
+}
+
+.button:pressed{
+	-fx-font-size : 24px;
 }
 
 .music{
