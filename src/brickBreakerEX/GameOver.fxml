@@ -12,9 +12,9 @@
 
 <AnchorPane prefHeight="800.0" prefWidth="1300.0" stylesheets="@../application.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="brickBreakerEX.GameOverController">
    <children>
-      <Label fx:id="message" alignment="CENTER" layoutX="167.0" layoutY="69.0" prefHeight="350.0" prefWidth="1000.0" text="🎊Your Score🎊" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="150.0">
+      <Label fx:id="message" alignment="CENTER" layoutX="24.0" layoutY="46.0" prefHeight="350.0" prefWidth="1257.0" text="🎊Your Score🎊" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
          <font>
-            <Font size="48.0" />
+            <Font size="70.0" />
          </font>
          <effect>
             <Lighting>
@@ -31,28 +31,33 @@
             </Lighting>
          </effect>
       </Label>
-      <Label fx:id="score" alignment="CENTER" layoutX="431.0" layoutY="395.0" prefHeight="70.0" prefWidth="470.0" text="--">
+      <Label fx:id="score" alignment="CENTER" layoutX="430.0" layoutY="337.0" prefHeight="70.0" prefWidth="480.0" text="--">
          <font>
             <Font size="24.0" />
          </font></Label>
-      <Button layoutX="431.0" layoutY="538.0" mnemonicParsing="false" onAction="#switchToMenu" prefHeight="70.0" prefWidth="470.0" styleClass="transperent-but" text="Return to Menu">
+      <Button fx:id="rToMenu" layoutX="430.0" layoutY="559.0" mnemonicParsing="false" onAction="#switchToMenu" prefHeight="70.0" prefWidth="470.0" styleClass="transperent-but" text="Return to Menu">
          <font>
             <Font size="18.0" />
          </font>
       </Button>
-      <Button fx:id="tryAgain" layoutX="431.0" layoutY="419.0" mnemonicParsing="false" onAction="#restartLevel" prefHeight="70.0" prefWidth="470.0" styleClass="transperent-but" text="Try Again">
+      <Button fx:id="tryAgain" layoutX="430.0" layoutY="455.0" mnemonicParsing="false" onAction="#restartLevel" prefHeight="70.0" prefWidth="470.0" styleClass="transperent-but" text="Try Again">
          <font>
             <Font size="18.0" />
          </font>
       </Button>
-      <TextField fx:id="nameTF" layoutX="683.0" layoutY="465.0" prefColumnCount="3" prefHeight="55.0" prefWidth="218.0">
+      <TextField fx:id="nameTF" layoutX="629.0" layoutY="414.0" prefColumnCount="3" prefHeight="55.0" prefWidth="218.0">
          <font>
             <Font size="18.0" />
          </font></TextField>
-      <Label fx:id="enterName" layoutX="431.0" layoutY="465.0" prefHeight="55.0" prefWidth="243.0" text="Enter name :">
+      <Label fx:id="enterName" layoutX="374.0" layoutY="414.0" prefHeight="55.0" prefWidth="243.0" text="Enter name :">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
+      <Button fx:id="enter" layoutX="867.0" layoutY="414.0" mnemonicParsing="false" onAction="#enteredName" prefHeight="55.0" prefWidth="180.0" text="Enter">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>
