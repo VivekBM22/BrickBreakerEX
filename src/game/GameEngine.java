@@ -384,7 +384,7 @@ public class GameEngine {
 		double ballCProj, paddleAProj, paddleBProj, paddleCProj, paddleDProj;
 		double ballMinProj, ballMaxProj, paddleMinProj, paddleMaxProj;
 		double ballX, ballY;
-		Vector2D axis1, axis2, axis3, mtv; // mtv -> Minimum Translation Vector
+		Vector2D axis, mtv; // mtv -> Minimum Translation Vector
 		double overlap, backtrack = 0; // overlap -> Magnitude of mtv
 		boolean reflect = false;
 		
@@ -392,7 +392,6 @@ public class GameEngine {
 		ballY = ball.getYCoord();
 		
 		//Checking along first axis
-		//axis1 = new Vector2D(0, -1);
 		ballMaxProj = -ballY + Ball.BALL_SIZE/2.0;
 		ballMinProj = -ballY - Ball.BALL_SIZE/2.0;
 		paddleMaxProj = paddleAProj = -paddle.getAY();
@@ -402,19 +401,13 @@ public class GameEngine {
 		else {
 			reflect = true;
 			overlap = paddleMaxProj - ballMinProj;
-			//mtv = axis1;
 			mtv = new Vector2D(0, -1);
 			backtrack = overlap / Math.abs(mtv.dot(ball.getVelocityUnitVector()));
-			if(ballMaxProj - paddleMinProj < overlap) {
+			if(ballMaxProj - paddleMinProj < overlap)
 				reflect = false;
-				/*overlap = ballMaxProj - paddleMinProj;
-				mtv = axis1.getReversed();
-				backtrack = overlap;*/
-			}
 		}
 		
 		//Checking along second axis
-		//axis2 = new Vector2D(1, 0);
 		ballMaxProj = ballX + Ball.BALL_SIZE/2.0;
 		ballMinProj = ballX - Ball.BALL_SIZE/2.0;
 		paddleMaxProj = paddleBProj = paddle.getBX();
@@ -422,29 +415,21 @@ public class GameEngine {
 		if(ballMaxProj < paddleMinProj || ballMinProj > paddleMaxProj)
 			return 0;
 		else {
-			if(paddleMaxProj - ballMinProj < overlap) {
+			if(paddleMaxProj - ballMinProj < overlap)
 				reflect = false;
-				/*overlap = paddleMaxProj - ballMinProj;
-				mtv = axis2;
-				backtrack = overlap;*/
-			}
-			if(ballMaxProj - paddleMinProj < overlap) {
+			if(ballMaxProj - paddleMinProj < overlap)
 				reflect = false;
-				/*overlap = ballMaxProj - paddleMinProj;
-				mtv = axis2.getReversed();
-				backtrack = overlap;*/
-			}
 		}
 		
 		//Checking along third axis
-		axis3 = paddle.normalToClosestCorner(ballX, ballY);
-		ballCProj = axis3.dot(ballX, ballY);
+		axis = paddle.normalToClosestCorner(ballX, ballY);
+		ballCProj = axis.dot(ballX, ballY);
 		ballMaxProj = ballCProj + Ball.BALL_SIZE/2.0;
 		ballMinProj = ballCProj - Ball.BALL_SIZE/2.0;
-		paddleMinProj = paddleAProj = axis3.dot(paddle.getAX(), paddle.getAY());
-		paddleBProj = axis3.dot(paddle.getBX(), paddle.getBY());
-		paddleCProj = axis3.dot(paddle.getCX(), paddle.getCY());
-		paddleDProj = axis3.dot(paddle.getDX(), paddle.getDY());
+		paddleMinProj = paddleAProj = axis.dot(paddle.getAX(), paddle.getAY());
+		paddleBProj = axis.dot(paddle.getBX(), paddle.getBY());
+		paddleCProj = axis.dot(paddle.getCX(), paddle.getCY());
+		paddleDProj = axis.dot(paddle.getDX(), paddle.getDY());
 		if(paddleBProj < paddleMinProj)
 			paddleMinProj = paddleBProj;
 		if(paddleCProj < paddleMinProj)
@@ -463,12 +448,8 @@ public class GameEngine {
 		if(ballMaxProj < paddleMinProj || ballMinProj > paddleMaxProj)
 			return 0;
 		else {
-			if(ballMaxProj - paddleMinProj < overlap) {
+			if(ballMaxProj - paddleMinProj < overlap)
 				reflect = false;
-				/*overlap = ballMaxProj - paddleMinProj;
-				mtv = axis3;
-				backtrack = -overlap;*/
-			}
 		}
 		
 		if(reflect)
@@ -483,10 +464,8 @@ public class GameEngine {
 			
 			return 1;
 		}
-		else {
-			//ball.move(backtrack, mtv);
+		else
 			ball.setY(paddle.getY() + (int)(Ball.BALL_SIZE_2 + Paddle.PADDLE_HEIGHT_2));
-		}
 		System.out.println("MTV: " + mtv);
 
 		return -1; //0: No Collision, 1: Reflect, -1: No Reflect
