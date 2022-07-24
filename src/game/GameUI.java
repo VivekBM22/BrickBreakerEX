@@ -34,6 +34,8 @@ public class GameUI  {
 		primaryStage.setScene(scene);
 		primaryStage.show();
 		
+		gamePane.setTranslateX(10);
+		gamePane.setTranslateY(35);
 		root.getChildren().add(gamePane);
 	
 		Label timeLabel = new Label();
