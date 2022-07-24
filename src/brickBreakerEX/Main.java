@@ -16,6 +16,7 @@ public class Main extends Application {
 			Scene scene = new Scene(root, 1300, 800);
 			//String css = this.getClass().getResource("/application.css").toExternalForm();
 			//scene.getStylesheets().add(css);
+			primaryStage.setResizable(false);
 			primaryStage.setTitle("BRICK BREAKER EX");
 			primaryStage.setScene(scene);
 			primaryStage.show();
