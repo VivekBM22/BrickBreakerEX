@@ -17,10 +17,39 @@
       </Label>
       <TableView layoutX="75.0" layoutY="200.0" prefHeight="500.0" prefWidth="350.0" AnchorPane.leftAnchor="75.0">
         <columns>
-          <TableColumn minWidth="-1.0" prefWidth="50.0" text="C1" />
-          <TableColumn prefWidth="150.0" text="C2" />
-            <TableColumn minWidth="-1.0" prefWidth="150.0" text="Column X" />
+          <TableColumn minWidth="-1.0" prefWidth="50.0" />
+          <TableColumn prefWidth="150.0" text="Name" />
+            <TableColumn minWidth="-1.0" prefWidth="150.0" text="Score" />
         </columns>
       </TableView>
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="75.0" layoutY="150.0" prefHeight="50.0" prefWidth="350.0" text="Tournament">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <TableView layoutX="875.0" layoutY="200.0" prefHeight="500.0" prefWidth="350.0">
+         <columns>
+            <TableColumn minWidth="-1.0" prefWidth="50.0" />
+            <TableColumn prefWidth="150.0" text="Name" />
+            <TableColumn minWidth="-1.0" prefWidth="150.0" text="Score" />
+         </columns>
+      </TableView>
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="875.0" layoutY="150.0" prefHeight="50.0" prefWidth="350.0" text="Tournament EX">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <TableView layoutX="475.0" layoutY="200.0" prefHeight="500.0" prefWidth="350.0">
+         <columns>
+            <TableColumn minWidth="-1.0" prefWidth="50.0" />
+            <TableColumn prefWidth="150.0" text="Name" />
+            <TableColumn minWidth="-1.0" prefWidth="150.0" text="Score" />
+         </columns>
+      </TableView>
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="475.0" layoutY="150.0" prefHeight="50.0" prefWidth="350.0" text="Time Trial">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

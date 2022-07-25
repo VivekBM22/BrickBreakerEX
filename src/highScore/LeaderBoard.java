@@ -91,7 +91,7 @@ public class LeaderBoard {
     }
 
     public static void insertScore(String name, int score, LeaderBoard leaderBoard) {
-        int i=0;
+        int i;
         for(i = 9; i > 0 && leaderBoard.score[i-1] < score; i--) {
             leaderBoard.name[i] = leaderBoard.name[i-1];
             leaderBoard.score[i] = leaderBoard.score[i-1];
