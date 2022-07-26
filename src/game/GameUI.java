@@ -4,12 +4,10 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.PixelReader;
-import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.Node;
@@ -34,10 +32,14 @@ public class GameUI  {
 		primaryStage.setScene(scene);
 		primaryStage.show();
 		
+		//gamePane.setStyle(" -fx-stroke:5px; \n" + " -fx-stroke-fill:black;");
 		gamePane.setTranslateX(10);
 		gamePane.setTranslateY(35);
 		root.getChildren().add(gamePane);
-	
+		
+		//Adding image background 
+		//root.setStyle("-fx-background-image :  url('file:../../resources/arcade_background.jpg'); \n" + "-fx-background-size: cover;");
+
 		Label timeLabel = new Label();
 		gamePane.getChildren().add(timeLabel);
 		
