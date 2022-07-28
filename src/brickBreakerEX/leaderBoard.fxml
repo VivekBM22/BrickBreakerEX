@@ -15,11 +15,11 @@
             <Font size="50.0" />
          </font>
       </Label>
-      <TableView layoutX="75.0" layoutY="200.0" prefHeight="500.0" prefWidth="350.0" AnchorPane.leftAnchor="75.0">
+      <TableView fx:id="TM" layoutX="75.0" layoutY="200.0" prefHeight="500.0" prefWidth="350.0" AnchorPane.leftAnchor="75.0">
         <columns>
-          <TableColumn minWidth="-1.0" prefWidth="50.0" />
-          <TableColumn prefWidth="150.0" text="Name" />
-            <TableColumn minWidth="-1.0" prefWidth="150.0" text="Score" />
+          <TableColumn fx:id="TM1" minWidth="-1.0" prefWidth="50.0" text="No." />
+          <TableColumn fx:id="TM2" prefWidth="150.0" text="Name" />
+            <TableColumn fx:id="TM3" minWidth="-1.0" prefWidth="150.0" text="Score" />
         </columns>
       </TableView>
       <Label alignment="CENTER" contentDisplay="CENTER" layoutX="75.0" layoutY="150.0" prefHeight="50.0" prefWidth="350.0" text="Tournament">
@@ -27,11 +27,11 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <TableView layoutX="875.0" layoutY="200.0" prefHeight="500.0" prefWidth="350.0">
+      <TableView fx:id="THM" layoutX="875.0" layoutY="200.0" prefHeight="500.0" prefWidth="350.0">
          <columns>
-            <TableColumn minWidth="-1.0" prefWidth="50.0" />
-            <TableColumn prefWidth="150.0" text="Name" />
-            <TableColumn minWidth="-1.0" prefWidth="150.0" text="Score" />
+            <TableColumn fx:id="THM1" minWidth="-1.0" prefWidth="50.0" text="No." />
+            <TableColumn fx:id="THM2" prefWidth="150.0" text="Name" />
+            <TableColumn fx:id="THM3" minWidth="-1.0" prefWidth="150.0" text="Score" />
          </columns>
       </TableView>
       <Label alignment="CENTER" contentDisplay="CENTER" layoutX="875.0" layoutY="150.0" prefHeight="50.0" prefWidth="350.0" text="Tournament EX">
@@ -39,11 +39,11 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <TableView layoutX="475.0" layoutY="200.0" prefHeight="500.0" prefWidth="350.0">
+      <TableView fx:id="TTM" layoutX="475.0" layoutY="200.0" prefHeight="500.0" prefWidth="350.0">
          <columns>
-            <TableColumn minWidth="-1.0" prefWidth="50.0" />
-            <TableColumn prefWidth="150.0" text="Name" />
-            <TableColumn minWidth="-1.0" prefWidth="150.0" text="Score" />
+            <TableColumn fx:id="TTM1" minWidth="-1.0" prefWidth="50.0" text="No." />
+            <TableColumn fx:id="TTM2" prefWidth="150.0" text="Name" />
+            <TableColumn fx:id="TTM3" minWidth="-1.0" prefWidth="150.0" text="Score" />
          </columns>
       </TableView>
       <Label alignment="CENTER" contentDisplay="CENTER" layoutX="475.0" layoutY="150.0" prefHeight="50.0" prefWidth="350.0" text="Time Trial">

@@ -6,7 +6,6 @@ import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 
-
 public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
@@ -16,6 +15,7 @@ public class Main extends Application {
 			Scene scene = new Scene(root, 1300, 800);
 			//String css = this.getClass().getResource("/application.css").toExternalForm();
 			//scene.getStylesheets().add(css);
+			//root.setDisable(true);
 			primaryStage.setResizable(false);
 			primaryStage.setTitle("BRICK BREAKER EX");
 			primaryStage.setScene(scene);

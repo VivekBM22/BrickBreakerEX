@@ -5,4 +5,6 @@ module Test {
 	requires javafx.fxml;
 	
 	opens brickBreakerEX to javafx.graphics, javafx.fxml;
+	
+	exports brickBreakerEX;
 }

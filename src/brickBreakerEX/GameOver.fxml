@@ -35,14 +35,14 @@
          <font>
             <Font size="24.0" />
          </font></Label>
-      <Button fx:id="rToMenu" layoutX="430.0" layoutY="559.0" mnemonicParsing="false" onAction="#switchToMenu" prefHeight="70.0" prefWidth="470.0" styleClass="transperent-but" text="Return to Menu">
+      <Button fx:id="rToMenu" layoutX="414.0" layoutY="561.0" mnemonicParsing="false" onAction="#switchToMenu" prefHeight="70.0" prefWidth="500.0" styleClass="transperent-but" text="Return to Menu">
          <font>
-            <Font size="18.0" />
+            <Font size="24.0" />
          </font>
       </Button>
-      <Button fx:id="tryAgain" layoutX="430.0" layoutY="455.0" mnemonicParsing="false" onAction="#restartLevel" prefHeight="70.0" prefWidth="470.0" styleClass="transperent-but" text="Try Again">
+      <Button fx:id="tryAgain" layoutX="420.0" layoutY="455.0" mnemonicParsing="false" onAction="#restartLevel" prefHeight="70.0" prefWidth="500.0" styleClass="transperent-but" text="Try Again">
          <font>
-            <Font size="18.0" />
+            <Font size="24.0" />
          </font>
       </Button>
       <TextField fx:id="nameTF" layoutX="681.0" layoutY="407.0" prefColumnCount="3" prefHeight="55.0" prefWidth="218.0" AnchorPane.leftAnchor="681.0">

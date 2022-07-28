@@ -16,7 +16,6 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 public class GameOverController {
-	private String username;
 	private int gScore;
 	@FXML
 	Button tryAgain;
