@@ -39,7 +39,7 @@ public class LeaderBoardController implements Initializable{
 	private Scene scene;
 	private Parent root;
 	
-	public void switchToMenu( ActionEvent event) throws IOException {
+	public void switchToMenu(ActionEvent event) throws IOException {
 		root = FXMLLoader.load(getClass().getResource("Menu.fxml"));
 		scene = new Scene(root, 1300, 800);
 		stage = (Stage)((Node)event.getSource()).getScene().getWindow();
@@ -80,23 +80,12 @@ public class LeaderBoardController implements Initializable{
         }
         return sbd;
     }
-	
-	public void setTableTM() {
-		TM.setItems(getTMData());
-	}
-	
-	public void setTableTTM() {
-		TTM.setItems(getTTMData());
-	}
-	
-	public void setTableTHM() {
-		THM.setItems(getTHMData());
-	}
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// TODO Auto-generated method stub
         //Cell value factory creation
+
         TM1.setCellValueFactory(new PropertyValueFactory<scoreBoardDetails,Integer>("position"));
         TM2.setCellValueFactory(new PropertyValueFactory<scoreBoardDetails,String>("name"));
         TM3.setCellValueFactory(new PropertyValueFactory<scoreBoardDetails,Integer>("score"));
