@@ -37,8 +37,8 @@ public class GameUI  {
 		root.getChildren().add(gamePane);
 		
 		//Adding image background 
-		//root.setStyle("-fx-background-image :  url('file:../../resources/arcade_background.jpg'); \n" + "-fx-background-size: cover;");
-
+//		root.setStyle("-fx-background-image :  url('file:../../resources/Background.png'); \n" );
+		root.setStyle("-fx-background-color :  #000000" );
 		Label timeLabel = new Label();
 		gamePane.getChildren().add(timeLabel);
 		

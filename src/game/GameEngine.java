@@ -790,11 +790,11 @@ public class GameEngine {
 	
 	void levelCheck(long curNanoTime) {
 		if(status == WON) {
-			if(mode != GameInfo.LEVEL_SELECT_MODE && level <= GameInfo.LEVEL_COUNT)
+			if(mode != GameInfo.LEVEL_SELECT_MODE && mode != GameInfo.LEVEL_SELECT_HARD_MODE && level <= GameInfo.LEVEL_COUNT)
 				levelInfo[level - 1] = new LevelInfo(livesLost, getGameTime(curNanoTime)/1000000);
 				
 			gameTimer.stop();
-			if(mode != GameInfo.LEVEL_SELECT_MODE && level < GameInfo.LEVEL_COUNT) {
+			if(mode != GameInfo.LEVEL_SELECT_MODE && mode != GameInfo.LEVEL_SELECT_HARD_MODE && level < GameInfo.LEVEL_COUNT) {
 				level++;
 				new AnimationTimer() {
 					public void handle(long currentNanoTime) {
