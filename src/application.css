@@ -12,30 +12,67 @@
 //  -fx-margin: 4px 2px;
 //}
 //}
-
-@font-face {
-    -fx-font-family: 'Press Start 2P';
-    src: url('fonts/PressStart2P-Regular.ttf');
-}
-
 //.button:hover {
 //    -fx-stroke: #808080;
 //    -fx-stroke-width: 2px;
 //    -fx-background-color : rgba(0,0,0,0);
 //}
 
+@font-face {
+    -fx-font-family: 'Press Start 2P';
+    src: url('fonts/PressStart2P-Regular.ttf');
+}
+
+.TableView{
+//    -fx-table-cell-border-color: transparent;
+//    -fx-background-color: rgba(0,0,0,0);
+    -fx-font-family : 'Press Start 2P';
+}
+
+.tablecolumn {
+    -fx-table-cell-border-color: transparent;
+    -fx-background-color: rgba(0,0,0,0);
+    -fx-font-family : 'Press Start 2P';
+}
+
+
 .label{
 	-fx-font-family : 'Press Start 2P';
+	-fx-text-fill : #FFFFFF; 
+}
+
+.label{
+	-fx-font-family : 'Press Start 2P';
+	-fx-text-fill : #FFFFFF; 
+}
+
+.TableView:disabled
+{
+	-fx-opacity: 100%;
+}
+
+.TableView .column-header .label:disabled
+{
+	-fx-opacity: 100%;
+}
+
+
+.TableView .column-header 
+{
+    -fx-background-color: #AAAAAA;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.6), 2, 0.5, 1, 1);
 }
 
 .button{
 	-fx-font-family : 'Press Start 2P';
 	-fx-background-color : rgba(0,0,0,0);
-//	-fx-text-fill : #FFFFFF; 
+	-fx-text-fill : #FFFFFF; 
 }
 
 .button:hover{
-	-fx-font-size : 36px;
+	-fx-font-size : 36px;	
 }
 
 .button:pressed{
@@ -46,37 +83,39 @@
 	-fx-font-size : 36px;
 }
 
-.music{
-	-fx-shape : "M10.717 3.55A.5.5 0 0 1 11 4v8a.5.5 0 0 1-.812.39L7.825 10.5H5.5A.5.5 0 0 1 5 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06zM10 5.04 8.312 6.39A.5.5 0 0 1 8 6.5H6v3h2a.5.5 0 0 1 .312.11L10 10.96V5.04z" ;
-	-fx-background-color: #111111;
-}
 
-.music-cut{
-	-fx-shape : "M6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06zM6 5.04 4.312 6.39A.5.5 0 0 1 4 6.5H2v3h2a.5.5 0 0 1 .312.11L6 10.96V5.04zm7.854.606a.5.5 0 0 1 0 .708L12.207 8l1.647 1.646a.5.5 0 0 1-.708.708L11.5 8.707l-1.646 1.647a.5.5 0 0 1-.708-.708L10.793 8 9.146 6.354a.5.5 0 1 1 .708-.708L11.5 7.293l1.646-1.647a.5.5 0 0 1 .708 0z" ;
-	-fx-background-color: #111111;
-}
+//.music{
+//	-fx-shape : "M10.717 3.55A.5.5 0 0 1 11 4v8a.5.5 0 0 1-.812.39L7.825 10.5H5.5A.5.5 0 0 1 5 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06zM10 5.04 8.312 6.39A.5.5 0 0 1 8 6.5H6v3h2a.5.5 0 0 1 .312.11L10 10.96V5.04z" ;
+//	-fx-background-color: #111111;
+//}
+//
+//.music-cut{
+//	-fx-shape : "M6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06zM6 5.04 4.312 6.39A.5.5 0 0 1 4 6.5H2v3h2a.5.5 0 0 1 .312.11L6 10.96V5.04zm7.854.606a.5.5 0 0 1 0 .708L12.207 8l1.647 1.646a.5.5 0 0 1-.708.708L11.5 8.707l-1.646 1.647a.5.5 0 0 1-.708-.708L10.793 8 9.146 6.354a.5.5 0 1 1 .708-.708L11.5 7.293l1.646-1.647a.5.5 0 0 1 .708 0z" ;
+//	-fx-background-color: #111111;
+//}
 
 .back_Button {
 	-fx-shape : "M 512 185.823 H 232.213 l 70.136 -70.136 L 221.331 34.67 L 0 256.001 l 221.331 221.33 l 81.018 -81.018 l -70.136 -70.136 H 512 V 185.823 Z M 491.915 306.093 H 183.723 l 90.221 90.221 l -52.614 52.613 L 28.404 256.001 L 221.331 63.077 l 52.614 52.612 l -90.221 90.221 h 308.191 V 306.093 Z";
-	-fx-background-color: #111111;
+	-fx-background-color: #FFFFFF;
 }
 
 .back_Button:hover {
-	-fx-shape : "M 512 185.823 H 232.213 l 70.136 -70.136 L 221.331 34.67 L 0 256.001 l 221.331 221.33 l 81.018 -81.018 l -70.136 -70.136 H 512 V 185.823 Z M 491.915 306.093 H 183.723 l 90.221 90.221 l -52.614 52.613 L 28.404 256.001 L 221.331 63.077 l 52.614 52.612 l -90.221 90.221 h 308.191 V 306.093 Z";
-	-fx-background-color: #808080;
+	-fx-shape : "M 512 185.823 H 232.213 l 70.136 -70.136 L 221.331 34.67 L 0 256.001 l 221.331 221.33 l 81.018 -81.018 l -70.136 -70.136 H 512 V 185.823 Z";
+	-fx-background-color: #FFFFFF;
 }
 
 .back_Button:focused {
-	-fx-shape : "M 512 185.823 H 232.213 l 70.136 -70.136 L 221.331 34.67 L 0 256.001 l 221.331 221.33 l 81.018 -81.018 l -70.136 -70.136 H 512 V 185.823 Z M 491.915 306.093 H 183.723 l 90.221 90.221 l -52.614 52.613 L 28.404 256.001 L 221.331 63.077 l 52.614 52.612 l -90.221 90.221 h 308.191 V 306.093 Z";
-	-fx-background-color: #808080;
+	-fx-shape : "M 512 185.823 H 232.213 l 70.136 -70.136 L 221.331 34.67 L 0 256.001 l 221.331 221.33 l 81.018 -81.018 l -70.136 -70.136 H 512 V 185.823 Z";
+	-fx-background-color: #FFFFFF;
 }
 
- 
-////////////////////////
-//.menuBackground{
-//	-fx-background-image :  url('file:../../resources/background_menu.png');
-//}
-////////////////////
+
+//////////////////////
+.menuBackground{
+	-fx-background-image :  url('file:../../resources/background_menu.png');
+	-fx-opacity : 92%;
+}
+//////////////////
 
 // (D/ashwi/College/s6/mini_project/Brick_Breaker_EX/BrickBreakerEX/)
 

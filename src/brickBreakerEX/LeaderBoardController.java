@@ -101,6 +101,7 @@ public class LeaderBoardController implements Initializable{
 		TM.setItems(getTMData());
 		TTM.setItems(getTTMData());
 		THM.setItems(getTHMData());
+		
 	}
 	
 }
