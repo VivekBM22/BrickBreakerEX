@@ -109,6 +109,9 @@
 	-fx-background-color: #FFFFFF;
 }
 
+.table-row-cell {
+    -fx-cell-size: 47px;
+}
 
 //////////////////////
 .menuBackground{
