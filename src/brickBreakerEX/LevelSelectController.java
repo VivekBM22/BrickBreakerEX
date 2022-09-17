@@ -2,6 +2,7 @@ package brickBreakerEX;
 
 import java.io.IOException;
 
+import game.GameUI;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -22,7 +23,8 @@ public class LevelSelectController {
 		String l = ((Button)e.getSource()).getText();
 		level = Integer.parseInt(l);
 		
-		game.GameUI.begin(e, mode, level);
+		GameUI GUI = new GameUI();
+		GUI.begin(e, mode, level);
 	}
 	
 	public void switchToDifficultySelect( ActionEvent event ) throws IOException {

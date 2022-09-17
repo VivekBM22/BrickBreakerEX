@@ -104,7 +104,8 @@ public class GameOverController {
 	}
 	
 	public void restartLevel(ActionEvent event) {
-		game.GameUI.begin(event, GameUI.mode, GameUI.level);
+		GameUI GUI = new GameUI();
+		GUI.begin(event, GameUI.mode, GameUI.level);
 	}
 	
 	public void switchToMenu( ActionEvent event) throws IOException {

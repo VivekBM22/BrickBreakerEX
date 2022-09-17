@@ -21,7 +21,7 @@
          <font>
             <Font size="24.0" />
          </font></Label>
-      <Button fx:id="rToMenu" layoutX="389.0" layoutY="563.0" mnemonicParsing="false" onAction="#switchToMenu" prefHeight="70.0" prefWidth="550.0" styleClass="transperent-but" text="Return to Menu">
+      <Button fx:id="rToMenu" layoutX="170.0" layoutY="563.0" mnemonicParsing="false" onAction="#switchToMenu" prefHeight="70.0" prefWidth="1000.0" styleClass="transperent-but" text="Return to Menu">
          <font>
             <Font size="24.0" />
          </font>
