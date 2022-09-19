@@ -1,15 +1,15 @@
 @font-face {
-    -fx-font-family: 'Press Start 2P';
+    -fx-font-family: 'Press_Start_2P';
     src: url('fonts/PressStart2P-Regular.ttf');
 }
 
 .label{
-	-fx-font-family : 'Press Start 2P';
+	-fx-font-family : 'Press_Start_2P';
 	-fx-text-fill : #FFFFFF; 
 }
 
 .button{
-	-fx-font-family : 'Press Start 2P';
+	-fx-font-family : 'Press_Start_2P';
 	-fx-background-color : rgba(0,0,0,0);
 	-fx-text-fill : #FFFFFF; 
 }
