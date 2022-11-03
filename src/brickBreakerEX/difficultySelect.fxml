@@ -5,11 +5,18 @@
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.effect.Bloom?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="800.0" prefWidth="1300.0" styleClass="menuBackground" stylesheets="@../application.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="brickBreakerEX.DifficultySelectContoller">
+<AnchorPane prefHeight="800.0" prefWidth="1300.0" stylesheets="@../application.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="brickBreakerEX.DifficultySelectContoller">
    <children>
+      <ImageView fitHeight="800.0" fitWidth="1300.0">
+         <image>
+            <Image url="@../../resources/Background_menu.png" />
+         </image>
+      </ImageView>
       <Label alignment="CENTER" layoutX="127.0" layoutY="129.0" prefHeight="250.0" prefWidth="1100.0" text="Difficulty Select" AnchorPane.bottomAnchor="390.0" AnchorPane.leftAnchor="130.0" AnchorPane.rightAnchor="130.0" AnchorPane.topAnchor="140.0">
          <font>
             <Font size="58.0" />

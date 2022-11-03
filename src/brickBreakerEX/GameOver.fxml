@@ -4,11 +4,18 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.Bloom?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="800.0" prefWidth="1300.0" styleClass="menuBackground" stylesheets="@../application.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="brickBreakerEX.GameOverController">
+<AnchorPane prefHeight="800.0" prefWidth="1300.0" stylesheets="@../application.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="brickBreakerEX.GameOverController">
    <children>
+      <ImageView fitHeight="900.0" fitWidth="1300.0">
+         <image>
+            <Image url="@../../resources/Background_menu.png" />
+         </image>
+      </ImageView>
       <Label fx:id="message" alignment="CENTER" layoutX="24.0" layoutY="46.0" prefHeight="350.0" prefWidth="1257.0" text="🎊Your Score🎊" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
          <font>
             <Font size="70.0" />

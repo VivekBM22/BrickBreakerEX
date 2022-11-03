@@ -293,7 +293,7 @@ public class GameInfo {
 				bi = new BrickInfo( 1100 - Brick.BRICK_HEIGHT, 400 - Brick.BRICK_LENGTH*2, Math.PI/2, 3);
 				brickInfoList.add(bi);
 			} else if(level == 4) {
-				levelTime = 20;
+				levelTime = 600;
 				bi = new BrickInfo( 860, 460, -Math.PI/6, 3);
 				brickInfoList.add(bi);
 				bi = new BrickInfo( 315, 210, -Math.PI/6, 3);

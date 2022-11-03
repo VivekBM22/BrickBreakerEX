@@ -12,11 +12,11 @@
 .tablecolumn {
     -fx-table-cell-border-color: transparent;
     -fx-background-color: rgba(0,0,0,0);
-    -fx-font-family : 'Press_Start_2P';
+    -fx-font-family : 'Press Start 2P';
 }
 
 .label{
-	-fx-font-family : 'Press_Start_2P';
+	-fx-font-family : 'Press Start 2P';
 	-fx-text-fill : #FFFFFF; 
 }
 
@@ -40,7 +40,7 @@
 }
 
 .button{
-	-fx-font-family : 'Press_Start_2P';
+	-fx-font-family : 'Press Start 2P';
 	-fx-background-color : rgba(0,0,0,0);
 	-fx-text-fill : #FFFFFF; 
 }
@@ -79,11 +79,12 @@
 
 //////////////////////
 .menuBackground{
-	-fx-background-image :  url('file:../../resources/background_menu.png');
+	-fx-background-image :  url("../resources/background_menu.png");
 	-fx-opacity : 92%;
 }
 //////////////////
-// (D/ashwi/College/s6/mini_project/Brick_Breaker_EX/BrickBreakerEX/)
+
+// (D:/ashwi/College/s6/mini_project/Brick_Breaker_EX/BrickBreakerEX/)
 
 //.button2 {border-radius: 4px;}
 //.button3 {border-radius: 8px;}

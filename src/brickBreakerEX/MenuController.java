@@ -10,6 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 public class MenuController {
@@ -18,8 +19,7 @@ public class MenuController {
 	private Parent root;
 	
 	@FXML
-	private AnchorPane Escene;
-	
+	private StackPane Escene1;
 	
 	public void switchToGameModes( ActionEvent event) throws IOException {
 		root = FXMLLoader.load(getClass().getResource("GameModes.fxml"));
@@ -38,7 +38,7 @@ public class MenuController {
 	}
 	
 	public void logout(ActionEvent e) {
-		stage = (Stage) Escene.getScene().getWindow();
+		stage = (Stage) Escene1.getScene().getWindow();
 		stage.close();
 	}
 	
