@@ -16,7 +16,7 @@
             <Image url="@../../resources/Background_menu.png" />
          </image>
       </ImageView>
-      <AnchorPane stylesheets="@../application.css">
+      <AnchorPane style="-fx-background-color: black;" stylesheets="@../application.css">
          <children>
             <Button layoutX="415.0" layoutY="439.6000061035156" mnemonicParsing="false" onAction="#switchToGameModes" onTouchMoved="#hoverOn" onTouchPressed="#hoverOn" onTouchReleased="#hoverOn" onTouchStationary="#hoverOn" prefHeight="70.0" prefWidth="450.0" stylesheets="@../application.css" text="Start" AnchorPane.bottomAnchor="290.0" AnchorPane.leftAnchor="425.0" AnchorPane.rightAnchor="425.0">
                <font>
