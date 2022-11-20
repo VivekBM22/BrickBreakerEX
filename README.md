@@ -26,8 +26,9 @@ Made with Java and JavaFX API.
 GUI made with the help of SceneBuilder.
 
 ## Setup
+- Be sure to have java, jre in your machine ( preferred to have the latest version ).
 - Download the newest version from releases directory.
-- Check the README.txt in the directory to see how to run the application.
+- Check the README.txt on how to run the jar file.
 
 ## Approach
 lore ipsum
