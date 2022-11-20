@@ -1,4 +1,7 @@
 #Ignore the bin files
 bin
 
+.settings
+build.fxbuild
+
 

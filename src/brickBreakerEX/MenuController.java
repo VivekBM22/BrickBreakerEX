@@ -21,7 +21,7 @@ public class MenuController {
 	private StackPane root;
 	
 	@FXML
-	private StackPane Escene1;
+	private AnchorPane Escene1;
 	
 	public void switchToGameModes( ActionEvent event) throws IOException {
 		Image image = new Image("Background_menu.png");
@@ -50,7 +50,7 @@ public class MenuController {
 	}
 	
 	public void logout(ActionEvent e) {
-		stage = (Stage) Escene1.getScene().getWindow();
+		stage = (Stage)Escene1.getScene().getWindow();
 		stage.close();
 	}
 	
