@@ -1,7 +1,7 @@
 # BRICK BREAKER EX
 
 ## Demo link:
-Access my site at [google.com](https://google.com)
+Access the game from releases.
 
 ## Table of Content:
 
@@ -15,28 +15,30 @@ Access my site at [google.com](https://google.com)
 - [License](#license)
 
 ## About The App
-[Name of project] is an app that ...
+The Brick-Breaker game but more fun and made with JavaFX 
 
 ## Screenshots
+`
+`
 
 ## Technologies
-Made with 
+Made with Java and JavaFX api.
 
 ## Setup
-- download or clone the repository
-- run `npm install`
-- ...
+- download the first version from releases.
 
 ## Approach
-I adopted the `BEM` naming style for my css class names and ...
+lore ipsum
 
 ## Status
-[name of project] is still in progress. `Version 2` will be out soon.
+Project completed.
 
 ## Credits
 List of contriubutors:
-- [John Doe](johndoe.com)
-- [Beginners guide to BEM](link-goes-here.com)
+- [Vivek B Malikayel](https://github.com/VivekBM22)
+- [Ashwin Sam George](https://github.com/AshwinC8)
+- [Adithya S Kartha](https://github.com/AadiSKartha)
+
 
 ## License
-MIT license @ [author](author.com)
+MIT license
