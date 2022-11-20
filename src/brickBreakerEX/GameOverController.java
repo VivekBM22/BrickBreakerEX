@@ -1,7 +1,6 @@
 package brickBreakerEX;
 
 import java.io.IOException;
-
 import game.GameUI;
 import highScore.LeaderBoard;
 import javafx.event.ActionEvent;
@@ -13,6 +12,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 public class GameOverController {
@@ -109,7 +112,12 @@ public class GameOverController {
 	}
 	
 	public void switchToMenu( ActionEvent event) throws IOException {
-		Parent root = FXMLLoader.load(getClass().getResource("Menu.fxml"));
+		Image image = new Image("Background_menu.png");
+		ImageView imageV = new ImageView();
+		imageV.setImage(image);
+		AnchorPane menu = FXMLLoader.load(getClass().getResource("Menu.fxml"));
+		StackPane root = new StackPane(imageV, menu);
+	
 		Scene scene = new Scene(root, 1300, 800);
 		Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
 		stage.setScene(scene);

@@ -9,6 +9,8 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -16,13 +18,18 @@ import javafx.stage.Stage;
 public class MenuController {
 	private Stage stage;
 	private Scene scene;
-	private Parent root;
+	private StackPane root;
 	
 	@FXML
 	private StackPane Escene1;
 	
 	public void switchToGameModes( ActionEvent event) throws IOException {
-		root = FXMLLoader.load(getClass().getResource("GameModes.fxml"));
+		Image image = new Image("Background_menu.png");
+		ImageView imageV = new ImageView();
+		imageV.setImage(image);
+		AnchorPane menu = FXMLLoader.load(getClass().getResource("GameModes.fxml"));
+		root = new StackPane(imageV, menu);
+		
 		scene = new Scene(root, 1300, 800);
 		stage = (Stage)((Node)event.getSource()).getScene().getWindow();
 		stage.setScene(scene);
@@ -30,7 +37,12 @@ public class MenuController {
 	}
 	
 	public void switchToLeaderboard( ActionEvent event) throws IOException {
-		root = FXMLLoader.load(getClass().getResource("leaderBoard.fxml"));
+		Image image = new Image("Background_menu.png");
+		ImageView imageV = new ImageView();
+		imageV.setImage(image);
+		AnchorPane menu = FXMLLoader.load(getClass().getResource("leaderBoard.fxml"));
+		root = new StackPane(imageV, menu);
+		
 		scene = new Scene(root, 1300, 800);
 		stage = (Stage)((Node)event.getSource()).getScene().getWindow();
 		stage.setScene(scene);
