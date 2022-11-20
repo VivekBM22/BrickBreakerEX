@@ -27,7 +27,7 @@ GUI made with the help of SceneBuilder.
 
 ## Setup
 - Be sure to have java, jre in your machine ( preferred to have the latest version ).
-- Download the newest version from releases directory.
+- Download the newest version from releases.
 - Check the README.txt on how to run the jar file.
 
 ## Approach
