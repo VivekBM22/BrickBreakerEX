@@ -5,7 +5,7 @@ Access the game from releases.
 
 ## Table of Content:
 
-- [About The App](#about-the-app)
+- [About The Application](#about-the-application)
 - [Screenshots](#screenshots)
 - [Technologies](#technologies)
 - [Setup](#setup)
@@ -14,18 +14,20 @@ Access the game from releases.
 - [Credits](#credits)
 - [License](#license)
 
-## About The App
-The Brick-Breaker game but more fun and made with JavaFX 
+## About The Application
+The Brick-Breaker game(the modern take on the classic game Breakout) but more fun, made with JavaFX .
 
 ## Screenshots
 `
 `
 
 ## Technologies
-Made with Java and JavaFX api.
+Made with Java and JavaFX API.
+GUI made with the help of SceneBuilder.
 
 ## Setup
-- download the first version from releases.
+- Download the newest version from releases directory.
+- Check the README.txt in the directory to see how to run the application.
 
 ## Approach
 lore ipsum
