@@ -1,7 +1,7 @@
 # BRICK BREAKER EX
 
 ## Demo link:
-Access the game from releases.
+Access the game from [releases](https://github.com/VivekBM22/BrickBreakerEX/releases/tag/Latest).
 
 ## Table of Content:
 
