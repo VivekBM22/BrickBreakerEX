@@ -31,7 +31,7 @@ GUI made with the help of SceneBuilder.
 - Check the README.txt on how to run the jar file.
 
 ## Approach
-lore ipsum
+Separating Axis Theorem (SAT) was used for Collision between Oriented Rectangle and Circle. The algorithm used here is one that is optimized for collision test between a circle and a rectangle.
 
 ## Status
 Project completed.
