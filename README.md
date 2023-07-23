@@ -17,9 +17,9 @@ Access the game from [releases](https://github.com/VivekBM22/BrickBreakerEX/rele
 ## About The Application
 The Brick-Breaker game(the modern take on the classic game Breakout) but more fun, made with JavaFX .
 
-## Screenshots
-`
-`
+## Gameplay
+https://github.com/VivekBM22/BrickBreakerEX/assets/84435023/d03fb06d-7a4c-4b23-b0b4-a97a7cde3387
+
 
 ## Technologies
 Made with Java and JavaFX API.
